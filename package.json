@@ -1,0 +1,36 @@
+{
+  "name": "metsuki-premium-landing",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "generate:og": "node scripts/generate-og-image.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p animesite/tsconfig.app.json && tsc --noEmit -p animesite/tsconfig.node.json && tsc --noEmit -p clash_clan/tsconfig.json",
+    "build:main": "vite build",
+    "build:animesite": "vite build --config animesite/vite.config.ts",
+    "build:clash_clan": "vite build --config clash_clan/vite.config.ts",
+    "build:mine_sweeper": "vite build --config mine_sweeper/vite.config.js",
+    "build:break_brick": "vite build --config break_brick/vite.config.js",
+    "build:light_flow": "vite build --config light_flow/vite.config.js",
+    "dev": "vite",
+    "build": "npm run generate:og && npm run typecheck && npm run build:main && npm run build:animesite && npm run build:clash_clan && npm run build:mine_sweeper && npm run build:break_brick && npm run build:light_flow",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.104.1",
+    "framer-motion": "^11.18.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.4",
+    "@types/node": "^22.19.17",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "sharp": "^0.34.5",
+    "tailwindcss": "^4.1.4",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11"
+  }
+}
