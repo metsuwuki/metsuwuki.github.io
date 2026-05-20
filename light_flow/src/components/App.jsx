@@ -78,7 +78,8 @@ function App() {
   const [muted, setMuted] = useState(isMuted);
   const [leaderboard, setLeaderboard] = useState([]);
   const [isLeaderboardModalOpen, setIsLeaderboardModalOpen] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isNativeFullscreen, setIsNativeFullscreen] = useState(false);
+  const [isPseudoFullscreen, setIsPseudoFullscreen] = useState(false);
   const [submittedLevelId, setSubmittedLevelId] = useState("");
   const flow = useMemo(() => computeFlow(level), [level]);
   const score = useMemo(
@@ -87,6 +88,7 @@ function App() {
   );
   const showNicknameModal = !nickname.trim();
   const showWinModal = flow.won && !showNicknameModal;
+  const isFullscreen = isNativeFullscreen || isPseudoFullscreen;
 
   const cellSize = isFullscreen
     ? `min(calc((100vw - 24px) / ${level.size}), calc((100vh - 112px) / ${level.size}))`
@@ -108,12 +110,25 @@ function App() {
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(document.fullscreenElement === boardShellRef.current);
+      setIsNativeFullscreen((document.fullscreenElement || document.webkitFullscreenElement) === boardShellRef.current);
     };
 
     document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
+    };
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("game-fullscreen-lock", isPseudoFullscreen);
+    document.body.classList.toggle("game-fullscreen-lock", isPseudoFullscreen);
+    return () => {
+      document.documentElement.classList.remove("game-fullscreen-lock");
+      document.body.classList.remove("game-fullscreen-lock");
+    };
+  }, [isPseudoFullscreen]);
 
   useEffect(() => {
     if (!flow.won || submittedLevelId === level.id || !nickname.trim()) return;
@@ -164,12 +179,25 @@ function App() {
     const shell = boardShellRef.current;
     if (!shell) return;
 
-    if (document.fullscreenElement) {
-      document.exitFullscreen?.();
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
       return;
     }
 
-    shell.requestFullscreen?.();
+    if (isPseudoFullscreen) {
+      setIsPseudoFullscreen(false);
+      return;
+    }
+
+    const requestFullscreen = shell.requestFullscreen || shell.webkitRequestFullscreen;
+    if (!requestFullscreen) {
+      setIsPseudoFullscreen(true);
+      return;
+    }
+
+    Promise.resolve(requestFullscreen.call(shell)).catch(() => {
+      setIsPseudoFullscreen(true);
+    });
   }
 
   function handleMute() {
@@ -338,7 +366,7 @@ function App() {
           </div>
         </header>
 
-        <div className="neon-board-shell" ref={boardShellRef}>
+        <div className={`neon-board-shell ${isPseudoFullscreen ? "is-pseudo-fullscreen" : ""}`} ref={boardShellRef}>
           <div className="fullscreen-game-hud" aria-hidden={!isFullscreen}>
             <div className="fullscreen-game-hud__stats">
               <span>Score: <strong>{score}</strong></span>

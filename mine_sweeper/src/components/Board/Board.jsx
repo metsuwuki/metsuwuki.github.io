@@ -46,6 +46,7 @@ function Board({
   isReady,
   copy,
   isFullscreen,
+  isPseudoFullscreen,
   tapMode,
   shellRef,
   muted,
@@ -203,7 +204,7 @@ function Board({
       </div>
 
       <div
-        className="board-shell"
+        className={`board-shell ${isPseudoFullscreen ? 'is-pseudo-fullscreen' : ''}`}
         ref={shellRef}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}

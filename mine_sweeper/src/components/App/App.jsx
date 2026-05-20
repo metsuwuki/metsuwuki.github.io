@@ -108,13 +108,15 @@ function App() {
   const [locale, setLocale] = useState(savedLocale);
   const [tapMode, setTapMode] = useState('open');
   const [muted, setMuted] = useState(audioManager.muted);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isNativeFullscreen, setIsNativeFullscreen] = useState(false);
+  const [isPseudoFullscreen, setIsPseudoFullscreen] = useState(false);
 
   const totalMines = DIFFICULTIES[difficulty].mines;
   const flagsLeft = Math.max(totalMines - countFlags(board), 0);
   const isFinished = status === GAME_STATUS.WON || status === GAME_STATUS.LOST;
   const showModal = !nickname || (status === GAME_STATUS.WON && isResultModalOpen);
   const copy = COPY[locale] || COPY.en;
+  const isFullscreen = isNativeFullscreen || isPseudoFullscreen;
 
   const leaderboardMode = useMemo(() => {
     if (leaderboardError) return 'Local fallback';
@@ -175,9 +177,10 @@ function App() {
         return undefined;
       }
 
-      if (document.fullscreenElement === boardShellRef.current) {
-        document.exitFullscreen?.();
+      if ((document.fullscreenElement || document.webkitFullscreenElement) === boardShellRef.current) {
+        (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
       }
+      setIsPseudoFullscreen(false);
       const timerId = window.setTimeout(resetGame, 520);
       return () => window.clearTimeout(timerId);
     }
@@ -186,12 +189,25 @@ function App() {
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(document.fullscreenElement === boardShellRef.current);
+      setIsNativeFullscreen((document.fullscreenElement || document.webkitFullscreenElement) === boardShellRef.current);
     };
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+    };
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('game-fullscreen-lock', isPseudoFullscreen);
+    document.body.classList.toggle('game-fullscreen-lock', isPseudoFullscreen);
+    return () => {
+      document.documentElement.classList.remove('game-fullscreen-lock');
+      document.body.classList.remove('game-fullscreen-lock');
+    };
+  }, [isPseudoFullscreen]);
 
   const ensureBoard = (row, col) => {
     if (status !== GAME_STATUS.READY) return board;
@@ -274,12 +290,25 @@ function App() {
     if (!shell) return;
     audioManager.unlock();
 
-    if (document.fullscreenElement) {
-      document.exitFullscreen?.();
+    if (isPseudoFullscreen) {
+      setIsPseudoFullscreen(false);
       return;
     }
 
-    shell.requestFullscreen?.();
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
+      return;
+    }
+
+    const requestFullscreen = shell.requestFullscreen || shell.webkitRequestFullscreen;
+    if (!requestFullscreen) {
+      setIsPseudoFullscreen(true);
+      return;
+    }
+
+    Promise.resolve(requestFullscreen.call(shell)).catch(() => {
+      setIsPseudoFullscreen(true);
+    });
   };
 
   const handleCloseGame = () => {
@@ -361,6 +390,7 @@ function App() {
           isReady={status === GAME_STATUS.READY}
           copy={copy}
           isFullscreen={isFullscreen}
+          isPseudoFullscreen={isPseudoFullscreen}
           tapMode={tapMode}
           shellRef={boardShellRef}
           muted={muted}

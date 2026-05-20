@@ -78,10 +78,11 @@ export async function submitScore({ nickname, difficulty, score, durationSeconds
     const playerId = await ensurePlayerId(name);
     const { error } = await supabase.from(RESULTS_TABLE).insert({
       player_id: playerId,
-      game: "neon_flow",
+      game_key: "neon_flow",
       difficulty,
       score,
       duration_seconds: durationSeconds,
+      combo: null,
       metadata: {
         moves,
         gridSize,

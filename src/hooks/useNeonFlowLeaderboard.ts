@@ -17,6 +17,10 @@ type LeaderboardState = {
   error: string | null;
 };
 
+type SharedGameStats = {
+  neon_flow_games_played?: number;
+};
+
 const LOCAL_KEY = "neon-flow-local-scores";
 
 function normalizeScore(score: NeonFlowScore): NeonFlowScore {
@@ -72,15 +76,22 @@ export function useNeonFlowLeaderboard(limit = 10, difficulty = "easy"): Leaderb
         return;
       }
 
-      const { data, error } = await supabase
-        .from("neon_flow_leaderboard")
-        .select("nickname,difficulty,best_score,best_time_seconds,best_moves,games_played")
-        .eq("difficulty", difficulty)
-        .order("best_score", { ascending: false })
-        .order("best_time_seconds", { ascending: true })
-        .limit(limit);
+      const [leaderboardResponse, statsResponse] = await Promise.all([
+        supabase
+          .from("neon_flow_leaderboard")
+          .select("nickname,difficulty,best_score,best_time_seconds,best_moves,games_played")
+          .eq("difficulty", difficulty)
+          .order("best_score", { ascending: false })
+          .order("best_time_seconds", { ascending: true })
+          .limit(limit),
+        supabase
+          .from("player_global_stats")
+          .select("neon_flow_games_played")
+      ]);
 
       if (!isMounted) return;
+
+      const { data, error } = leaderboardResponse;
 
       if (error) {
         setState({ ...getLocalState(limit, difficulty), error: error.message });
@@ -91,7 +102,12 @@ export function useNeonFlowLeaderboard(limit = 10, difficulty = "easy"): Leaderb
 
       setState({
         scores,
-        gamesPlayed: scores.reduce((total, score) => total + Number(score.games_played ?? 0), 0),
+        gamesPlayed: statsResponse.error
+          ? scores.reduce((total, score) => total + Number(score.games_played ?? 0), 0)
+          : ((statsResponse.data ?? []) as SharedGameStats[]).reduce(
+              (total, score) => total + Number(score.neon_flow_games_played ?? 0),
+              0
+            ),
         isLoading: false,
         error: null
       });

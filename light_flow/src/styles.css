@@ -78,13 +78,15 @@
     0 18px 44px rgba(8, 8, 18, 0.22);
 }
 
-.neon-board-shell:fullscreen {
+.neon-board-shell:fullscreen,
+.neon-board-shell.is-pseudo-fullscreen {
   display: grid;
   align-content: center;
   justify-content: center;
   width: 100vw;
-  min-height: 100vh;
-  max-height: 100vh;
+  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
   overflow: hidden;
   padding: 72px 12px 12px;
   border: 0;
@@ -93,15 +95,23 @@
     linear-gradient(180deg, rgba(24, 18, 46, 0.96), rgba(7, 5, 16, 0.98));
 }
 
-.neon-board-shell:fullscreen .neon-board {
+.neon-board-shell.is-pseudo-fullscreen {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+}
+
+.neon-board-shell:fullscreen .neon-board,
+.neon-board-shell.is-pseudo-fullscreen .neon-board {
   border-color: transparent;
   background: transparent;
   box-shadow: none;
 }
 
-.neon-board-shell:fullscreen .fullscreen-game-hud {
+.neon-board-shell:fullscreen .fullscreen-game-hud,
+.neon-board-shell.is-pseudo-fullscreen .fullscreen-game-hud {
   position: fixed;
-  z-index: 8;
+  z-index: 1002;
   top: max(12px, env(safe-area-inset-top));
   left: 50%;
   display: flex;
@@ -118,13 +128,15 @@
   transform: translateX(-50%);
 }
 
-.neon-board-shell:fullscreen .neon-board {
+.neon-board-shell:fullscreen .neon-board,
+.neon-board-shell.is-pseudo-fullscreen .neon-board {
   max-width: calc(100vw - 24px);
-  max-height: calc(100vh - 96px);
+  max-height: calc(100dvh - 96px);
   overflow: hidden;
 }
 
-.neon-board-shell:fullscreen .fullscreen-game-hud__button img {
+.neon-board-shell:fullscreen .fullscreen-game-hud__button img,
+.neon-board-shell.is-pseudo-fullscreen .fullscreen-game-hud__button img {
   width: 1.18rem;
   height: 1.18rem;
 }
@@ -523,13 +535,15 @@
     border-radius: 14px;
   }
 
-  .neon-board-shell:fullscreen {
+  .neon-board-shell:fullscreen,
+  .neon-board-shell.is-pseudo-fullscreen {
     align-content: center;
     overflow: hidden;
     padding: max(74px, calc(env(safe-area-inset-top) + 64px)) 8px max(12px, env(safe-area-inset-bottom));
   }
 
-  .neon-board-shell:fullscreen .fullscreen-game-hud {
+  .neon-board-shell:fullscreen .fullscreen-game-hud,
+  .neon-board-shell.is-pseudo-fullscreen .fullscreen-game-hud {
     display: inline-flex;
     width: auto;
     max-width: calc(100vw - 18px);
@@ -540,13 +554,15 @@
     border-radius: 999px;
   }
 
-  .neon-board-shell:fullscreen .fullscreen-game-hud__actions {
+  .neon-board-shell:fullscreen .fullscreen-game-hud__actions,
+  .neon-board-shell.is-pseudo-fullscreen .fullscreen-game-hud__actions {
     flex: 0 0 auto;
     justify-content: center;
     gap: 7px;
   }
 
-  .neon-board-shell:fullscreen .fullscreen-game-hud__stats {
+  .neon-board-shell:fullscreen .fullscreen-game-hud__stats,
+  .neon-board-shell.is-pseudo-fullscreen .fullscreen-game-hud__stats {
     display: flex;
     flex: 0 1 auto;
     flex-wrap: wrap;
@@ -557,14 +573,16 @@
     line-height: 1.25;
   }
 
-  .neon-board-shell:fullscreen .fullscreen-game-hud__button {
+  .neon-board-shell:fullscreen .fullscreen-game-hud__button,
+  .neon-board-shell.is-pseudo-fullscreen .fullscreen-game-hud__button {
     width: 2.05rem;
     height: 2.05rem;
   }
 
-  .neon-board-shell:fullscreen .neon-board {
+  .neon-board-shell:fullscreen .neon-board,
+  .neon-board-shell.is-pseudo-fullscreen .neon-board {
     max-width: calc(100vw - 20px);
-    max-height: calc(100vh - 88px);
+    max-height: calc(100dvh - 88px);
     padding: 8px;
     border: 0;
     border-radius: 0;

@@ -177,9 +177,12 @@ export const submitScore = async ({ nickname, difficulty, timeSeconds }) => {
     const playerId = await ensurePlayerId(name);
     const { error } = await supabase.from(RESULTS_TABLE).insert({
       player_id: playerId,
-      game: 'minesweeper',
+      game_key: 'minesweeper',
       difficulty,
       duration_seconds: timeSeconds,
+      score: null,
+      combo: null,
+      metadata: {},
       created_at: playedAt,
     });
 

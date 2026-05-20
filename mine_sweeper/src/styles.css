@@ -87,6 +87,14 @@ input {
 button {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.game-fullscreen-lock {
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
 }
 
 button:focus-visible,
@@ -679,13 +687,16 @@ input:focus-visible {
   display: none;
 }
 
-.board-shell:fullscreen {
+.board-shell:fullscreen,
+.board-shell.is-pseudo-fullscreen {
+  position: relative;
   display: grid;
   align-content: start;
   justify-content: center;
   width: 100vw;
-  min-height: 100vh;
-  max-height: 100vh;
+  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
   overflow: hidden;
   padding: 72px 12px 12px;
   border-radius: 0;
@@ -699,13 +710,21 @@ input:focus-visible {
   scrollbar-width: none;
 }
 
-.board-shell:fullscreen::-webkit-scrollbar {
+.board-shell.is-pseudo-fullscreen {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+}
+
+.board-shell:fullscreen::-webkit-scrollbar,
+.board-shell.is-pseudo-fullscreen::-webkit-scrollbar {
   display: none;
 }
 
-.board-shell:fullscreen .fullscreen-game-hud {
+.board-shell:fullscreen .fullscreen-game-hud,
+.board-shell.is-pseudo-fullscreen .fullscreen-game-hud {
   position: fixed;
-  z-index: 8;
+  z-index: 1002;
   top: max(12px, env(safe-area-inset-top));
   left: 50%;
   display: flex;
@@ -773,21 +792,24 @@ input:focus-visible {
     0 0 18px rgba(124, 77, 255, 0.22);
 }
 
-.board-shell:fullscreen .board-zoom {
+.board-shell:fullscreen .board-zoom,
+.board-shell.is-pseudo-fullscreen .board-zoom {
   width: calc(var(--cell-size) * 25);
   height: calc(var(--cell-size) * 25);
   max-width: calc(100vw - 24px);
-  max-height: calc(100vh - 112px);
+  max-height: calc(100dvh - 112px);
   transform-origin: center center;
   will-change: transform;
 }
 
 @media (max-width: 520px) {
-  .board-shell:fullscreen {
+  .board-shell:fullscreen,
+  .board-shell.is-pseudo-fullscreen {
     padding: 78px 8px max(10px, env(safe-area-inset-bottom));
   }
 
-  .board-shell:fullscreen .fullscreen-game-hud {
+  .board-shell:fullscreen .fullscreen-game-hud,
+  .board-shell.is-pseudo-fullscreen .fullscreen-game-hud {
     width: min(calc(100vw - 16px), 520px);
     align-items: center;
     flex-direction: row;
@@ -811,7 +833,8 @@ input:focus-visible {
   }
 }
 
-.board-shell:fullscreen .board {
+.board-shell:fullscreen .board,
+.board-shell.is-pseudo-fullscreen .board {
   border-radius: 16px;
 }
 
@@ -1775,7 +1798,8 @@ input:focus-visible {
     padding: 12px;
   }
 
-  .board-shell:fullscreen {
+  .board-shell:fullscreen,
+  .board-shell.is-pseudo-fullscreen {
     justify-content: center;
   }
 
