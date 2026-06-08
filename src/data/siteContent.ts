@@ -1,14 +1,11 @@
+import brickBreakerIcon from "../../break_brick/assets/icon.png";
+import clashClanIcon from "../../clash_clan/assets/clash_icon.png";
+import lightFlowIcon from "../../light_flow/assets/icon.png";
 import bypassCleanerIcon from "../assets/apps/bypass-cleaner-icon.ico";
 import bypassCleanerPreview from "../assets/apps/bypass-cleaner-preview.png";
 import exeAnalyserIcon from "../assets/apps/exe-analyser-icon.ico";
 import exeAnalyserPreview from "../assets/apps/exe-analyser-preview.png";
 import brickBreakerPreview from "../assets/BrickBreaker.jpg";
-import lightFlowPreview from "../assets/NeonFlow.jpg";
-import mineSweeperPreview from "../assets/Minesweepers.jpg";
-import clashClanIcon from "../../clash_clan/assets/clash_icon.png";
-import brickBreakerIcon from "../../break_brick/assets/icon.png";
-import lightFlowIcon from "../../light_flow/assets/icon.png";
-import mineSweeperIcon from "../assets/icons/mine.png";
 import gameNavIcon from "../assets/game.svg";
 import cIcon from "../assets/icons/c.svg";
 import cppIcon from "../assets/icons/cpp.svg";
@@ -20,11 +17,14 @@ import javaIcon from "../assets/icons/java.svg";
 import jsIcon from "../assets/icons/js.svg";
 import kotlinIcon from "../assets/icons/kotlin.svg";
 import luaIcon from "../assets/icons/lua.svg";
+import mineSweeperIcon from "../assets/icons/mine.png";
 import pythonIcon from "../assets/icons/py.svg";
 import reactIcon from "../assets/icons/react.svg";
 import rustIcon from "../assets/icons/rust.svg";
 import scssIcon from "../assets/icons/scss.svg";
 import tsIcon from "../assets/icons/ts.svg";
+import mineSweeperPreview from "../assets/Minesweepers.jpg";
+import lightFlowPreview from "../assets/NeonFlow.jpg";
 import type { IconName } from "../components/UiIcon";
 import { appPath } from "../utils/siteRoutes";
 
@@ -186,7 +186,7 @@ const techItems: TechItem[] = [
   { label: "Java", tone: "java", icon: javaIcon },
   { label: "Python", tone: "python", icon: pythonIcon },
   { label: "Lua", tone: "lua", icon: luaIcon },
-  { label: "Kotlin", tone: "kotlin", icon: kotlinIcon }
+  { label: "Kotlin", tone: "kotlin", icon: kotlinIcon },
 ];
 
 const contentByLocale: Record<Locale, LocalizedSiteContent> = {
@@ -200,14 +200,14 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
       heroEyebrow: "home page",
       heroTitle: "MetsUwUki",
       heroRole: "Software Developer",
-      heroDescription: "I'm a software Full-Stack developer. Here are my languages. Move mouse on them to see info about my experience: Green = good, Yellow = quite well, Red = some experience.",
+      heroDescription:
+        "I'm a software Full-Stack developer. Here are my languages. Move mouse on them to see info about my experience: Green = good, Yellow = quite well, Red = some experience.",
       portraitAlt: "Metsuwuki portrait",
       discordPresenceId: "836229144701829140",
       uniqueVisitorsLabel: "Unique visitors",
       writeLabel: "Message",
       gamesTitle: "Games",
-      gamesDescription:
-        "Small browser games.",
+      gamesDescription: "Small browser games.",
       gamesCardEyebrow: "Browser game",
       gamesMinesweeperTitle: "Minesweeper",
       gamesMinesweeperText:
@@ -249,7 +249,8 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
       ctaText:
         "The main entry point of the project: server atmosphere, navigation, and key directions in one place.",
       guestbookTitle: "Guestbook",
-      guestbookDescription: "Leave a message, idea, or quick feedback. Entries are saved as posts.",
+      guestbookDescription:
+        "Leave a message, idea, or quick feedback. Entries are saved as posts.",
       guestbookRepo: "metsuwuki/metsuwuki.github.io",
       guestbookLabel: "guestbook",
       guestbookDateLocale: "en-US",
@@ -270,19 +271,25 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
       openMenuAria: "Open menu",
       closeMenuAria: "Close menu",
       localeSwitcherAria: "Page language",
-      footerCopy: "© 2026 METSUWUKI. Software development, applications, and projects."
+      footerCopy:
+        "© 2026 METSUWUKI. Software development, applications, and projects.",
     },
     navigation: [
       { label: "Home", href: "#overview", icon: "home" },
       { label: "Games", href: "#games", icon: "apps", image: gameNavIcon },
       { label: "Guestbook", href: "#guestbook", icon: "write" },
       { label: "KAGAMI-Server", href: animesitePath, icon: "discord" },
-      { label: "Clash Clan", href: clashClanPath, icon: "shield", image: clashClanIcon }
+      {
+        label: "Clash Clan",
+        href: clashClanPath,
+        icon: "shield",
+        image: clashClanIcon,
+      },
     ],
     techGroups: [
       { title: "Web stack", items: techItems.slice(0, 6) },
       { title: "Low-level", items: techItems.slice(6, 10) },
-      { title: "Other", items: techItems.slice(10) }
+      { title: "Other", items: techItems.slice(10) },
     ],
     appCards: [
       {
@@ -296,42 +303,46 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
           "https://github.com/metsuwuki/ByPass_Cleaner/releases/download/v.0.4.0-alpha/ByPass.Cleaner.Setup.exe",
         accent: "violet",
         tags: ["Quarantine", "Preview", "Logs"],
-        highlights: ["folder scanning", "forced delete", "process terminate"]
+        highlights: ["folder scanning", "forced delete", "process terminate"],
       },
       {
         title: "EXE-Analyser",
-        version: "13.05.2026 - v.0.5.1-beta",
+        version: "08.06.2026 - v0.6.0",
         subtitle: "exe analyser",
         text: "Utility for `.exe` analysis with PE checks, runtime scenarios, risk scoring, uploading your own Unit tests and export to practical formats.",
         preview: exeAnalyserPreview,
         icon: exeAnalyserIcon,
         downloadHref:
-          "https://github.com/metsuwuki/EXE-Programs-Analyser/releases/download/v.0.5.1-beta/EXE_Analyzer_Setup_0.5.1.exe",
+          "https://github.com/metsuwuki/EXE-Programs-Analyser/releases/download/v0.6.0/EXE_Analyzer_Setup_0.6.0.exe",
         accent: "cyan",
         tags: ["PE", "Runtime", "Export"],
-        highlights: ["entropy and imports", "stress scenarios", "html/json/markdown"]
-      }
+        highlights: [
+          "entropy and imports",
+          "stress scenarios",
+          "html/json/markdown",
+        ],
+      },
     ],
     destinationCards: [
       {
         title: "KAGAMI-Server",
         text: "Main server page with atmosphere, navigation, and core project directions.",
         href: animesitePath,
-        accent: "violet"
+        accent: "violet",
       },
       {
         title: "Clash Clan",
         text: "Clan management dashboard for rosters, war participation, transfers, and blacklist control.",
         href: clashClanPath,
-        accent: "peach"
+        accent: "peach",
       },
       {
         title: "GitHub",
         text: "Code, releases, and technical details without showcase noise.",
         href: "https://github.com/metsuwuki",
-        accent: "cyan"
-      }
-    ]
+        accent: "cyan",
+      },
+    ],
   },
   ru: {
     siteMeta: {
@@ -393,7 +404,8 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
       ctaText:
         "Главная входная точка проекта: атмосфера сервера, навигация и всё основное в одном месте. GitHub остается рядом как техническая часть.",
       guestbookTitle: "Книга гостей",
-      guestbookDescription: "Оставь сообщение, идею или короткий фидбек. Записи сохраняются и остаются как посты.",
+      guestbookDescription:
+        "Оставь сообщение, идею или короткий фидбек. Записи сохраняются и остаются как посты.",
       guestbookRepo: "metsuwuki/metsuwuki.github.io",
       guestbookLabel: "guestbook",
       guestbookDateLocale: "ru-RU",
@@ -414,19 +426,24 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
       openMenuAria: "Открыть меню",
       closeMenuAria: "Закрыть меню",
       localeSwitcherAria: "Язык страницы",
-      footerCopy: "© 2026 METSUWUKI. Разработка ПО, приложения и проекты."
+      footerCopy: "© 2026 METSUWUKI. Разработка ПО, приложения и проекты.",
     },
     navigation: [
       { label: "Главная", href: "#overview", icon: "home" },
       { label: "Игры", href: "#games", icon: "apps", image: gameNavIcon },
       { label: "Книга гостей", href: "#guestbook", icon: "write" },
       { label: "KAGAMI-Server", href: animesitePath, icon: "discord" },
-      { label: "Clash Clan", href: clashClanPath, icon: "shield", image: clashClanIcon }
+      {
+        label: "Clash Clan",
+        href: clashClanPath,
+        icon: "shield",
+        image: clashClanIcon,
+      },
     ],
     techGroups: [
       { title: "Веб-стек", items: techItems.slice(0, 6) },
       { title: "Низкий уровень", items: techItems.slice(6, 10) },
-      { title: "Остальное", items: techItems.slice(10) }
+      { title: "Остальное", items: techItems.slice(10) },
     ],
     appCards: [
       {
@@ -440,43 +457,51 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
           "https://github.com/metsuwuki/ByPass_Cleaner/releases/download/v.0.4.0-alpha/ByPass.Cleaner.Setup.exe",
         accent: "violet",
         tags: ["Карантин", "Предпросмотр", "Логи"],
-        highlights: ["сканирование папок", "принудительное удаление", "завершение процессов"]
+        highlights: [
+          "сканирование папок",
+          "принудительное удаление",
+          "завершение процессов",
+        ],
       },
       {
         title: "EXE-Analyser",
-        version: "13.05.2026 - v.0.5.1-beta",
+        version: "08.06.2026 - v0.6.0",
         subtitle: "анализатор exe",
         text: "Инструмент для разбора `.exe` с PE-проверками, runtime-сценариями, оценкой риска, загрузкой своих Unit тестов и экспортом результатов в удобные форматы.",
         preview: exeAnalyserPreview,
         icon: exeAnalyserIcon,
         downloadHref:
-          "https://github.com/metsuwuki/EXE-Programs-Analyser/releases/download/v.0.5.1-beta/EXE_Analyzer_Setup_0.5.1.exe",
+          "https://github.com/metsuwuki/EXE-Programs-Analyser/releases/download/v0.6.0/EXE_Analyzer_Setup_0.6.0.exe",
         accent: "cyan",
         tags: ["PE", "Runtime", "Экспорт"],
-        highlights: ["энтропия и импорты", "стресс-сценарии", "html/json/markdown"]
-      }
+        highlights: [
+          "энтропия и импорты",
+          "стресс-сценарии",
+          "html/json/markdown",
+        ],
+      },
     ],
     destinationCards: [
       {
         title: "KAGAMI-Server",
         text: "Главная страница сервера: вход в атмосферу, навигация и основное направление проекта.",
         href: animesitePath,
-        accent: "violet"
+        accent: "violet",
       },
       {
         title: "Clash Clan",
         text: "Clan management dashboard для составов, войн, переносов игроков и blacklist.",
         href: clashClanPath,
-        accent: "peach"
+        accent: "peach",
       },
       {
         title: "GitHub",
         text: "Код, релизы и открытая техническая часть без лишнего витринного текста.",
         href: "https://github.com/metsuwuki",
-        accent: "cyan"
-      }
-    ]
-  }
+        accent: "cyan",
+      },
+    ],
+  },
 };
 
 export const defaultLocale: Locale = "en";
@@ -498,7 +523,7 @@ export const discordPresenceFallback: DiscordPresenceFallback = {
   accentColor: "#7d2bf9",
   status: "dnd",
   activityName: "Visual Studio Code",
-  activePlatform: "Desktop"
+  activePlatform: "Desktop",
 };
 
 export const socialLinks = {
@@ -509,23 +534,23 @@ export const socialLinks = {
   lightFlow: lightFlowPath,
   discordProfile: "https://discord.com/users/836229144701829140",
   github: "https://github.com/metsuwuki",
-  apps: "#apps"
+  apps: "#apps",
 };
 
 export const gameCards = {
   mineSweeper: {
     href: mineSweeperLaunchPath,
     icon: mineSweeperIcon,
-    preview: mineSweeperPreview
+    preview: mineSweeperPreview,
   },
   brickBreaker: {
     href: breakBrickLaunchPath,
     icon: brickBreakerIcon,
-    preview: brickBreakerPreview
+    preview: brickBreakerPreview,
   },
   lightFlow: {
     href: lightFlowLaunchPath,
     icon: lightFlowIcon,
-    preview: lightFlowPreview
-  }
+    preview: lightFlowPreview,
+  },
 };
