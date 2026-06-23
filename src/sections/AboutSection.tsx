@@ -1,14 +1,27 @@
 import { motion } from "framer-motion";
 import { SectionHeading } from "../components/SectionHeading";
-import { UiIcon } from "../components/UiIcon";
 import { useMotionSettings } from "../hooks/useMotionSettings";
 import { usePageLocale } from "../i18n/pageLocale";
 import { getRevealProps } from "../utils/motion";
 
+import cIcon from "../assets/icons/c.svg";
+import cppIcon from "../assets/icons/cpp.svg";
+import csIcon from "../assets/icons/cs.svg";
+import cssIcon from "../assets/icons/css.svg";
 import downloadIcon from "../assets/icons/download.svg";
+import goIcon from "../assets/icons/go.svg";
+import htmlIcon from "../assets/icons/html.svg";
+import javaIcon from "../assets/icons/java.svg";
+import jsIcon from "../assets/icons/js.svg";
+import kotlinIcon from "../assets/icons/kotlin.svg";
 import logIcon from "../assets/icons/log.svg";
+import luaIcon from "../assets/icons/lua.svg";
 import peIcon from "../assets/icons/pe.svg";
+import pyIcon from "../assets/icons/py.svg";
 import previewIcon from "../assets/icons/preview.svg";
+import reactIcon from "../assets/icons/react.svg";
+import rustIcon from "../assets/icons/rust.svg";
+import scssIcon from "../assets/icons/scss.svg";
 import shieldWarnIcon from "../assets/icons/shield_warn.svg";
 import runtimeIcon from "../assets/icons/runtime.svg";
 import importsIcon from "../assets/icons/imports.svg";
@@ -17,7 +30,9 @@ import deleteIcon from "../assets/icons/delete.svg";
 import fileIcon from "../assets/icons/file.svg";
 import processIcon from "../assets/icons/process.svg";
 import stressIcon from "../assets/icons/stress_scenario.svg";
+import tsIcon from "../assets/icons/ts.svg";
 import windowsIcon from "../assets/icons/windows.svg";
+import type { AppCard } from "../data/siteContent";
 
 const tagIcons: Record<string, string> = {
   Export: downloadIcon,
@@ -37,14 +52,82 @@ const highlightIcons: Record<string, string> = {
   "stress scenarios": stressIcon
 };
 
+const languageLogos = [
+  { name: "TypeScript", icon: tsIcon },
+  { name: "JavaScript", icon: jsIcon },
+  { name: "React", icon: reactIcon },
+  { name: "HTML", icon: htmlIcon },
+  { name: "CSS", icon: cssIcon },
+  { name: "SCSS", icon: scssIcon },
+  { name: "Python", icon: pyIcon },
+  { name: "Rust", icon: rustIcon },
+  { name: "Go", icon: goIcon },
+  { name: "Java", icon: javaIcon },
+  { name: "C++", icon: cppIcon },
+  { name: "C#", icon: csIcon },
+  { name: "Lua", icon: luaIcon },
+  { name: "Kotlin", icon: kotlinIcon },
+  { name: "C", icon: cIcon },
+];
+
 export default function AboutSection() {
   const { content } = usePageLocale();
-  const { appCards, siteMeta } = content;
+  const { appCards, featureCards, siteMeta } = content;
   const { prefersReducedMotion } = useMotionSettings();
+
+  function openApp(app: AppCard) {
+    const target = app.downloadHref ?? app.githubHref ?? app.websiteHref;
+    if (target) window.open(target, "_blank", "noreferrer");
+  }
 
   return (
     <section className="section-block section-block--airy" id="apps">
       <div className="page-container">
+        <motion.div {...getRevealProps(prefersReducedMotion)}>
+          <SectionHeading title={siteMeta.featureTitle} description={siteMeta.featureDescription} align="left" />
+        </motion.div>
+
+        <motion.div className="logo-marquee" {...getRevealProps(prefersReducedMotion, 0.05)}>
+          <div className="logo-marquee__track">
+            <ul className="logo-marquee__group">
+              {languageLogos.map((logo) => (
+                <li className="logo-marquee__item" key={logo.name}>
+                  <img src={logo.icon} alt="" loading="lazy" />
+                </li>
+              ))}
+            </ul>
+            <ul className="logo-marquee__group" aria-hidden="true">
+              {languageLogos.map((logo) => (
+                <li className="logo-marquee__item" key={`${logo.name}-duplicate`}>
+                  <img src={logo.icon} alt="" loading="lazy" />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </motion.div>
+
+        <div className="destination-grid destination-grid--premium">
+          {featureCards.map((card, index) => (
+            <motion.a
+              key={card.title}
+              {...getRevealProps(prefersReducedMotion, index * 0.06)}
+              href={card.href}
+              target={card.href?.startsWith("http") ? "_blank" : undefined}
+              rel={card.href?.startsWith("http") ? "noreferrer" : undefined}
+              className={`destination-card destination-card--${card.tone} ${card.href ? "" : "destination-card--static"}`}
+            >
+              <span className="destination-card__halo" aria-hidden="true" />
+              <img src={card.image} alt="" className="destination-card__image" loading="lazy" />
+              <span className="destination-card__label">{card.title}</span>
+              <p>{card.text}</p>
+              <span className="destination-card__meta" aria-hidden="true">
+                <span>{card.href?.startsWith("http") ? "External" : "Section"}</span>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+              </span>
+            </motion.a>
+          ))}
+        </div>
+
         <motion.div {...getRevealProps(prefersReducedMotion)}>
           <SectionHeading title={siteMeta.appsTitle} description={siteMeta.appsDescription} align="left" />
         </motion.div>
@@ -55,6 +138,16 @@ export default function AboutSection() {
               key={app.title}
               {...getRevealProps(prefersReducedMotion, index * 0.08)}
               className={`app-card app-card--${app.accent}`}
+              role="link"
+              tabIndex={0}
+              aria-label={`${app.title} ${siteMeta.appGithubLabel}`}
+              onClick={() => openApp(app)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  openApp(app);
+                }
+              }}
             >
               <div className="app-card__inner">
                 <div className="window-chrome app-card__chrome" aria-hidden="true">
@@ -77,7 +170,11 @@ export default function AboutSection() {
                     <p className="app-card__eyebrow">{siteMeta.appCardEyebrow}</p>
                     <h3>{app.title}</h3>
                   </div>
-                  <span className="app-card__version">{app.version}</span>
+                  {app.version ? (
+                    <div className="app-card__meta-badges">
+                      <span className="app-card__version">{app.version}</span>
+                    </div>
+                  ) : null}
                 </div>
 
                 <p className="app-card__text">{app.text}</p>
@@ -104,16 +201,6 @@ export default function AboutSection() {
                       </span>
                     ))}
                   </div>
-
-                  <a
-                    href={app.downloadHref}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={`button button--ghost app-card__button app-card__button--${app.accent}`}
-                  >
-                    <UiIcon name="download" className="button__leading-icon" />
-                    <span>{siteMeta.appDownloadLabel}</span>
-                  </a>
                 </div>
               </div>
               <div className={`app-card__platform app-card__platform--${app.accent}`} aria-hidden="true">

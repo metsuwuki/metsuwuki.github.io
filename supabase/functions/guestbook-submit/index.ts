@@ -6,23 +6,20 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
+const allowedAvatars = new Set(["profile", "profile1", "profile2", "profile3", "profile4", "profile5", "profile6", "profile7"]);
 
 serve(async (req) => {
-  // Handle CORS
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    const { name, message } = await req.json();
-
-    // Get client IP
+    const { name, message, avatar } = await req.json();
     const clientIp =
       req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
       req.headers.get("cf-connecting-ip") ||
       "unknown";
 
-    // Initialize Supabase client
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
@@ -31,8 +28,6 @@ serve(async (req) => {
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
-
-    // Check rate limit: count messages from this IP in the last hour
     const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
 
     const { data: recentMessages, error: countError } = await supabase
@@ -41,57 +36,45 @@ serve(async (req) => {
       .eq("ip_address", clientIp)
       .gte("created_at", oneHourAgo);
 
-    if (countError) {
-      console.error("Error checking rate limit:", countError);
-      throw countError;
-    }
+    if (countError) throw countError;
 
-    // If more than 1 message from this IP in the last hour, reject
     if ((recentMessages?.length || 0) >= 1) {
       return new Response(
         JSON.stringify({
           error: "rate_limit_exceeded",
-          message: "Вы можете отправлять только одно сообщение в час",
+          message: "You can send only one message per hour.",
         }),
         {
           status: 429,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
-    // Insert the new message with IP address
-    const { error: insertError } = await supabase
-      .from("guestbook")
-      .insert({
-        name: name.trim(),
-        message: message.trim(),
-        ip_address: clientIp,
-      });
+    const { error: insertError } = await supabase.from("guestbook").insert({
+      name: String(name ?? "").trim(),
+      message: String(message ?? "").trim(),
+      avatar: typeof avatar === "string" && allowedAvatars.has(avatar) ? avatar : "profile",
+      ip_address: clientIp,
+    });
 
-    if (insertError) {
-      console.error("Error inserting message:", insertError);
-      throw insertError;
-    }
+    if (insertError) throw insertError;
 
-    return new Response(
-      JSON.stringify({ success: true, message: "Сообщение отправлено" }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
-    );
+    return new Response(JSON.stringify({ success: true, message: "Message sent." }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.error("Error:", error);
     return new Response(
       JSON.stringify({
         error: "internal_error",
-        message: "Ошибка при отправке сообщения",
+        message: "Could not send the message.",
       }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      },
     );
   }
 });

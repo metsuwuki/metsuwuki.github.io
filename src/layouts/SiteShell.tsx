@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import clashClanIcon from "../../clash_clan/assets/clash_icon.png";
+import { ParticleCanvas } from "../components/ParticleCanvas";
 import { SiteHeader } from "../components/SiteHeader";
 import { UiIcon } from "../components/UiIcon";
 import { socialLinks } from "../data/siteContent";
@@ -17,6 +17,7 @@ export function SiteShell({ children }: SiteShellProps) {
     <div className="page-shell">
       <div className="page-shell__backdrop" aria-hidden="true">
         <div className="page-shell__scene" />
+        <ParticleCanvas />
         <div className="page-shell__scene-glow" />
         <div className="page-shell__fireflies page-shell__fireflies--one" />
         <div className="page-shell__fireflies page-shell__fireflies--two" />
@@ -48,7 +49,7 @@ export function SiteShell({ children }: SiteShellProps) {
 
       <main>{children}</main>
 
-      <footer className="site-footer">
+      <footer className="site-footer" id="contact">
         <div className="page-container">
           <div className="site-footer__panel">
             <div className="site-footer__inner">
@@ -60,18 +61,13 @@ export function SiteShell({ children }: SiteShellProps) {
 
                 <div className="site-footer__socials">
                   <a
-                    href={socialLinks.discord}
+                    href={socialLinks.discordProfile}
+                    target="_blank"
+                    rel="noreferrer"
                     className="site-footer__social-btn site-footer__social-btn--discord"
                   >
                     <UiIcon name="discord" className="site-footer__social-icon" />
-                    {siteMeta.ctaTitle}
-                  </a>
-                  <a
-                    href={socialLinks.clashClan}
-                    className="site-footer__social-btn site-footer__social-btn--clash"
-                  >
-                    <img src={clashClanIcon} alt="" className="site-footer__social-icon site-footer__social-icon--image" />
-                    Clash Clan
+                    Discord
                   </a>
                   <a
                     href={socialLinks.github}

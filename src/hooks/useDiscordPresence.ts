@@ -21,30 +21,6 @@ type DiscordActivity = {
   name?: string;
 };
 
-function buildAvatarUrl(userId: string, avatarHash: string) {
-  return `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.png?size=160`;
-}
-
-function getPlatformLabel(payload: LanyardData): string {
-  if (payload.active_on_discord_desktop) {
-    return "Desktop";
-  }
-
-  if (payload.active_on_discord_mobile) {
-    return "Mobile";
-  }
-
-  if (payload.active_on_discord_web) {
-    return "Web";
-  }
-
-  return discordPresenceFallback.activePlatform;
-}
-
-function getPrimaryActivity(activities?: DiscordActivity[]): string {
-  return activities?.find((activity) => activity.type === 0)?.name ?? discordPresenceFallback.activityName;
-}
-
 type LanyardData = {
   discord_status?: PresenceState;
   discord_user?: {
@@ -59,6 +35,35 @@ type LanyardData = {
   active_on_discord_mobile?: boolean;
 };
 
+function buildAvatarUrl(userId: string, avatarHash: string) {
+  return `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.png?size=160`;
+}
+
+function getPlatformLabel(payload: LanyardData): string {
+  if (payload.active_on_discord_desktop) return "Desktop";
+  if (payload.active_on_discord_mobile) return "Mobile";
+  if (payload.active_on_discord_web) return "Web";
+  return discordPresenceFallback.activePlatform;
+}
+
+function getPrimaryActivity(activities?: DiscordActivity[]): string {
+  return activities?.find((activity) => activity.type === 0)?.name ?? discordPresenceFallback.activityName;
+}
+
+function getPresenceLabel(state: PresenceState, locale: Locale): string {
+  if (locale === "ru") {
+    if (state === "online") return "В сети";
+    if (state === "idle") return "Неактивен";
+    if (state === "dnd") return "Не беспокоить";
+    return "Не в сети";
+  }
+
+  if (state === "online") return "Online";
+  if (state === "idle") return "Idle";
+  if (state === "dnd") return "Do not disturb";
+  return "Offline";
+}
+
 function mapPresence(state: PresenceState, locale: Locale, userId?: string, payload?: LanyardData): PresenceInfo {
   const displayName =
     payload?.discord_user?.display_name ??
@@ -68,35 +73,22 @@ function mapPresence(state: PresenceState, locale: Locale, userId?: string, payl
   const avatarHash = payload?.discord_user?.avatar ?? discordPresenceFallback.avatarHash;
   const resolvedUserId = userId ?? "836229144701829140";
 
-  const baseProfile = {
+  return {
+    available: state !== "offline",
+    label: getPresenceLabel(state, locale),
+    state,
     displayName,
     username,
     avatarUrl: buildAvatarUrl(resolvedUserId, avatarHash),
     accentColor: discordPresenceFallback.accentColor,
     activityName: getPrimaryActivity(payload?.activities),
-    activePlatform: payload ? getPlatformLabel(payload) : discordPresenceFallback.activePlatform
+    activePlatform: payload ? getPlatformLabel(payload) : discordPresenceFallback.activePlatform,
   };
-
-  switch (state) {
-    case "online":
-      return { available: true, label: locale === "ru" ? "Онлайн" : "Online", state, ...baseProfile };
-    case "idle":
-      return { available: true, label: locale === "ru" ? "Неактивен" : "Idle", state, ...baseProfile };
-    case "dnd":
-      return { available: true, label: locale === "ru" ? "Не беспокоить" : "Do not disturb", state, ...baseProfile };
-    default:
-      return {
-        available: false,
-        label: locale === "ru" ? "Не в сети" : "Offline",
-        state: "offline",
-        ...baseProfile
-      };
-  }
 }
 
 export function useDiscordPresence(userId?: string, locale: Locale = "en"): PresenceInfo {
   const [presence, setPresence] = useState<PresenceInfo>(
-    mapPresence(discordPresenceFallback.status, locale, userId)
+    mapPresence(discordPresenceFallback.status, locale, userId),
   );
 
   useEffect(() => {
@@ -120,13 +112,9 @@ export function useDiscordPresence(userId?: string, locale: Locale = "en"): Pres
           return;
         }
 
-        if (!cancelled) {
-          setPresence(mapPresence(discordPresenceFallback.status, locale, userId));
-        }
+        if (!cancelled) setPresence(mapPresence(discordPresenceFallback.status, locale, userId));
       } catch {
-        if (!cancelled) {
-          setPresence(mapPresence(discordPresenceFallback.status, locale, userId));
-        }
+        if (!cancelled) setPresence(mapPresence(discordPresenceFallback.status, locale, userId));
       }
     };
 
