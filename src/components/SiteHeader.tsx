@@ -13,7 +13,7 @@ function KagamiStarSvg() {
       aria-hidden="true"
       className="site-nav__kagami-star"
     >
-      <path d="M12 2.5l2.6 5.3 5.8.85-4.2 4.1 1 5.8L12 15.8l-5.2 2.75 1-5.8-4.2-4.1 5.8-.85z" />
+      <path d="M12 2.5l2.18 7.32L21.5 12l-7.32 2.18L12 21.5l-2.18-7.32L2.5 12l7.32-2.18L12 2.5z" />
     </svg>
   );
 }

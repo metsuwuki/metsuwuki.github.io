@@ -293,28 +293,55 @@ function ParticleField() {
   return <canvas ref={canvasRef} className="kg-hero__particles" aria-hidden="true" />;
 }
 
+function VacantSlot() {
+  return (
+    <div className="kg-vacant-card">
+      <div className="kg-vacant-card__icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" />
+        </svg>
+      </div>
+      <span className="kg-vacant-card__label">Вакантно</span>
+    </div>
+  );
+}
+
 function KagamiHero() {
   const bgRef = useRef<HTMLDivElement>(null);
+  const fadeGroupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let raf = 0;
     const handler = () => {
-      if (bgRef.current && window.scrollY < window.innerHeight) {
-        bgRef.current.style.transform = `scale(1.06) translateY(${window.scrollY * 0.22}px)`;
-      }
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const vh = window.innerHeight;
+        if (y < vh) {
+          const progress = y / vh;
+          if (bgRef.current) {
+            bgRef.current.style.transform = `scale(1.06) translateY(${y * 0.22}px)`;
+          }
+          if (fadeGroupRef.current) {
+            fadeGroupRef.current.style.opacity = String(Math.max(0, 1 - progress * 1.8));
+          }
+        }
+      });
     };
     window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
+    return () => {
+      window.removeEventListener("scroll", handler);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
     <section className="kg-hero" id="kg-hero">
-      <div
-        className="kg-hero__bg"
-        ref={bgRef}
-        style={{ backgroundImage: `url(${heroBg})` }}
-        aria-hidden="true"
-      />
-      <div className="kg-hero__overlay" aria-hidden="true" />
+      <div className="kg-hero__fade-group" ref={fadeGroupRef} aria-hidden="true">
+        <div className="kg-hero__bg" ref={bgRef} style={{ backgroundImage: `url(${heroBg})` }} />
+        <div className="kg-hero__overlay" />
+      </div>
       <ParticleField />
 
       <motion.div
@@ -445,19 +472,15 @@ function KagamiActivities() {
 
             <div className="kg-rank-block">
               <p className="kg-rank-label">ЗАМЕСТИТЕЛИ</p>
-              <div className="kg-avatar-row">
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className="kg-avatar kg-avatar--slot">?</div>
-                ))}
+              <div className="kg-vacant-row">
+                {[0, 1, 2].map((i) => <VacantSlot key={i} />)}
               </div>
             </div>
 
             <div className="kg-rank-block">
               <p className="kg-rank-label">КООРДИНАТОРЫ</p>
-              <div className="kg-avatar-row">
-                {[0, 1, 2, 3].map((i) => (
-                  <div key={i} className="kg-avatar kg-avatar--slot">?</div>
-                ))}
+              <div className="kg-vacant-row">
+                {[0, 1, 2, 3].map((i) => <VacantSlot key={i} />)}
               </div>
             </div>
           </motion.div>
@@ -514,7 +537,7 @@ function KagamiJoin() {
             <KgStar className="kg-star-img--join" />
           </motion.div>
           <motion.h2 variants={fadeUp}>
-            ГОТОВ СТАТЬ ЧАСТЬЮ<br /><span>K<KgStar className="kg-star-img--inline" />GAMI?</span>
+            ГОТОВ СТАТЬ ЧАСТЬЮ<br /><span> K<KgStar className="kg-star-img--inline" />GAMI?</span>
           </motion.h2>
           <motion.p variants={fadeUp}>
             Присоединяйся к нашей команде и начни писать свою историю в мире GTA 5 RP.
@@ -617,6 +640,7 @@ function KagamiFooter() {
 export default function KagamiPage() {
   return (
     <div className="kagami-page">
+      <div className="kg-bg-grid" aria-hidden="true" />
       <KagamiNav />
       <KagamiHero />
       <KagamiPrinciples />

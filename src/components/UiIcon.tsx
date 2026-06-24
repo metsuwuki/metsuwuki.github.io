@@ -322,13 +322,10 @@ const iconNodes: Record<IconName, JSX.Element> = {
     </>
   ),
   message: (
-    <path
-      d="M6 14.75L3.75 16L4.6 13.95C4.08 13.19 3.8 12.25 3.8 11.23C3.8 8.33 6.55 6 10 6C13.45 6 16.2 8.33 16.2 11.23C16.2 14.12 13.45 16.45 10 16.45C8.72 16.45 7.53 16.13 6.54 15.58M7.9 10.15H12.1M7.9 12.2H10.7"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <>
+      <rect x="2.5" y="5.5" width="15" height="10" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M2.5 8L10 12.5L17.5 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </>
   ),
   overview: (
     <>
