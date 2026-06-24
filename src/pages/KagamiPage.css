@@ -1409,3 +1409,179 @@
     padding: 0 18px;
   }
 }
+
+/* Calmer destination-card-inspired texture pass */
+.kg-section {
+  padding-block: clamp(54px, 7vw, 96px);
+}
+
+.kg-principles::before,
+.kg-cols::before,
+.kg-steps::before {
+  opacity: 0.28;
+  filter: blur(0);
+  inset: -10px;
+}
+
+.kg-section::after {
+  opacity: 0.24;
+  inset: 20px 7%;
+}
+
+.kg-principle-card,
+.kg-col-card,
+.kg-activity-item,
+.kg-benefit-item,
+.kg-leader-card,
+.kg-step,
+.kg-footer__brand,
+.kg-footer__col {
+  border-radius: 24px;
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.13), transparent 34%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 8px),
+    radial-gradient(circle at 50% 24%, rgba(182, 124, 255, 0.17), transparent 38%),
+    rgba(12, 10, 28, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.11),
+    inset 0 -1px 0 rgba(95, 49, 172, 0.14),
+    0 16px 38px rgba(0, 0, 12, 0.22);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background-position 360ms ease;
+}
+
+.kg-principle-card::after,
+.kg-col-card::after,
+.kg-activity-item::after,
+.kg-benefit-item::after,
+.kg-leader-card::after,
+.kg-step::after,
+.kg-footer__brand::after,
+.kg-footer__col::after {
+  background:
+    linear-gradient(90deg, transparent, rgba(244, 221, 255, 0.3), transparent) 0 0 / 180% 1px no-repeat,
+    radial-gradient(circle at 50% 22%, rgba(182, 124, 255, 0.14), transparent 40%);
+  opacity: 0.66;
+}
+
+.kg-principle-card:hover,
+.kg-col-card:hover,
+.kg-activity-item:hover,
+.kg-benefit-item:hover,
+.kg-leader-card:hover,
+.kg-step:hover,
+.kg-footer__brand:hover,
+.kg-footer__col:hover {
+  transform: translate3d(0, -3px, 0);
+  background-position: 0 0, 14px 0, 0 0, 0 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(95, 49, 172, 0.16),
+    0 20px 44px rgba(0, 0, 12, 0.28);
+}
+
+.kg-principle-card:nth-child(1),
+.kg-col-card:nth-child(1),
+.kg-activity-item:nth-child(3n + 1),
+.kg-benefit-item:nth-child(3n + 1) {
+  border-color: rgba(143, 231, 234, 0.34);
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.13), transparent 34%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.032) 0 1px, transparent 1px 8px),
+    radial-gradient(circle at 18% 0%, rgba(143, 231, 234, 0.18), transparent 35%),
+    rgba(10, 20, 34, 0.7);
+}
+
+.kg-principle-card:nth-child(2),
+.kg-col-card:nth-child(2),
+.kg-activity-item:nth-child(3n + 2),
+.kg-benefit-item:nth-child(3n + 2) {
+  border-color: rgba(165, 139, 255, 0.34);
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.12), transparent 34%),
+    repeating-linear-gradient(120deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 8px),
+    radial-gradient(circle at 50% 20%, rgba(165, 139, 255, 0.2), transparent 38%),
+    rgba(18, 12, 42, 0.72);
+}
+
+.kg-principle-card:nth-child(3),
+.kg-col-card:nth-child(3),
+.kg-activity-item:nth-child(3n),
+.kg-benefit-item:nth-child(3n) {
+  border-color: rgba(143, 231, 234, 0.26);
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.12), transparent 34%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 8px),
+    radial-gradient(circle at 18% 0%, rgba(143, 231, 234, 0.13), transparent 34%),
+    radial-gradient(circle at 88% 6%, rgba(165, 139, 255, 0.16), transparent 36%),
+    rgba(12, 13, 36, 0.72);
+}
+
+.kg-principle-card:nth-child(4),
+.kg-step,
+.kg-footer__brand {
+  border-color: rgba(231, 199, 127, 0.28);
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.12), transparent 34%),
+    repeating-linear-gradient(120deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 8px),
+    radial-gradient(circle at 82% 0%, rgba(231, 199, 127, 0.15), transparent 34%),
+    rgba(26, 20, 32, 0.72);
+}
+
+.kg-principle-card:nth-child(1) .kg-principle-card__icon,
+.kg-activity-item:nth-child(3n + 1) .kg-activity-item__icon,
+.kg-benefit-item:nth-child(3n + 1) .kg-benefit-item__icon {
+  color: var(--kg-teal);
+  border-color: rgba(143, 231, 234, 0.3);
+}
+
+.kg-principle-card:nth-child(2) .kg-principle-card__icon,
+.kg-activity-item:nth-child(3n + 2) .kg-activity-item__icon,
+.kg-benefit-item:nth-child(3n + 2) .kg-benefit-item__icon {
+  color: var(--kg-purple-light);
+  border-color: rgba(165, 139, 255, 0.3);
+}
+
+.kg-principle-card:nth-child(4) .kg-principle-card__icon,
+.kg-step__num {
+  color: var(--kg-gold);
+}
+
+.kg-activity-item,
+.kg-benefit-item {
+  min-height: 78px;
+}
+
+.kg-col-card {
+  min-height: auto;
+}
+
+.kg-hero__content {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .kg-section {
+    padding-block: 46px;
+  }
+
+  .kg-section::after {
+    opacity: 0.18;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kg-principle-card,
+  .kg-col-card,
+  .kg-activity-item,
+  .kg-benefit-item,
+  .kg-leader-card,
+  .kg-step,
+  .kg-footer__brand,
+  .kg-footer__col {
+    transition: none;
+  }
+}
