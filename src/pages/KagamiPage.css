@@ -1585,3 +1585,173 @@
     transition: none;
   }
 }
+
+/* Violet depth pass: softer hero fade and fuller section backdrops */
+.kagami-page {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(124, 77, 255, 0.16), transparent 28rem),
+    radial-gradient(circle at 82% 38%, rgba(165, 139, 255, 0.12), transparent 30rem),
+    radial-gradient(circle at 50% 74%, rgba(60, 35, 128, 0.2), transparent 34rem),
+    linear-gradient(180deg, #090716 0%, #0d0921 42%, #05040f 100%);
+}
+
+.kagami-page::after {
+  background:
+    linear-gradient(to right, rgba(165, 139, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(165, 139, 255, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 20% 22%, rgba(255, 255, 255, 0.13) 0 0.8px, transparent 1.5px),
+    radial-gradient(circle at 74% 34%, rgba(165, 139, 255, 0.22) 0 0.9px, transparent 1.6px),
+    radial-gradient(circle at 54% 76%, rgba(143, 231, 234, 0.12) 0 0.8px, transparent 1.5px);
+  background-size: 90px 90px, 90px 90px, 250px 250px, 320px 320px, 390px 390px;
+  opacity: 0.22;
+  mask-image: radial-gradient(ellipse at center, black 0%, rgba(0, 0, 0, 0.72) 54%, transparent 92%);
+}
+
+.kg-hero {
+  isolation: isolate;
+}
+
+.kg-hero__bg {
+  bottom: -18vh;
+  transform: scale(1.08);
+  mask-image: linear-gradient(to bottom, black 0%, black 58%, rgba(0, 0, 0, 0.62) 76%, transparent 100%);
+}
+
+.kg-hero__overlay {
+  background:
+    radial-gradient(ellipse 70% 56% at 50% 56%, rgba(88, 28, 135, 0.42) 0%, transparent 66%),
+    linear-gradient(to bottom, rgba(8, 6, 18, 0.1) 0%, rgba(9, 7, 21, 0.36) 42%, rgba(10, 7, 23, 0.76) 74%, #090716 100%);
+}
+
+.kg-hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  z-index: 1;
+  height: min(34vh, 280px);
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(124, 77, 255, 0.2), transparent 56%),
+    linear-gradient(to bottom, transparent 0%, rgba(9, 7, 22, 0.62) 48%, #090716 100%);
+}
+
+.kg-section {
+  position: relative;
+}
+
+.kg-section::before {
+  background:
+    radial-gradient(circle at 16% 12%, rgba(124, 77, 255, 0.1), transparent 28rem),
+    radial-gradient(circle at 82% 24%, rgba(165, 139, 255, 0.08), transparent 24rem),
+    linear-gradient(to right, rgba(165, 139, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(165, 139, 255, 0.03) 1px, transparent 1px);
+  background-size: auto, auto, 96px 96px, 96px 96px;
+  opacity: 0.52;
+  mask-image: radial-gradient(ellipse at center, black 0%, rgba(0, 0, 0, 0.7) 58%, transparent 88%);
+}
+
+.kg-principles,
+.kg-cols,
+.kg-steps {
+  isolation: isolate;
+}
+
+.kg-principles::before,
+.kg-cols::before,
+.kg-steps::before {
+  opacity: 0.38;
+  background:
+    radial-gradient(circle at 24% 0%, rgba(124, 77, 255, 0.18), transparent 32%),
+    radial-gradient(circle at 80% 8%, rgba(165, 139, 255, 0.14), transparent 34%),
+    linear-gradient(to right, rgba(165, 139, 255, 0.04) 1px, transparent 1px);
+  background-size: auto, auto, 72px 72px;
+}
+
+.kg-principle-card,
+.kg-col-card,
+.kg-activity-item,
+.kg-benefit-item,
+.kg-leader-card,
+.kg-step,
+.kg-footer__brand,
+.kg-footer__col {
+  border-color: rgba(165, 139, 255, 0.34);
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.12), transparent 34%),
+    repeating-linear-gradient(120deg, rgba(255, 255, 255, 0.032) 0 1px, transparent 1px 8px),
+    linear-gradient(to right, rgba(165, 139, 255, 0.036) 1px, transparent 1px),
+    radial-gradient(circle at 50% 18%, rgba(124, 77, 255, 0.26), transparent 39%),
+    rgba(13, 9, 35, 0.76);
+  background-size: auto, auto, 34px 34px, auto, auto;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(124, 77, 255, 0.2),
+    0 16px 38px rgba(8, 4, 22, 0.28);
+}
+
+.kg-principle-card::after,
+.kg-col-card::after,
+.kg-activity-item::after,
+.kg-benefit-item::after,
+.kg-leader-card::after,
+.kg-step::after,
+.kg-footer__brand::after,
+.kg-footer__col::after {
+  background:
+    linear-gradient(90deg, transparent, rgba(244, 221, 255, 0.28), transparent) 0 0 / 180% 1px no-repeat,
+    radial-gradient(circle at 18% 0%, rgba(165, 139, 255, 0.18), transparent 30%),
+    radial-gradient(circle at 88% 10%, rgba(124, 77, 255, 0.16), transparent 36%);
+}
+
+.kg-principle-card:nth-child(1),
+.kg-principle-card:nth-child(2),
+.kg-principle-card:nth-child(3),
+.kg-principle-card:nth-child(4),
+.kg-col-card:nth-child(1),
+.kg-col-card:nth-child(2),
+.kg-col-card:nth-child(3),
+.kg-activity-item,
+.kg-benefit-item,
+.kg-step,
+.kg-footer__brand {
+  border-color: rgba(165, 139, 255, 0.3);
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.12), transparent 34%),
+    repeating-linear-gradient(120deg, rgba(255, 255, 255, 0.032) 0 1px, transparent 1px 8px),
+    linear-gradient(to right, rgba(165, 139, 255, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 22% 0%, rgba(165, 139, 255, 0.18), transparent 36%),
+    radial-gradient(circle at 84% 20%, rgba(95, 49, 172, 0.16), transparent 38%),
+    rgba(14, 9, 37, 0.78);
+  background-size: auto, auto, 34px 34px, auto, auto, auto;
+}
+
+.kg-principle-card:nth-child(1) .kg-principle-card__icon,
+.kg-principle-card:nth-child(2) .kg-principle-card__icon,
+.kg-principle-card:nth-child(3) .kg-principle-card__icon,
+.kg-principle-card:nth-child(4) .kg-principle-card__icon,
+.kg-activity-item__icon,
+.kg-benefit-item__icon,
+.kg-step__num {
+  color: var(--kg-purple-light);
+  border-color: rgba(165, 139, 255, 0.32);
+}
+
+.kg-principle-card h3,
+.kg-col-title span,
+.kg-rank-label,
+.kg-benefit-item h4,
+.kg-activity-item h4 {
+  color: #bda9ff;
+}
+
+.kg-principle-card:hover,
+.kg-col-card:hover,
+.kg-activity-item:hover,
+.kg-benefit-item:hover,
+.kg-leader-card:hover,
+.kg-step:hover {
+  border-color: rgba(196, 173, 255, 0.5);
+  background-position: 0 0, 16px 0, 8px 0, 0 0, 0 0, 0 0;
+}

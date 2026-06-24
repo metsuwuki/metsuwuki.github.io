@@ -9262,3 +9262,20 @@ body {
   }
 }
 
+/* Keep the homepage footer card static so clipped edges stay clean. */
+.site-footer__inner {
+  overflow: hidden;
+  transform: none !important;
+  transition: border-color 160ms ease, box-shadow 160ms ease !important;
+}
+
+.site-footer__inner:hover {
+  transform: none !important;
+  background-position: 0 0, 0 0, 0 0, 0 0, 0 0 !important;
+  border-color: rgba(190, 134, 255, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(95, 49, 172, 0.18),
+    0 20px 58px rgba(5, 2, 18, 0.38);
+}
+
