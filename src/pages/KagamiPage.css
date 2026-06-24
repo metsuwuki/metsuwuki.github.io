@@ -1071,3 +1071,341 @@
   from { transform: translate3d(-0.8%, 0, 0); opacity: 0.28; }
   to { transform: translate3d(0.8%, -1%, 0); opacity: 0.46; }
 }
+
+/* Denser glass texture pass */
+.kagami-page {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(143, 231, 234, 0.1), transparent 24rem),
+    radial-gradient(circle at 86% 34%, rgba(124, 77, 255, 0.14), transparent 28rem),
+    radial-gradient(circle at 52% 82%, rgba(231, 199, 127, 0.07), transparent 24rem),
+    linear-gradient(180deg, var(--kg-bg) 0%, #070615 54%, var(--kg-bg-deep) 100%);
+}
+
+.kagami-page::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.11) 0 0.8px, transparent 1.4px),
+    radial-gradient(circle at 74% 34%, rgba(143, 231, 234, 0.18) 0 0.9px, transparent 1.5px),
+    radial-gradient(circle at 58% 78%, rgba(231, 199, 127, 0.13) 0 0.9px, transparent 1.5px);
+  background-size: 260px 260px, 320px 320px, 380px 380px;
+  opacity: 0.16;
+  mix-blend-mode: screen;
+}
+
+.kg-nav--scrolled,
+.kg-nav__mobile {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    repeating-linear-gradient(120deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 7px),
+    rgba(11, 10, 26, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 52px rgba(0, 0, 10, 0.32);
+}
+
+.kg-hero__content {
+  border-radius: 30px;
+  padding: clamp(28px, 4vw, 46px);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018) 48%, rgba(124, 77, 255, 0.1)),
+    repeating-linear-gradient(120deg, rgba(255, 255, 255, 0.026) 0 1px, transparent 1px 7px),
+    radial-gradient(circle at 20% 0%, rgba(143, 231, 234, 0.12), transparent 36%),
+    rgba(10, 8, 24, 0.34);
+  border: 1px solid rgba(218, 204, 242, 0.12);
+  box-shadow:
+    0 28px 88px rgba(0, 0, 12, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px) saturate(1.08);
+}
+
+.kg-section {
+  overflow: hidden;
+}
+
+.kg-section::after {
+  content: '';
+  position: absolute;
+  inset: 12px 4%;
+  z-index: 0;
+  border: 1px solid rgba(218, 204, 242, 0.045);
+  border-radius: 34px;
+  background:
+    linear-gradient(to right, rgba(218, 204, 242, 0.028) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(218, 204, 242, 0.022) 1px, transparent 1px);
+  background-size: 72px 72px;
+  opacity: 0.52;
+  mask-image: radial-gradient(ellipse at center, black, transparent 78%);
+  pointer-events: none;
+}
+
+.kg-section > .kg-container {
+  position: relative;
+  z-index: 1;
+}
+
+.kg-section-label {
+  width: fit-content;
+  margin-inline: auto;
+  padding: 0.56rem 0.88rem;
+  border: 1px solid rgba(143, 231, 234, 0.16);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(143, 231, 234, 0.08), rgba(124, 77, 255, 0.1)),
+    rgba(255, 255, 255, 0.025);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.kg-principles,
+.kg-cols,
+.kg-steps,
+.kg-footer__grid {
+  position: relative;
+}
+
+.kg-principles::before,
+.kg-cols::before,
+.kg-steps::before {
+  content: '';
+  position: absolute;
+  inset: -18px;
+  z-index: -1;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(143, 231, 234, 0.12), transparent 32%),
+    radial-gradient(circle at 88% 12%, rgba(165, 139, 255, 0.13), transparent 34%),
+    radial-gradient(circle at 50% 100%, rgba(231, 199, 127, 0.075), transparent 34%);
+  opacity: 0.78;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.kg-principle-card,
+.kg-col-card,
+.kg-step,
+.kg-footer__col,
+.kg-footer__brand {
+  background-image:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.026) 46%, rgba(124, 77, 255, 0.1)),
+    repeating-linear-gradient(120deg, rgba(255, 255, 255, 0.034) 0 1px, transparent 1px 7px),
+    radial-gradient(circle at 18% 0%, rgba(143, 231, 234, 0.12), transparent 38%),
+    rgba(10, 8, 24, 0.74);
+}
+
+.kg-principle-card {
+  min-height: 190px;
+  padding: 32px 22px;
+}
+
+.kg-principle-card__icon,
+.kg-activity-item__icon,
+.kg-benefit-item__icon {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 10px 26px rgba(0, 0, 12, 0.22);
+}
+
+.kg-activity-item,
+.kg-benefit-item,
+.kg-leader-card,
+.kg-avatar--slot {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.076), rgba(255, 255, 255, 0.016) 52%, rgba(143, 231, 234, 0.055)),
+    repeating-linear-gradient(120deg, rgba(255, 255, 255, 0.024) 0 1px, transparent 1px 6px),
+    rgba(255, 255, 255, 0.026);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.075),
+    0 10px 28px rgba(0, 0, 12, 0.14);
+}
+
+.kg-activity-item::before,
+.kg-benefit-item::before,
+.kg-leader-card::before,
+.kg-step::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.075), transparent) 0 0 / 180% 1px no-repeat,
+    radial-gradient(circle at 86% 18%, rgba(255, 255, 255, 0.08), transparent 28%);
+  opacity: 0.82;
+  pointer-events: none;
+}
+
+.kg-col-card:nth-child(1) {
+  border-color: rgba(143, 231, 234, 0.24);
+}
+
+.kg-col-card:nth-child(2) {
+  border-color: rgba(165, 139, 255, 0.24);
+}
+
+.kg-col-card:nth-child(3) {
+  border-color: rgba(231, 199, 127, 0.2);
+}
+
+.kg-col-title {
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(218, 204, 242, 0.09);
+}
+
+.kg-leader-card {
+  border-radius: 16px;
+}
+
+.kg-avatar {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.035),
+    0 14px 32px rgba(0, 0, 12, 0.2);
+}
+
+.kg-step {
+  position: relative;
+  overflow: hidden;
+  min-height: 118px;
+  border-color: rgba(143, 231, 234, 0.18);
+  box-shadow:
+    0 18px 46px rgba(0, 0, 12, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(16px) saturate(1.1);
+}
+
+.kg-step__num {
+  opacity: 0.5;
+  text-shadow: 0 0 24px rgba(165, 139, 255, 0.45);
+}
+
+.kg-footer {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(143, 231, 234, 0.08), transparent 34%),
+    radial-gradient(ellipse at 18% 30%, rgba(124, 77, 255, 0.12), transparent 34%),
+    rgba(7, 5, 18, 0.98);
+}
+
+.kg-footer__brand,
+.kg-footer__col {
+  border: 1px solid rgba(218, 204, 242, 0.09);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 16px 42px rgba(0, 0, 12, 0.18);
+  backdrop-filter: blur(14px) saturate(1.08);
+}
+
+.kg-footer__col ul a {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px 0;
+}
+
+@media (max-width: 768px) {
+  .kg-hero__content {
+    padding: 24px 18px;
+    border-radius: 24px;
+  }
+
+  .kg-section::after {
+    inset-inline: 10px;
+    border-radius: 24px;
+  }
+}
+
+/* Hero copy should stay unframed; move the texture weight into real content cards. */
+.kg-hero__content {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  padding: 0 20px;
+}
+
+.kg-principle-card,
+.kg-col-card,
+.kg-activity-item,
+.kg-benefit-item,
+.kg-leader-card,
+.kg-step,
+.kg-footer__brand,
+.kg-footer__col {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(165, 139, 255, 0.24);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.028)),
+    repeating-linear-gradient(118deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 8px),
+    linear-gradient(135deg, rgba(143, 231, 234, 0.065), rgba(124, 77, 255, 0.09) 54%, rgba(231, 199, 127, 0.035)),
+    rgba(12, 10, 30, 0.82);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(124, 77, 255, 0.16),
+    0 18px 48px rgba(0, 0, 12, 0.3);
+}
+
+.kg-principle-card::after,
+.kg-col-card::after,
+.kg-activity-item::after,
+.kg-benefit-item::after,
+.kg-leader-card::after,
+.kg-step::after,
+.kg-footer__brand::after,
+.kg-footer__col::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent) 0 0 / 180% 1px no-repeat,
+    radial-gradient(circle at 12% 10%, rgba(143, 231, 234, 0.11), transparent 26%),
+    radial-gradient(circle at 90% 18%, rgba(165, 139, 255, 0.12), transparent 30%);
+  opacity: 0.74;
+  pointer-events: none;
+}
+
+.kg-principle-card > *,
+.kg-activity-item > *,
+.kg-benefit-item > *,
+.kg-leader-card > *,
+.kg-step > *,
+.kg-footer__brand > *,
+.kg-footer__col > * {
+  position: relative;
+  z-index: 1;
+}
+
+.kg-activity-item,
+.kg-benefit-item {
+  border-color: rgba(165, 139, 255, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.026)),
+    repeating-linear-gradient(118deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 8px),
+    radial-gradient(circle at 12% 20%, rgba(143, 231, 234, 0.095), transparent 34%),
+    rgba(22, 20, 45, 0.78);
+}
+
+.kg-activity-item:hover,
+.kg-benefit-item:hover,
+.kg-leader-card:hover,
+.kg-step:hover {
+  border-color: rgba(143, 231, 234, 0.36);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.034)),
+    repeating-linear-gradient(118deg, rgba(255, 255, 255, 0.055) 0 1px, transparent 1px 8px),
+    linear-gradient(135deg, rgba(143, 231, 234, 0.105), rgba(124, 77, 255, 0.13)),
+    rgba(24, 20, 52, 0.84);
+}
+
+@media (max-width: 768px) {
+  .kg-hero__content {
+    padding: 0 18px;
+  }
+}

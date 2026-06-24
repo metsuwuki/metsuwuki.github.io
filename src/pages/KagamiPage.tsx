@@ -7,7 +7,9 @@ import leaderImg from "../../metsuki.jpg";
 import mikaImg from "../../mika.jpg";
 import "./KagamiPage.css";
 
-// в”Ђв”Ђ Framer variants в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+const kagamiDiscordInvite = "https://discord.gg/FFDcSZ4n2J";
+
+// ── Framer variants ──────────────────────────────────────────
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
@@ -17,7 +19,7 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.1 } },
 };
 
-// в”Ђв”Ђ SVG Icons в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// ── SVG Icons ────────────────────────────────────────────────
 
 function ShieldIcon() {
   return (
@@ -149,35 +151,35 @@ function SparkleIcon() {
   );
 }
 
-// в”Ђв”Ђ Star image helper в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// ── Star image helper ─────────────────────────────────────────
 function KgStar({ className = "" }: { className?: string }) {
   return (
     <img
       src={starImg}
       className={`kg-star-img ${className}`}
-      alt="в…"
+      alt="★"
       aria-hidden="true"
     />
   );
 }
 
-// в”Ђв”Ђ Sub-components в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// ── Sub-components ───────────────────────────────────────────
 
 function KagamiNav() {
   const isScrolled = useScrolled(40);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const links = [
-    { label: "Р“Р»Р°РІРЅР°СЏ", href: "#kg-hero" },
-    { label: "Рћ РЅР°СЃ", href: "#kg-about" },
-    { label: "РРЅС„РѕСЂРјР°С†РёСЏ", href: "#kg-activities" },
-    { label: "РљРѕРЅС‚Р°РєС‚С‹", href: "#kg-contacts" },
+    { label: "Главная", href: "#kg-hero" },
+    { label: "О нас", href: "#kg-about" },
+    { label: "Информация", href: "#kg-activities" },
+    { label: "Контакты", href: "#kg-contacts" },
   ];
 
   return (
     <nav className={`kg-nav ${isScrolled ? "kg-nav--scrolled" : ""} ${menuOpen ? "kg-nav--open" : ""}`}>
       <div className="kg-nav__inner">
-        <a href="/" className="kg-nav__back" title="РќР° РіР»Р°РІРЅСѓСЋ" aria-label="РќР° РіР»Р°РІРЅСѓСЋ">
+        <a href="/" className="kg-nav__back" title="На главную" aria-label="На главную">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="18" height="18" aria-hidden="true">
             <path d="M3 10h14M3 10l5-5M3 10l5 5" />
           </svg>
@@ -192,13 +194,19 @@ function KagamiNav() {
             </li>
           ))}
         </ul>
-        <a href="#kg-join" className="kg-btn kg-btn--primary kg-btn--sm" onClick={() => setMenuOpen(false)}>
-          Р’РЎРўРЈРџРРўР¬ в†—
+        <a
+          href={kagamiDiscordInvite}
+          target="_blank"
+          rel="noreferrer"
+          className="kg-btn kg-btn--primary kg-btn--sm"
+          onClick={() => setMenuOpen(false)}
+        >
+          ВСТУПИТЬ ↗
         </a>
         <button
           className="kg-burger"
           aria-expanded={menuOpen}
-          aria-label={menuOpen ? "Р—Р°РєСЂС‹С‚СЊ РјРµРЅСЋ" : "РћС‚РєСЂС‹С‚СЊ РјРµРЅСЋ"}
+          aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
           onClick={() => setMenuOpen((v) => !v)}
         >
           <span className={menuOpen ? "is-open" : ""} />
@@ -209,13 +217,19 @@ function KagamiNav() {
       {menuOpen && (
         <div className="kg-nav__mobile">
           <a href="/" className="kg-nav__mobile-back" onClick={() => setMenuOpen(false)}>
-            в†ђ metsuwuki.github.io
+            ← metsuwuki.github.io
           </a>
           {links.map((l) => (
             <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)}>{l.label}</a>
           ))}
-          <a href="#kg-join" className="kg-btn kg-btn--primary" onClick={() => setMenuOpen(false)}>
-            Р’РЎРўРЈРџРРўР¬
+          <a
+            href={kagamiDiscordInvite}
+            target="_blank"
+            rel="noreferrer"
+            className="kg-btn kg-btn--primary"
+            onClick={() => setMenuOpen(false)}
+          >
+            ВСТУПИТЬ
           </a>
         </div>
       )}
@@ -309,21 +323,21 @@ function KagamiHero() {
         animate="visible"
         variants={stagger}
       >
-        <motion.p className="kg-eyebrow" variants={fadeUp}>Р”РћР‘Р Рћ РџРћР–РђР›РћР’РђРўР¬ Р’</motion.p>
+        <motion.p className="kg-eyebrow" variants={fadeUp}>ДОБРО ПОЖАЛОВАТЬ В</motion.p>
         <motion.h1 className="kg-hero__title" variants={fadeUp}>
           K<span className="kg-star-wrap"><KgStar className="kg-star-img--hero" /></span>GAMI
         </motion.h1>
         <motion.p className="kg-hero__tagline" variants={fadeUp}>
-          РЎРР›Рђ &bull; Р•Р”РРќРЎРўР’Рћ &bull; РђРњР‘РР¦РР
+          СИЛА &bull; ЕДИНСТВО &bull; АМБИЦИИ
         </motion.p>
         <motion.p className="kg-hero__desc" variants={fadeUp}>
-          РћСЂРіР°РЅРёР·Р°С†РёСЏ, РѕСЃРЅРѕРІР°РЅРЅР°СЏ СЃ С†РµР»СЊСЋ РѕР±СЉРµРґРёРЅРёС‚СЊ Р°РєС‚РёРІРЅС‹С…
-          Рё С†РµР»РµСѓСЃС‚СЂРµРјР»С‘РЅРЅС‹С… РёРіСЂРѕРєРѕРІ, РіРѕС‚РѕРІС‹С… СЂР°Р·РІРёРІР°С‚СЊСЃСЏ,
-          Р·Р°СЂР°Р±Р°С‚С‹РІР°С‚СЊ Рё СЃРѕР·РґР°РІР°С‚СЊ СЃРѕР±СЃС‚РІРµРЅРЅСѓСЋ РёСЃС‚РѕСЂРёСЋ.
+          Организация, основанная с целью объединить активных
+          и целеустремлённых игроков, готовых развиваться,
+          зарабатывать и создавать собственную историю.
         </motion.p>
         <motion.div className="kg-hero__btns" variants={fadeUp}>
-          <a href="#kg-about" className="kg-btn kg-btn--outline">РЈР—РќРђРўР¬ Р‘РћР›Р¬РЁР•</a>
-          <a href="#kg-join" className="kg-btn kg-btn--primary">Р’РЎРўРЈРџРРўР¬</a>
+          <a href="#kg-about" className="kg-btn kg-btn--outline">УЗНАТЬ БОЛЬШЕ</a>
+          <a href={kagamiDiscordInvite} target="_blank" rel="noreferrer" className="kg-btn kg-btn--primary">ВСТУПИТЬ</a>
         </motion.div>
       </motion.div>
 
@@ -336,16 +350,16 @@ function KagamiHero() {
 
 function KagamiPrinciples() {
   const principles = [
-    { Icon: ShieldIcon, title: "Р”РРЎР¦РРџР›РРќРђ", text: "РџРѕСЂСЏРґРѕРє, СѓРІР°Р¶РµРЅРёРµ Рё РѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕСЃС‚СЊ." },
-    { Icon: TeamIcon, title: "Р•Р”РРќРЎРўР’Рћ", text: "РљР°Р¶РґС‹Р№ СѓС‡Р°СЃС‚РЅРёРє вЂ” С‡Р°СЃС‚СЊ РєРѕРјР°РЅРґС‹." },
-    { Icon: GrowthIcon, title: "Р РђР—Р’РРўРР•", text: "РњС‹ СЂР°СЃС‚С‘Рј РІРјРµСЃС‚Рµ Рё РїРѕРјРѕРіР°РµРј РґСЂСѓРі РґСЂСѓРіСѓ." },
-    { Icon: CrownIcon, title: "РђРњР‘РР¦РР", text: "РњС‹ СЃС‚СЂРµРјРёРјСЃСЏ СЃС‚Р°С‚СЊ РѕРґРЅРѕР№ РёР· СЃРёР»СЊРЅРµР№С€РёС… РѕСЂРіР°РЅРёР·Р°С†РёР№." },
+    { Icon: ShieldIcon, title: "ДИСЦИПЛИНА", text: "Порядок, уважение и ответственность." },
+    { Icon: TeamIcon, title: "ЕДИНСТВО", text: "Каждый участник — часть команды." },
+    { Icon: GrowthIcon, title: "РАЗВИТИЕ", text: "Мы растём вместе и помогаем друг другу." },
+    { Icon: CrownIcon, title: "АМБИЦИИ", text: "Мы стремимся стать одной из сильнейших организаций." },
   ];
 
   return (
     <section className="kg-section" id="kg-about">
       <div className="kg-container">
-        <div className="kg-section-label">РќРђРЁР РџР РРќР¦РРџР«</div>
+        <div className="kg-section-label">НАШИ ПРИНЦИПЫ</div>
         <motion.div
           className="kg-principles"
           initial="hidden"
@@ -372,7 +386,7 @@ function KagamiActivities() {
       <div className="kg-container">
         <div className="kg-cols">
 
-          {/* Col 1 вЂ” what we do */}
+          {/* Col 1 — what we do */}
           <motion.div
             className="kg-col-card"
             initial="hidden"
@@ -380,12 +394,12 @@ function KagamiActivities() {
             viewport={{ once: true, amount: 0.15 }}
             variants={fadeUp}
           >
-            <h2 className="kg-col-title">Р§Р•Рњ Р—РђРќРРњРђР•РўРЎРЇ <span>KAGAMI</span></h2>
+            <h2 className="kg-col-title">ЧЕМ ЗАНИМАЕТСЯ <span>KAGAMI</span></h2>
             <div className="kg-activity-list">
               {[
-                { Icon: BriefcaseIcon, title: "РљРћРќРўР РђРљРўР«", text: "Р’С‹РїРѕР»РЅРµРЅРёРµ Р·Р°РґР°РЅРёР№ Рё СѓС‡Р°СЃС‚РёРµ РІ СЂР°Р·Р»РёС‡РЅС‹С… Р°РєС‚РёРІРЅРѕСЃС‚СЏС…." },
-                { Icon: TargetIcon, title: "РЎРћР’РњР•РЎРўРќР«Р• РњР•Р РћРџР РРЇРўРРЇ", text: "РџРѕРµР·РґРєРё, РѕРїРµСЂР°С†РёРё, РѕР±С‰РµРЅРёРµ Рё РІРµСЃС‘Р»РѕРµ РІСЂРµРјСЏ РІРјРµСЃС‚Рµ." },
-                { Icon: StarIcon, title: "Р РђР—Р’РРўРР• РћР Р“РђРќРР—РђР¦РР", text: "РќРѕРІС‹Рµ СѓС‡Р°СЃС‚РЅРёРєРё, РґРѕСЃС‚РёР¶РµРЅРёСЏ Рё РґРІРёР¶РµРЅРёРµ РІРїРµСЂС‘Рґ." },
+                { Icon: BriefcaseIcon, title: "КОНТРАКТЫ", text: "Выполнение заданий и участие в различных активностях." },
+                { Icon: TargetIcon, title: "СОВМЕСТНЫЕ МЕРОПРИЯТИЯ", text: "Поездки, операции, общение и весёлое время вместе." },
+                { Icon: StarIcon, title: "РАЗВИТИЕ ОРГАНИЗАЦИИ", text: "Новые участники, достижения и движение вперёд." },
               ].map((item) => (
                 <div key={item.title} className="kg-activity-item">
                   <div className="kg-activity-item__icon"><item.Icon /></div>
@@ -398,7 +412,7 @@ function KagamiActivities() {
             </div>
           </motion.div>
 
-          {/* Col 2 вЂ” leadership */}
+          {/* Col 2 — leadership */}
           <motion.div
             className="kg-col-card"
             id="kg-team"
@@ -407,30 +421,30 @@ function KagamiActivities() {
             viewport={{ once: true, amount: 0.15 }}
             variants={fadeUp}
           >
-            <h2 className="kg-col-title">Р РЈРљРћР’РћР”РЎРўР’Рћ</h2>
+            <h2 className="kg-col-title">РУКОВОДСТВО</h2>
 
             <div className="kg-leader-block">
-              <p className="kg-rank-label">Р›РР”Р•Р Р«</p>
+              <p className="kg-rank-label">ЛИДЕРЫ</p>
               <div className="kg-leaders-row">
                 <div className="kg-leader-card">
                   <div className="kg-avatar kg-avatar--lg">
                     <img src={leaderImg} alt="Metsuki Kagami" />
                   </div>
                   <div className="kg-leader-name">Metsuki<br />Kagami</div>
-                  <div className="kg-leader-role">РћСЃРЅРѕРІР°С‚РµР»СЊ</div>
+                  <div className="kg-leader-role">Основатель</div>
                 </div>
                 <div className="kg-leader-card">
                   <div className="kg-avatar kg-avatar--lg">
                     <img src={mikaImg} alt="Mika Kagami" />
                   </div>
                   <div className="kg-leader-name">Mika<br />Kagami</div>
-                  <div className="kg-leader-role">РЎРѕРѕСЃРЅРѕРІР°С‚РµР»СЊРЅРёС†Р°</div>
+                  <div className="kg-leader-role">Соосновательница</div>
                 </div>
               </div>
             </div>
 
             <div className="kg-rank-block">
-              <p className="kg-rank-label">Р—РђРњР•РЎРўРРўР•Р›Р</p>
+              <p className="kg-rank-label">ЗАМЕСТИТЕЛИ</p>
               <div className="kg-avatar-row">
                 {[0, 1, 2].map((i) => (
                   <div key={i} className="kg-avatar kg-avatar--slot">?</div>
@@ -439,7 +453,7 @@ function KagamiActivities() {
             </div>
 
             <div className="kg-rank-block">
-              <p className="kg-rank-label">РљРћРћР Р”РРќРђРўРћР Р«</p>
+              <p className="kg-rank-label">КООРДИНАТОРЫ</p>
               <div className="kg-avatar-row">
                 {[0, 1, 2, 3].map((i) => (
                   <div key={i} className="kg-avatar kg-avatar--slot">?</div>
@@ -448,7 +462,7 @@ function KagamiActivities() {
             </div>
           </motion.div>
 
-          {/* Col 3 вЂ” benefits */}
+          {/* Col 3 — benefits */}
           <motion.div
             className="kg-col-card"
             id="kg-benefits"
@@ -457,15 +471,15 @@ function KagamiActivities() {
             viewport={{ once: true, amount: 0.15 }}
             variants={fadeUp}
           >
-            <h2 className="kg-col-title">Р’ KAGAMI <span>РўР•Р‘РЇ Р–Р”РЃРў</span></h2>
+            <h2 className="kg-col-title">В KAGAMI <span>ТЕБЯ ЖДЁТ</span></h2>
             <div className="kg-benefits-grid">
               {[
-                { Icon: CoinsIcon, title: "Р—РђР РђР‘РћРўРћРљ", text: "Р‘РѕР»СЊС€РёРµ РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё Рё РєРѕРјР°РЅРґРЅР°СЏ СЂР°Р±РѕС‚Р°." },
-                { Icon: ChatIcon, title: "РћР‘Р©Р•РќРР•", text: "РџСЂРёСЏС‚РЅРѕРµ РєРѕРјСЊСЋРЅРёС‚Рё Рё РЅРѕРІС‹Рµ РґСЂСѓР·СЊСЏ." },
-                { Icon: ClipboardIcon, title: "РљРћРќРўР РђРљРўР«", text: "Р©РµРґСЂС‹Рµ РЅР°РіСЂР°РґС‹ Р·Р° Р·Р°РґР°РЅРёСЏ." },
-                { Icon: RocketIcon, title: "Р РђР—Р’РРўРР•", text: "РџСЂРѕРєР°С‡РёРІР°Р№ СЃРµР±СЏ Рё РґРѕСЃС‚РёРіР°Р№ РЅРѕРІС‹С… РІС‹СЃРѕС‚." },
-                { Icon: HandshakeIcon, title: "РџРћР”Р”Р•Р Р–РљРђ", text: "РџРѕРјРѕС‰СЊ Рё СЃРѕРІРµС‚С‹ РѕС‚ РѕРїС‹С‚РЅС‹С… РёРіСЂРѕРєРѕРІ." },
-                { Icon: SparkleIcon, title: "РђРўРњРћРЎР¤Р•Р Рђ", text: "РЈРЅРёРєР°Р»СЊРЅС‹Р№ СЃС‚РёР»СЊ РѕСЂРіР°РЅРёР·Р°С†РёРё." },
+                { Icon: CoinsIcon, title: "ЗАРАБОТОК", text: "Большие возможности и командная работа." },
+                { Icon: ChatIcon, title: "ОБЩЕНИЕ", text: "Приятное комьюнити и новые друзья." },
+                { Icon: ClipboardIcon, title: "КОНТРАКТЫ", text: "Щедрые награды за задания." },
+                { Icon: RocketIcon, title: "РАЗВИТИЕ", text: "Прокачивай себя и достигай новых высот." },
+                { Icon: HandshakeIcon, title: "ПОДДЕРЖКА", text: "Помощь и советы от опытных игроков." },
+                { Icon: SparkleIcon, title: "АТМОСФЕРА", text: "Уникальный стиль организации." },
               ].map((b) => (
                 <div key={b.title} className="kg-benefit-item">
                   <div className="kg-benefit-item__icon"><b.Icon /></div>
@@ -500,29 +514,35 @@ function KagamiJoin() {
             <KgStar className="kg-star-img--join" />
           </motion.div>
           <motion.h2 variants={fadeUp}>
-            Р“РћРўРћР’ РЎРўРђРўР¬ Р§РђРЎРўР¬Р®<br /><span>K<KgStar className="kg-star-img--inline" />GAMI?</span>
+            ГОТОВ СТАТЬ ЧАСТЬЮ<br /><span>K<KgStar className="kg-star-img--inline" />GAMI?</span>
           </motion.h2>
           <motion.p variants={fadeUp}>
-            РџСЂРёСЃРѕРµРґРёРЅСЏР№СЃСЏ Рє РЅР°С€РµР№ РєРѕРјР°РЅРґРµ Рё РЅР°С‡РЅРё РїРёСЃР°С‚СЊ СЃРІРѕСЋ РёСЃС‚РѕСЂРёСЋ РІ РјРёСЂРµ GTA 5 RP.
+            Присоединяйся к нашей команде и начни писать свою историю в мире GTA 5 RP.
           </motion.p>
           <motion.div className="kg-steps" variants={fadeUp}>
             <div className="kg-step">
               <div className="kg-step__num">01</div>
-              <div className="kg-step__text">РџРѕРґР°Р№ Р·Р°СЏРІРєСѓ РІ Discord</div>
+              <div className="kg-step__text">Подай заявку в Discord</div>
             </div>
-            <div className="kg-step__arrow" aria-hidden="true">в†’</div>
+            <div className="kg-step__arrow" aria-hidden="true">→</div>
             <div className="kg-step">
               <div className="kg-step__num">02</div>
-              <div className="kg-step__text">РџРѕР»СѓС‡Рё СЂРѕР»СЊ РІ РґРёСЃРєРѕСЂРґРµ</div>
+              <div className="kg-step__text">Получи роль в дискорде</div>
             </div>
-            <div className="kg-step__arrow" aria-hidden="true">в†’</div>
+            <div className="kg-step__arrow" aria-hidden="true">→</div>
             <div className="kg-step">
               <div className="kg-step__num">03</div>
-              <div className="kg-step__text">Р”РѕР±СЂРѕ РїРѕР¶Р°Р»РѕРІР°С‚СЊ РІ СЃРµРјСЊСЋ</div>
+              <div className="kg-step__text">Добро пожаловать в семью</div>
             </div>
           </motion.div>
-          <motion.a href="#kg-contacts" className="kg-btn kg-btn--primary kg-btn--lg" variants={fadeUp}>
-            Р’РЎРўРЈРџРРўР¬
+          <motion.a
+            href={kagamiDiscordInvite}
+            target="_blank"
+            rel="noreferrer"
+            className="kg-btn kg-btn--primary kg-btn--lg"
+            variants={fadeUp}
+          >
+            ВСТУПИТЬ
           </motion.a>
         </motion.div>
       </div>
@@ -538,7 +558,7 @@ function KagamiFooter() {
         { label: "Главная", href: "#kg-hero" },
         { label: "О нас", href: "#kg-about" },
         { label: "Информация", href: "#kg-activities" },
-        { label: "Вступить", href: "#kg-join" },
+        { label: "Вступить", href: kagamiDiscordInvite },
       ],
     },
     {
@@ -559,8 +579,8 @@ function KagamiFooter() {
         <div className="kg-footer__grid">
           <div className="kg-footer__brand">
             <div className="kg-footer__logo">K<KgStar className="kg-star-img--footer" />GAMI</div>
-            <p>РћСЂРіР°РЅРёР·Р°С†РёСЏ РґР»СЏ Р°РєС‚РёРІРЅС‹С… Рё С†РµР»РµСѓСЃС‚СЂРµРјР»С‘РЅРЅС‹С… РёРіСЂРѕРєРѕРІ GTA 5 RP.</p>
-            <div className="kg-footer__tagline">РЎРР›Рђ &bull; Р•Р”РРќРЎРўР’Рћ &bull; РђРњР‘РР¦РР</div>
+            <p>Организация для активных и целеустремлённых игроков GTA 5 RP.</p>
+            <div className="kg-footer__tagline">СИЛА &bull; ЕДИНСТВО &bull; АМБИЦИИ</div>
           </div>
 
           {cols.map((col) => (
@@ -568,7 +588,15 @@ function KagamiFooter() {
               <h4>{col.title}</h4>
               <ul>
                 {col.links.map((l) => (
-                  <li key={l.href}><a href={l.href}>{l.label}</a></li>
+                  <li key={l.href}>
+                    <a
+                      href={l.href}
+                      target={l.href.startsWith("http") ? "_blank" : undefined}
+                      rel={l.href.startsWith("http") ? "noreferrer" : undefined}
+                    >
+                      {l.label}
+                    </a>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -577,15 +605,15 @@ function KagamiFooter() {
         </div>
 
         <div className="kg-footer__bottom">
-          <span>В© 2024 Kв…GAMI вЂ” GTA 5 RP РЎРµРјСЊСЏ.</span>
-          <a href="/" className="kg-footer__home">в†ђ РќР° РіР»Р°РІРЅСѓСЋ</a>
+          <span>(c) 2024 K★GAMI - GTA 5 RP семья.</span>
+          <a href="/" className="kg-footer__home">&lt;- На главную</a>
         </div>
       </div>
     </footer>
   );
 }
 
-// в”Ђв”Ђ Main page export в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// Main page export
 export default function KagamiPage() {
   return (
     <div className="kagami-page">
