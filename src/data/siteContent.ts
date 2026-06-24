@@ -235,7 +235,6 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
       { label: "Projects", href: "#apps", icon: "apps" },
       { label: "Guestbook", href: "#guestbook", icon: "write" },
       { label: "Contacts", href: "#contact", icon: "message" },
-      { label: "GTA 5 RP", href: "/gta5rp", icon: "kagami" },
     ],
     featureCards: sharedFeatureCards,
     appCards: projectCards,
@@ -292,7 +291,6 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
       { label: "Проекты", href: "#apps", icon: "apps" },
       { label: "Книга гостей", href: "#guestbook", icon: "write" },
       { label: "Контакты", href: "#contact", icon: "message" },
-      { label: "GTA 5 RP", href: "/gta5rp", icon: "kagami" },
     ],
     featureCards: sharedFeatureCards.map((card) => {
       const ruText: Record<string, Pick<FeatureCard, "label" | "text" | "buttonLabel">> = {

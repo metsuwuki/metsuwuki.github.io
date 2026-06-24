@@ -1,18 +1,19 @@
 ﻿import { motion } from "framer-motion";
 import { TypewriterText } from "../components/TypewriterText";
+import type { Variants } from "framer-motion";
 import { UiIcon } from "../components/UiIcon";
 import { VisitorsTrendChart } from "../components/VisitorsTrendChart";
 import { useMotionSettings } from "../hooks/useMotionSettings";
 import { usePageViews } from "../hooks/usePageViews";
 import { usePageLocale } from "../i18n/pageLocale";
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 18 },
-  visible: {
+  visible: (index = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.46, ease: [0.22, 1, 0.36, 1] },
-  },
+    transition: { duration: 0.46, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] },
+  }),
 };
 
 export default function HeroSection() {
@@ -57,24 +58,25 @@ export default function HeroSection() {
 
   return (
     <section className="hero-section hero-section--reference" id="overview">
+      <div className="hero-scroll-hint" aria-hidden="true"><span /></div>
       <div className="page-container hero-reference-grid">
         <motion.div className="hero-reference-copy" {...revealProps}>
-          <motion.p className="hero-eyebrow" variants={itemVariants}>
+          <motion.p className="hero-eyebrow" custom={0} variants={itemVariants}>
             {siteMeta.heroEyebrow}
           </motion.p>
 
-          <motion.h1 variants={itemVariants}>
+          <motion.h1 custom={1} variants={itemVariants}>
             {titleParts[0]}
             <span className="hero-title__accent">UwU</span>
             {titleParts[1]}
           </motion.h1>
 
-          <motion.p className="hero-role" variants={itemVariants}>
+          <motion.p className="hero-role" custom={2} variants={itemVariants}>
             {siteMeta.heroRole}
             <UiIcon name="terminal" className="hero-role__icon" />
           </motion.p>
 
-          <motion.p className="hero-section__description hero-section__description--typed" variants={itemVariants}>
+          <motion.p className="hero-section__description hero-section__description--typed" custom={3} variants={itemVariants}>
             <TypewriterText
               className="typewriter-text"
               phrases={typedDescription.phrases}

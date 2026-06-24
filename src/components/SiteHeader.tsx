@@ -5,6 +5,19 @@ import { useScrolled } from "../hooks/useScrolled";
 import { usePageLocale } from "../i18n/pageLocale";
 import { UiIcon } from "./UiIcon";
 
+function KagamiStarSvg() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className="site-nav__kagami-star"
+    >
+      <path d="M12 2.5l2.6 5.3 5.8.85-4.2 4.1 1 5.8L12 15.8l-5.2 2.75 1-5.8-4.2-4.1 5.8-.85z" />
+    </svg>
+  );
+}
+
 export function SiteHeader() {
   const isScrolled = useScrolled(20);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,7 +31,7 @@ export function SiteHeader() {
     <header className="site-header">
       <div className={`site-header__inner ${isScrolled ? "is-scrolled" : ""}`}>
         <a href="#overview" className="site-brand" aria-label={`${siteMeta.brandName} ${siteMeta.brandHomeAria}`} onClick={closeMenu}>
-          <span className="site-brand__mark">
+          <span className={`site-brand__mark site-brand__mark--${presence.state}`}>
             <img src={presence.avatarUrl || portraitImage} alt="" width="44" height="44" />
           </span>
           <span className="site-brand__copy">
@@ -38,6 +51,10 @@ export function SiteHeader() {
               {item.label}
             </a>
           ))}
+          <a href="/gta5rp" className="site-nav__kagami-link" title="K★GAMI — GTA 5 RP">
+            <KagamiStarSvg />
+            <span>K★GAMI</span>
+          </a>
         </nav>
 
         <div className="site-header__actions">
@@ -83,6 +100,10 @@ export function SiteHeader() {
                   {item.label}
                 </a>
               ))}
+              <a href="/gta5rp" className="site-header__mobile-kagami" onClick={closeMenu}>
+                <KagamiStarSvg />
+                K★GAMI
+              </a>
             </nav>
           </div>
         ) : null}

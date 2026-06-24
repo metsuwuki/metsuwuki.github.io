@@ -174,7 +174,7 @@ button:focus-visible {
 .page-shell__scene {
   background:
     linear-gradient(180deg, rgba(10, 6, 19, 0.44), rgba(10, 6, 19, 0.62)),
-    url("../background.png") center top / cover no-repeat;
+    url("/background.jpg") center top / cover no-repeat;
   transform: scale(1.03);
   transform-origin: center top;
   filter: saturate(1.06) brightness(0.76);
@@ -621,6 +621,43 @@ button:focus-visible {
 .site-header__mobile-nav a:hover {
   color: var(--text);
   background: rgba(237, 174, 209, 0.08);
+}
+
+/* K★GAMI redirect link in desktop nav */
+.site-nav__kagami-link {
+  color: var(--violet) !important;
+  border: 1px solid rgba(165, 139, 255, 0.22) !important;
+  background: rgba(124, 77, 255, 0.06) !important;
+  gap: 0.42rem !important;
+}
+.site-nav__kagami-link:hover {
+  color: #c4aaff !important;
+  background: rgba(124, 77, 255, 0.15) !important;
+  border-color: rgba(165, 139, 255, 0.46) !important;
+  box-shadow: 0 0 14px rgba(124, 77, 255, 0.2) !important;
+}
+.site-nav__kagami-star {
+  width: 0.88rem;
+  height: 0.88rem;
+  flex-shrink: 0;
+}
+
+/* K★GAMI link in mobile burger menu */
+.site-header__mobile-kagami {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--violet) !important;
+  border-color: rgba(165, 139, 255, 0.28) !important;
+  background: rgba(124, 77, 255, 0.08) !important;
+}
+.site-header__mobile-kagami:hover {
+  color: #c4aaff !important;
+  background: rgba(124, 77, 255, 0.16) !important;
+}
+.site-header__mobile-kagami .site-nav__kagami-star {
+  width: 1rem;
+  height: 1rem;
 }
 
 .site-header__actions {
@@ -3150,7 +3187,7 @@ button:focus-visible {
 .page-shell__scene {
   background:
     linear-gradient(180deg, rgba(7, 4, 14, 0.16) 0%, rgba(7, 4, 14, 0.4) 42%, rgba(7, 4, 14, 0.78) 100%),
-    url("../background.png") center 18% / cover no-repeat;
+    url("/background.jpg") center 18% / cover no-repeat;
   transform: scale(1.02);
   filter: saturate(1.08) brightness(0.72) contrast(1.03);
 }
@@ -5340,7 +5377,7 @@ body {
 .page-shell__scene {
   background:
     linear-gradient(180deg, rgba(6, 3, 13, 0.05) 0%, rgba(6, 3, 13, 0.18) 58%, rgba(6, 3, 13, 0.9) 100%),
-    url("../background.png") center top / cover no-repeat;
+    url("/background.jpg") center top / cover no-repeat;
   filter: saturate(1.2) brightness(0.86) contrast(1.05);
 }
 
@@ -5772,16 +5809,19 @@ body {
 }
 
 .guestbook-submit {
-  width: 100%;
-  min-height: 3.35rem;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #9f34ff, #681fff);
+  align-self: flex-start;
+  width: auto;
+  min-height: 2.55rem;
+  padding: 0.62rem 1.5rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #9f34ff 0%, #681fff 100%);
+  box-shadow: 0 8px 24px rgba(151, 89, 255, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .guestbook-submit__arrow {
-  width: 0.95rem;
-  height: 0.95rem;
-  margin-left: 0.35rem;
+  width: 0.88rem;
+  height: 0.88rem;
+  margin-left: 0.3rem;
 }
 
 .guestbook-note {
@@ -8711,6 +8751,311 @@ body {
 
   .typewriter-text {
     overflow-wrap: break-word;
+  }
+}
+
+/* ── Hero scroll hint ──────────────────────────────────────── */
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-scroll-hint span {
+  display: block;
+  width: 24px;
+  height: 40px;
+  border: 2px solid rgba(165, 139, 255, 0.3);
+  border-radius: 12px;
+  position: relative;
+}
+
+.hero-scroll-hint span::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 8px;
+  background: var(--violet);
+  border-radius: 2px;
+  opacity: 0.85;
+  animation: heroScrollDown 2s ease-in-out infinite;
+}
+
+@keyframes heroScrollDown {
+  0%   { opacity: 0.85; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0;    transform: translateX(-50%) translateY(14px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-hint span::after {
+    animation: none;
+  }
+}
+
+/* ── Discord status ring on avatar ─────────────────────────── */
+.site-brand__mark--online {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 2px rgba(67, 217, 141, 0.7),
+    0 0 10px rgba(67, 217, 141, 0.22);
+  animation: statusRingOnline 2.8s ease-in-out infinite;
+}
+
+.site-brand__mark--idle {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 2px rgba(246, 197, 79, 0.65),
+    0 0 10px rgba(246, 197, 79, 0.18);
+  animation: statusRingIdle 3.5s ease-in-out infinite;
+}
+
+.site-brand__mark--dnd {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 2px rgba(255, 95, 118, 0.58),
+    0 0 10px rgba(255, 95, 118, 0.16);
+  animation: statusRingDnd 4s ease-in-out infinite;
+}
+
+.site-brand__mark--offline {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1.5px rgba(127, 142, 163, 0.28);
+}
+
+@keyframes statusRingOnline {
+  0%, 100% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 0 2px rgba(67, 217, 141, 0.7),
+      0 0 10px rgba(67, 217, 141, 0.22);
+  }
+  50% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 0 2.5px rgba(67, 217, 141, 0.96),
+      0 0 18px rgba(67, 217, 141, 0.48);
+  }
+}
+
+@keyframes statusRingIdle {
+  0%, 100% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 0 2px rgba(246, 197, 79, 0.62),
+      0 0 9px rgba(246, 197, 79, 0.16);
+  }
+  50% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 0 2.5px rgba(246, 197, 79, 0.9),
+      0 0 16px rgba(246, 197, 79, 0.38);
+  }
+}
+
+@keyframes statusRingDnd {
+  0%, 100% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 0 2px rgba(255, 95, 118, 0.55),
+      0 0 9px rgba(255, 95, 118, 0.14);
+  }
+  50% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 0 2.5px rgba(255, 95, 118, 0.82),
+      0 0 16px rgba(255, 95, 118, 0.34);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-brand__mark--online,
+  .site-brand__mark--idle,
+  .site-brand__mark--dnd {
+    animation: none;
+  }
+}
+
+/* Final homepage polish */
+.page-shell {
+  animation: pageShellEnter 0.4s ease-out both;
+}
+
+@keyframes pageShellEnter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hero-section--reference h1 {
+  animation: heroTitleGlowPulse 4.8s ease-in-out infinite;
+}
+
+@keyframes heroTitleGlowPulse {
+  0%,
+  100% {
+    text-shadow:
+      0 18px 60px rgba(0, 0, 0, 0.4),
+      0 0 24px rgba(182, 124, 255, 0.16);
+  }
+
+  50% {
+    text-shadow:
+      0 18px 60px rgba(0, 0, 0, 0.4),
+      0 0 38px rgba(182, 124, 255, 0.32),
+      0 0 64px rgba(0, 212, 255, 0.12);
+  }
+}
+
+.site-footer__panel {
+  border-color: rgba(143, 231, 234, 0.34) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.035),
+    0 28px 90px rgba(5, 2, 18, 0.58),
+    0 0 60px rgba(0, 212, 255, 0.1) !important;
+}
+
+.site-footer__panel::before {
+  left: 1.35rem !important;
+  right: 1.35rem !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.7), rgba(124, 77, 255, 0.68), rgba(255, 31, 113, 0.5), transparent) !important;
+  opacity: 1 !important;
+}
+
+.site-footer__top {
+  grid-template-columns: minmax(14rem, 1fr) minmax(18rem, 0.95fr) auto !important;
+  align-items: start !important;
+  gap: clamp(1rem, 3vw, 2.4rem) !important;
+}
+
+.site-footer__brand-block {
+  gap: 0.55rem;
+}
+
+.site-footer__kagami-link {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.72rem;
+  margin-top: 0.35rem;
+  padding: 0.58rem 0.72rem;
+  border: 1px solid rgba(143, 231, 234, 0.22);
+  border-radius: 14px;
+  color: #f8f4ff;
+  background:
+    linear-gradient(135deg, rgba(143, 231, 234, 0.1), rgba(124, 77, 255, 0.14)),
+    rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.site-footer__kagami-link:hover,
+.site-footer__kagami-link:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(143, 231, 234, 0.54);
+  background:
+    linear-gradient(135deg, rgba(143, 231, 234, 0.16), rgba(124, 77, 255, 0.22)),
+    rgba(255, 255, 255, 0.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 16px 34px rgba(0, 212, 255, 0.12);
+}
+
+.site-footer__kagami-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.08rem;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.site-footer__kagami-star {
+  width: 1.2em;
+  height: 1.2em;
+  color: var(--lavender);
+  filter: drop-shadow(0 0 10px rgba(165, 139, 255, 0.56));
+}
+
+.site-footer__kagami-link > span:last-child {
+  font-family: "Geist Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: rgba(232, 221, 250, 0.64);
+}
+
+.site-footer__nav-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(8.5rem, 1fr));
+  gap: 0.9rem;
+}
+
+.site-footer__nav-col {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.48rem;
+  padding: 0.2rem 0;
+}
+
+.site-footer__nav-col h3 {
+  color: rgba(143, 231, 234, 0.88);
+  font-family: "Geist Mono", monospace;
+  font-size: 0.7rem;
+  font-weight: 760;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.site-footer__nav-col a {
+  width: fit-content;
+  color: rgba(232, 221, 250, 0.68);
+  font-size: 0.86rem;
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.site-footer__nav-col a:hover,
+.site-footer__nav-col a:focus-visible {
+  color: #fff;
+  transform: translateX(2px);
+}
+
+.site-footer__socials {
+  align-self: start;
+}
+
+@media (max-width: 900px) {
+  .site-footer__top {
+    grid-template-columns: 1fr !important;
+  }
+
+  .site-footer__nav-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .site-footer__nav-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer__kagami-link {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-shell,
+  .hero-section--reference h1 {
+    animation: none;
   }
 }
 
