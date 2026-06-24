@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
+import { TypewriterText } from "../components/TypewriterText";
 import { UiIcon } from "../components/UiIcon";
 import { VisitorsTrendChart } from "../components/VisitorsTrendChart";
 import { useMotionSettings } from "../hooks/useMotionSettings";
@@ -20,6 +21,26 @@ export default function HeroSection() {
   const { prefersReducedMotion } = useMotionSettings();
   const { count: uniqueVisitors, monthlySeries, loading: statsLoading } = usePageViews();
   const titleParts = siteMeta.heroTitle.split("UwU");
+  const isRussian = siteMeta.guestbookDateLocale === "ru-RU";
+  const typedDescription = isRussian
+    ? {
+        prefix: "Создаю современные приложения с ",
+        phrases: [
+          "красивыми интерфейсами.",
+          "масштабируемой архитектурой.",
+          "высокой производительностью.",
+          "продуманным UX.",
+        ],
+      }
+    : {
+        prefix: "Building modern applications with ",
+        phrases: [
+          "beautiful interfaces.",
+          "scalable architectures.",
+          "high performance.",
+          "clean user experiences.",
+        ],
+      };
 
   const revealProps = prefersReducedMotion
     ? {}
@@ -53,8 +74,13 @@ export default function HeroSection() {
             <UiIcon name="terminal" className="hero-role__icon" />
           </motion.p>
 
-          <motion.p className="hero-section__description" variants={itemVariants}>
-            {siteMeta.heroDescription}
+          <motion.p className="hero-section__description hero-section__description--typed" variants={itemVariants}>
+            <TypewriterText
+              className="typewriter-text"
+              phrases={typedDescription.phrases}
+              prefix={typedDescription.prefix}
+              reducedMotion={prefersReducedMotion}
+            />
           </motion.p>
         </motion.div>
 
@@ -84,3 +110,4 @@ export default function HeroSection() {
     </section>
   );
 }
+

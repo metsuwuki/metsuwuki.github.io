@@ -1,157 +1,93 @@
-import { useEffect, useRef } from "react";
-import type { Chart, ChartConfiguration } from "chart.js";
+import { useMemo } from "react";
 import type { PageViewPoint } from "../hooks/usePageViews";
 
 type VisitorsTrendChartProps = {
   points: PageViewPoint[];
 };
 
+const WIDTH = 430;
+const HEIGHT = 190;
+const PADDING = { top: 16, right: 20, bottom: 34, left: 18 };
+
+function buildLinePath(coords: Array<{ x: number; y: number }>): string {
+  if (coords.length === 0) return "";
+  if (coords.length === 1) return `M ${coords[0].x} ${coords[0].y}`;
+
+  return coords.reduce((path, point, index) => {
+    if (index === 0) return `M ${point.x} ${point.y}`;
+    return `${path} L ${point.x} ${point.y}`;
+  }, "");
+}
+
 export function VisitorsTrendChart({ points }: VisitorsTrendChartProps) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const chartRef = useRef<Chart<"line"> | null>(null);
+  const chart = useMemo(() => {
+    const values = points.map((point) => point.value);
+    const maxValue = Math.max(1, ...values);
+    const minValue = 0;
+    const innerWidth = WIDTH - PADDING.left - PADDING.right;
+    const innerHeight = HEIGHT - PADDING.top - PADDING.bottom;
+    const denominator = Math.max(1, points.length - 1);
 
-  useEffect(() => {
-    let cancelled = false;
+    const coords = points.map((point, index) => {
+      const x = PADDING.left + (index / denominator) * innerWidth;
+      const normalized = (point.value - minValue) / Math.max(1, maxValue - minValue);
+      const y = PADDING.top + innerHeight - normalized * innerHeight;
+      return { x, y, point };
+    });
 
-    async function renderChart() {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
+    const linePath = buildLinePath(coords);
+    const areaPath = `${linePath} L ${PADDING.left + innerWidth} ${PADDING.top + innerHeight} L ${PADDING.left} ${PADDING.top + innerHeight} Z`;
+    const labels = coords.filter((_, index) => index === 0 || index === Math.floor(coords.length / 2) || index === coords.length - 1);
+    const ticks = Array.from(new Set([0, Math.ceil(maxValue / 2), maxValue]));
 
-      const context = canvas.getContext("2d");
-      if (!context) return;
-
-      const {
-        Chart,
-        CategoryScale,
-        Filler,
-        LineController,
-        LineElement,
-        LinearScale,
-        PointElement,
-        Tooltip,
-      } = await import("chart.js");
-
-      if (cancelled) return;
-
-      Chart.register(CategoryScale, Filler, LineController, LineElement, LinearScale, PointElement, Tooltip);
-
-      const gradient = context.createLinearGradient(0, 0, 0, canvas.height || 180);
-      gradient.addColorStop(0, "rgba(215, 166, 255, 0.42)");
-      gradient.addColorStop(0.55, "rgba(143, 79, 255, 0.16)");
-      gradient.addColorStop(1, "rgba(143, 79, 255, 0)");
-
-      const config: ChartConfiguration<"line"> = {
-        type: "line",
-        data: {
-          labels: points.map((point) => point.label),
-          datasets: [
-            {
-              data: points.map((point) => point.value),
-              borderColor: "#d9a8ff",
-              backgroundColor: gradient,
-              borderWidth: 2.6,
-              tension: 0,
-              fill: true,
-              pointRadius: 3.4,
-              pointHoverRadius: 5,
-              pointBackgroundColor: "#f4ddff",
-              pointBorderColor: "#8f4fff",
-              pointBorderWidth: 2,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          layout: {
-            padding: {
-              top: 8,
-              right: 8,
-              bottom: 0,
-              left: 0,
-            },
-          },
-          animation: {
-            duration: 700,
-            easing: "easeOutQuart",
-          },
-          interaction: {
-            intersect: false,
-            mode: "index",
-          },
-          plugins: {
-            legend: {
-              display: false,
-            },
-            tooltip: {
-              displayColors: false,
-              backgroundColor: "rgba(13, 8, 31, 0.94)",
-              borderColor: "rgba(217, 168, 255, 0.32)",
-              borderWidth: 1,
-              titleColor: "#f7efff",
-              bodyColor: "#d9c8f2",
-              callbacks: {
-                label: (item) => `${item.parsed.y} visitors`,
-              },
-            },
-          },
-          scales: {
-            x: {
-              grid: {
-                color: "rgba(206, 171, 255, 0.07)",
-                drawTicks: false,
-              },
-              ticks: {
-                color: "rgba(231, 222, 247, 0.48)",
-                maxTicksLimit: 4,
-                maxRotation: 0,
-                padding: 2,
-                font: {
-                  size: 9,
-                  family: "Geist Mono, monospace",
-                },
-              },
-              border: {
-                display: false,
-              },
-            },
-            y: {
-              beginAtZero: true,
-              suggestedMax: Math.max(4, ...points.map((point) => point.value)) + 1,
-              grid: {
-                color: "rgba(206, 171, 255, 0.1)",
-                drawTicks: false,
-              },
-              ticks: {
-                color: "rgba(231, 222, 247, 0.5)",
-                precision: 0,
-                maxTicksLimit: 3,
-                padding: 4,
-                font: {
-                  size: 9,
-                  family: "Geist Mono, monospace",
-                },
-              },
-              border: {
-                display: false,
-              },
-            },
-          },
-        },
-      };
-
-      chartRef.current?.destroy();
-      chartRef.current = new Chart(context, config);
-    }
-
-    renderChart();
-
-    return () => {
-      cancelled = true;
-      chartRef.current?.destroy();
-      chartRef.current = null;
-    };
+    return { areaPath, coords, innerHeight, innerWidth, labels, linePath, maxValue, ticks };
   }, [points]);
 
-  return <canvas ref={canvasRef} aria-label="Monthly visitors trend" />;
+  return (
+    <svg className="visitors-trend-chart" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label="30-day visitors trend">
+      <defs>
+        <linearGradient id="visitorLineGradient" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%" stopColor="#8f4fff" />
+          <stop offset="46%" stopColor="#c98bff" />
+          <stop offset="100%" stopColor="#f0d4ff" />
+        </linearGradient>
+        <linearGradient id="visitorAreaGradient" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="rgba(201, 139, 255, 0.22)" />
+          <stop offset="58%" stopColor="rgba(98, 54, 148, 0.15)" />
+          <stop offset="100%" stopColor="rgba(10, 7, 18, 0)" />
+        </linearGradient>
+        <filter id="visitorGlow" x="-20%" y="-40%" width="140%" height="180%">
+          <feGaussianBlur stdDeviation="2.4" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      <path className="visitors-trend-chart__horizon" d={`M ${PADDING.left} ${PADDING.top + chart.innerHeight} H ${PADDING.left + chart.innerWidth}`} />
+
+      {chart.ticks.map((tick) => {
+        const y = PADDING.top + chart.innerHeight - (tick / Math.max(1, chart.maxValue)) * chart.innerHeight;
+        return (
+          <g className="visitors-trend-chart__scale" key={tick}>
+            <line className="visitors-trend-chart__grid" x1={PADDING.left} x2={PADDING.left + chart.innerWidth} y1={y} y2={y} />
+            <text className="visitors-trend-chart__tick" x={PADDING.left + 2} y={Math.max(PADDING.top + 9, y - 5)}>
+              {tick}
+            </text>
+          </g>
+        );
+      })}
+
+      <path className="visitors-trend-chart__area" d={chart.areaPath} />
+      <path className="visitors-trend-chart__line-glow" d={chart.linePath} />
+      <path className="visitors-trend-chart__line" d={chart.linePath} />
+
+      {chart.labels.map(({ x, point }) => (
+        <text className="visitors-trend-chart__label" key={point.date} x={Math.min(Math.max(x, 34), WIDTH - 34)} y={HEIGHT - 12} textAnchor="middle">
+          {point.label}
+        </text>
+      ))}
+    </svg>
+  );
 }

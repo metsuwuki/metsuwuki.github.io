@@ -91,14 +91,14 @@ export default function AboutSection() {
           <div className="logo-marquee__track">
             <ul className="logo-marquee__group">
               {languageLogos.map((logo) => (
-                <li className="logo-marquee__item" key={logo.name}>
+                <li className="logo-marquee__item" data-logo={logo.name} key={logo.name}>
                   <img src={logo.icon} alt="" loading="lazy" />
                 </li>
               ))}
             </ul>
             <ul className="logo-marquee__group" aria-hidden="true">
               {languageLogos.map((logo) => (
-                <li className="logo-marquee__item" key={`${logo.name}-duplicate`}>
+                <li className="logo-marquee__item" data-logo={logo.name} key={`${logo.name}-duplicate`}>
                   <img src={logo.icon} alt="" loading="lazy" />
                 </li>
               ))}
@@ -132,7 +132,7 @@ export default function AboutSection() {
           <SectionHeading title={siteMeta.appsTitle} description={siteMeta.appsDescription} align="left" />
         </motion.div>
 
-        <div className="app-showcase-grid">
+        <div className="app-showcase-grid" id="applications-catalog">
           {appCards.map((app, index) => (
             <motion.article
               key={app.title}

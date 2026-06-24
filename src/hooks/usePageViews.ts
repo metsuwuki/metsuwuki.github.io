@@ -58,6 +58,25 @@ function aggregateMonthlyVisitors(rows: Array<{ last_seen: string | null }>): Pa
   }));
 }
 
+function aggregateVisitorEvents(rows: Array<{ seen_at: string | null; visitor_id: string | null }>): PageViewPoint[] {
+  const series = buildEmptySeries();
+  const visitorsByDate = new Map(series.map((point) => [point.date, new Set<string>()]));
+
+  for (const row of rows) {
+    if (!row.seen_at || !row.visitor_id) continue;
+    const date = new Date(row.seen_at);
+    if (Number.isNaN(date.getTime())) continue;
+
+    const key = date.toISOString().slice(0, 10);
+    visitorsByDate.get(key)?.add(row.visitor_id);
+  }
+
+  return series.map((point) => ({
+    ...point,
+    value: visitorsByDate.get(point.date)?.size ?? 0,
+  }));
+}
+
 export function usePageViews() {
   const [count, setCount] = useState<number | null>(null);
   const [monthlySeries, setMonthlySeries] = useState<PageViewPoint[]>(() => buildEmptySeries());
@@ -75,6 +94,15 @@ export function usePageViews() {
           { onConflict: "id" }
         );
 
+        try {
+          await supabase
+            .from("visitor_events")
+            .insert({ visitor_id: visitorId })
+            .throwOnError();
+        } catch {
+          // The site can still show the legacy last_seen trend until the migration is applied.
+        }
+
         const { count: total } = await supabase
           .from("visitors")
           .select("id", { count: "exact", head: true });
@@ -83,14 +111,25 @@ export function usePageViews() {
         since.setHours(0, 0, 0, 0);
         since.setDate(since.getDate() - (ANALYTICS_DAYS - 1));
 
-        const { data: monthlyVisitors } = await supabase
+        const { data: monthlyEvents, error: monthlyEventsError } = await supabase
+          .from("visitor_events")
+          .select("visitor_id, seen_at")
+          .gte("seen_at", since.toISOString());
+
+        const { data: monthlyVisitors } = monthlyEventsError
+          ? await supabase
           .from("visitors")
           .select("last_seen")
-          .gte("last_seen", since.toISOString());
+              .gte("last_seen", since.toISOString())
+          : { data: null };
 
         if (active) {
           setCount(total ?? 0);
-          setMonthlySeries(aggregateMonthlyVisitors(monthlyVisitors ?? []));
+          setMonthlySeries(
+            monthlyEventsError
+              ? aggregateMonthlyVisitors(monthlyVisitors ?? [])
+              : aggregateVisitorEvents(monthlyEvents ?? [])
+          );
           setLoading(false);
         }
       } catch {

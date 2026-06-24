@@ -8,6 +8,7 @@ import profileAvatar4 from "../../assets/profile4.png";
 import profileAvatar5 from "../../assets/profile5.png";
 import profileAvatar6 from "../../assets/profile6.png";
 import profileAvatar7 from "../../assets/profile7.png";
+import mikaAvatar from "../../mika.jpg";
 import ownerAvatar from "../../metsuki.jpg";
 import { SectionHeading } from "../components/SectionHeading";
 import { UiIcon } from "../components/UiIcon";
@@ -29,9 +30,27 @@ const avatarOptions = [
   { id: "profile7", src: profileAvatar7, label: "Profile avatar 7" },
 ];
 
-function getAvatarSrc(name: string, avatar: string | null): string {
+function isMikaKagamiEntry(name: string, createdAt: string): boolean {
+  const date = new Date(createdAt);
+  const parts = new Intl.DateTimeFormat("en", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: "Europe/Berlin",
+    year: "numeric",
+  }).formatToParts(date);
+  const getPart = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
+  const berlinDate = `${getPart("year")}-${getPart("month")}-${getPart("day")}`;
+
+  return name.trim().toLowerCase() === "mika kagami" && berlinDate === "2026-04-24";
+}
+
+function getAvatarSrc(name: string, avatar: string | null, createdAt: string): string {
   if (name.trim().toLowerCase() === "metsuwuki") {
     return ownerAvatar;
+  }
+
+  if (isMikaKagamiEntry(name, createdAt)) {
+    return mikaAvatar;
   }
 
   return avatarOptions.find((option) => option.id === avatar)?.src ?? avatarOptions[0].src;
@@ -222,7 +241,7 @@ export default function GuestbookSection() {
               {!loading && !fetchError
                 ? entries.map((entry) => (
                     <article className="guestbook-msg" key={entry.id}>
-                      <img src={getAvatarSrc(entry.name, entry.avatar)} alt="" className="guestbook-msg__avatar" loading="lazy" />
+                      <img src={getAvatarSrc(entry.name, entry.avatar, entry.created_at)} alt="" className="guestbook-msg__avatar" loading="lazy" />
                       <div className="guestbook-msg__content">
                         <header className="guestbook-msg__header">
                           <span

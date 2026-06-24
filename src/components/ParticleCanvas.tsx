@@ -9,6 +9,17 @@ type Particle = {
   alpha: number;
 };
 
+type Meteor = {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  length: number;
+  life: number;
+  maxLife: number;
+  alpha: number;
+};
+
 function createParticle(width: number, height: number): Particle {
   return {
     x: Math.random() * width,
@@ -17,6 +28,22 @@ function createParticle(width: number, height: number): Particle {
     vy: (Math.random() - 0.5) * 0.14,
     radius: 0.8 + Math.random() * 1.7,
     alpha: 0.18 + Math.random() * 0.42,
+  };
+}
+
+function createMeteor(width: number, height: number): Meteor {
+  const speed = 7 + Math.random() * 3.8;
+  const angle = Math.PI * (0.13 + Math.random() * 0.08);
+
+  return {
+    x: -80 + Math.random() * width * 0.78,
+    y: Math.random() * height * 0.44,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    length: 86 + Math.random() * 72,
+    life: 0,
+    maxLife: 34 + Math.random() * 22,
+    alpha: 0.28 + Math.random() * 0.22,
   };
 }
 
@@ -30,10 +57,13 @@ export function ParticleCanvas() {
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const particles: Particle[] = [];
+    const meteors: Meteor[] = [];
     let animationFrame = 0;
     let width = 0;
     let height = 0;
     let ratio = 1;
+    let frame = 0;
+    let nextMeteorFrame = 140 + Math.round(Math.random() * 220);
 
     const resize = () => {
       ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -45,12 +75,13 @@ export function ParticleCanvas() {
       canvas.style.height = `${height}px`;
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-      const targetCount = Math.max(34, Math.min(78, Math.round(width / 24)));
+      const targetCount = Math.max(16, Math.min(38, Math.round(width / 46)));
       while (particles.length < targetCount) particles.push(createParticle(width, height));
       particles.length = targetCount;
     };
 
     const draw = () => {
+      frame += 1;
       context.clearRect(0, 0, width, height);
 
       for (const particle of particles) {
@@ -94,6 +125,48 @@ export function ParticleCanvas() {
           context.moveTo(a.x, a.y);
           context.lineTo(b.x, b.y);
           context.stroke();
+        }
+      }
+
+      if (!reducedMotion && frame >= nextMeteorFrame && meteors.length < (width < 760 ? 2 : 4)) {
+        meteors.push(createMeteor(width, height));
+        nextMeteorFrame = frame + 80 + Math.round(Math.random() * 150);
+      }
+
+      for (let index = meteors.length - 1; index >= 0; index -= 1) {
+        const meteor = meteors[index];
+        meteor.life += 1;
+        meteor.x += meteor.vx;
+        meteor.y += meteor.vy;
+
+        const progress = meteor.life / meteor.maxLife;
+        const fade = Math.sin(Math.min(1, progress) * Math.PI);
+        const tailX = meteor.x - meteor.vx * (meteor.length / 10);
+        const tailY = meteor.y - meteor.vy * (meteor.length / 10);
+        const gradient = context.createLinearGradient(tailX, tailY, meteor.x, meteor.y);
+
+        gradient.addColorStop(0, "rgba(143, 79, 255, 0)");
+        gradient.addColorStop(0.55, `rgba(190, 128, 255, ${meteor.alpha * fade * 0.48})`);
+        gradient.addColorStop(1, `rgba(255, 240, 255, ${meteor.alpha * fade})`);
+
+        context.save();
+        context.globalCompositeOperation = "lighter";
+        context.strokeStyle = gradient;
+        context.lineWidth = 1.35;
+        context.lineCap = "round";
+        context.beginPath();
+        context.moveTo(tailX, tailY);
+        context.lineTo(meteor.x, meteor.y);
+        context.stroke();
+
+        context.fillStyle = `rgba(255, 240, 255, ${meteor.alpha * fade})`;
+        context.beginPath();
+        context.arc(meteor.x, meteor.y, 1.8, 0, Math.PI * 2);
+        context.fill();
+        context.restore();
+
+        if (meteor.life >= meteor.maxLife || meteor.x > width + 180 || meteor.y > height + 120) {
+          meteors.splice(index, 1);
         }
       }
 

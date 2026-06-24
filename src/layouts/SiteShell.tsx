@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { CursorTrailCanvas } from "../components/CursorTrailCanvas";
 import { ParticleCanvas } from "../components/ParticleCanvas";
 import { SiteHeader } from "../components/SiteHeader";
 import { UiIcon } from "../components/UiIcon";
@@ -44,6 +45,7 @@ export function SiteShell({ children }: SiteShellProps) {
         <div className="page-shell__spark page-shell__spark--four" />
         <div className="page-shell__grid" />
       </div>
+      <CursorTrailCanvas />
 
       <SiteHeader />
 
