@@ -1,4 +1,6 @@
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { m } from "framer-motion";
+import { Reveal } from "../components/Reveal";
 import { SectionHeading } from "../components/SectionHeading";
 import { useMotionSettings } from "../hooks/useMotionSettings";
 import { usePageLocale } from "../i18n/pageLocale";
@@ -74,20 +76,38 @@ export default function AboutSection() {
   const { content } = usePageLocale();
   const { appCards, featureCards, siteMeta } = content;
   const { prefersReducedMotion } = useMotionSettings();
+  const marqueeRef = useRef<HTMLDivElement | null>(null);
 
   function openApp(app: AppCard) {
     const target = app.downloadHref ?? app.githubHref ?? app.websiteHref;
     if (target) window.open(target, "_blank", "noreferrer");
   }
 
+  // The marquee's CSS animation otherwise keeps ticking forever, even while
+  // scrolled well out of view — pause it via IntersectionObserver instead
+  // (animation-timeline: view() doesn't fit here: it would turn the
+  // time-driven infinite ticker into a scroll-position-scrubbed one).
+  useEffect(() => {
+    const el = marqueeRef.current;
+    const track = el?.querySelector<HTMLElement>(".logo-marquee__track");
+    if (!el || !track) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      track.style.animationPlayState = entry.isIntersecting ? "running" : "paused";
+    });
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section className="section-block section-block--airy" id="apps">
       <div className="page-container">
-        <motion.div {...getRevealProps(prefersReducedMotion)}>
+        <Reveal prefersReducedMotion={prefersReducedMotion}>
           <SectionHeading title={siteMeta.featureTitle} description={siteMeta.featureDescription} align="left" />
-        </motion.div>
+        </Reveal>
 
-        <motion.div className="logo-marquee" {...getRevealProps(prefersReducedMotion, 0.05)}>
+        <m.div className="logo-marquee" ref={marqueeRef} {...getRevealProps(prefersReducedMotion, 0.05)}>
           <div className="logo-marquee__track">
             <ul className="logo-marquee__group">
               {languageLogos.map((logo) => (
@@ -104,11 +124,11 @@ export default function AboutSection() {
               ))}
             </ul>
           </div>
-        </motion.div>
+        </m.div>
 
         <div className="destination-grid destination-grid--premium">
           {featureCards.map((card, index) => (
-            <motion.a
+            <m.a
               key={card.title}
               {...getRevealProps(prefersReducedMotion, index * 0.06)}
               href={card.href}
@@ -124,17 +144,17 @@ export default function AboutSection() {
                 <span>{card.href?.startsWith("http") ? "External" : "Section"}</span>
                 <span>{String(index + 1).padStart(2, "0")}</span>
               </span>
-            </motion.a>
+            </m.a>
           ))}
         </div>
 
-        <motion.div {...getRevealProps(prefersReducedMotion)}>
+        <Reveal prefersReducedMotion={prefersReducedMotion}>
           <SectionHeading title={siteMeta.appsTitle} description={siteMeta.appsDescription} align="left" />
-        </motion.div>
+        </Reveal>
 
         <div className="app-showcase-grid" id="applications-catalog">
           {appCards.map((app, index) => (
-            <motion.article
+            <m.article
               key={app.title}
               {...getRevealProps(prefersReducedMotion, index * 0.08)}
               className={`app-card app-card--${app.accent}`}
@@ -208,7 +228,7 @@ export default function AboutSection() {
                 <img src={windowsIcon} alt="" loading="lazy" />
               </div>
               </div>
-            </motion.article>
+            </m.article>
           ))}
         </div>
       </div>

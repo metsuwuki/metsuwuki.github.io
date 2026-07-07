@@ -1,4 +1,4 @@
-﻿import { motion } from "framer-motion";
+﻿import { m } from "framer-motion";
 import { TypewriterText } from "../components/TypewriterText";
 import type { Variants } from "framer-motion";
 import { UiIcon } from "../components/UiIcon";
@@ -60,33 +60,33 @@ export default function HeroSection() {
     <section className="hero-section hero-section--reference" id="overview">
       <div className="hero-scroll-hint" aria-hidden="true"><span /></div>
       <div className="page-container hero-reference-grid">
-        <motion.div className="hero-reference-copy" {...revealProps}>
-          <motion.p className="hero-eyebrow" custom={0} variants={itemVariants}>
+        <m.div className="hero-reference-copy" {...revealProps}>
+          <m.p className="hero-eyebrow" custom={0} variants={itemVariants}>
             {siteMeta.heroEyebrow}
-          </motion.p>
+          </m.p>
 
-          <motion.h1 custom={1} variants={itemVariants}>
+          <m.h1 custom={1} variants={itemVariants}>
             {titleParts[0]}
             <span className="hero-title__accent">UwU</span>
             {titleParts[1]}
-          </motion.h1>
+          </m.h1>
 
-          <motion.p className="hero-role" custom={2} variants={itemVariants}>
+          <m.p className="hero-role" custom={2} variants={itemVariants}>
             {siteMeta.heroRole}
             <UiIcon name="terminal" className="hero-role__icon" />
-          </motion.p>
+          </m.p>
 
-          <motion.p className="hero-section__description hero-section__description--typed" custom={3} variants={itemVariants}>
+          <m.p className="hero-section__description hero-section__description--typed" custom={3} variants={itemVariants}>
             <TypewriterText
               className="typewriter-text"
               phrases={typedDescription.phrases}
               prefix={typedDescription.prefix}
               reducedMotion={prefersReducedMotion}
             />
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
-        <motion.aside
+        <m.aside
           className="hero-reference-rail hero-reference-rail--visitors"
           {...(!prefersReducedMotion
             ? {
@@ -107,7 +107,7 @@ export default function HeroSection() {
               <VisitorsTrendChart points={monthlySeries} />
             </div>
           </section>
-        </motion.aside>
+        </m.aside>
       </div>
     </section>
   );

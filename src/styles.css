@@ -8799,87 +8799,38 @@ body {
 }
 
 /* ── Discord status ring on avatar ─────────────────────────── */
+/* Frozen at the animation's peak (previous 50%-keyframe) value instead of
+   oscillating: box-shadow is a paint property (every frame forces a
+   rasterize), not a compositor one, so no amount of easing makes an
+   animated box-shadow "cheap" — removing the animation removes the cost
+   entirely, which beats any GPU-friendly alternative. The adjacent
+   ::before/::after wave ripples (below) already carry the "pulsing"
+   motion for this indicator, so the glow ring stays lively overall. */
 .site-brand__mark--online {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 0 0 2px rgba(67, 217, 141, 0.7),
-    0 0 10px rgba(67, 217, 141, 0.22);
-  animation: statusRingOnline 2.8s ease-in-out infinite;
+    0 0 0 2.5px rgba(67, 217, 141, 0.96),
+    0 0 18px rgba(67, 217, 141, 0.48);
 }
 
 .site-brand__mark--idle {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 0 0 2px rgba(246, 197, 79, 0.65),
-    0 0 10px rgba(246, 197, 79, 0.18);
-  animation: statusRingIdle 3.5s ease-in-out infinite;
+    0 0 0 2.5px rgba(246, 197, 79, 0.9),
+    0 0 16px rgba(246, 197, 79, 0.38);
 }
 
 .site-brand__mark--dnd {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 0 0 2px rgba(255, 95, 118, 0.58),
-    0 0 10px rgba(255, 95, 118, 0.16);
-  animation: statusRingDnd 4s ease-in-out infinite;
+    0 0 0 2.5px rgba(255, 95, 118, 0.82),
+    0 0 16px rgba(255, 95, 118, 0.34);
 }
 
 .site-brand__mark--offline {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 0 0 1.5px rgba(127, 142, 163, 0.28);
-}
-
-@keyframes statusRingOnline {
-  0%, 100% {
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 0 0 2px rgba(67, 217, 141, 0.7),
-      0 0 10px rgba(67, 217, 141, 0.22);
-  }
-  50% {
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 0 0 2.5px rgba(67, 217, 141, 0.96),
-      0 0 18px rgba(67, 217, 141, 0.48);
-  }
-}
-
-@keyframes statusRingIdle {
-  0%, 100% {
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 0 0 2px rgba(246, 197, 79, 0.62),
-      0 0 9px rgba(246, 197, 79, 0.16);
-  }
-  50% {
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 0 0 2.5px rgba(246, 197, 79, 0.9),
-      0 0 16px rgba(246, 197, 79, 0.38);
-  }
-}
-
-@keyframes statusRingDnd {
-  0%, 100% {
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 0 0 2px rgba(255, 95, 118, 0.55),
-      0 0 9px rgba(255, 95, 118, 0.14);
-  }
-  50% {
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 0 0 2.5px rgba(255, 95, 118, 0.82),
-      0 0 16px rgba(255, 95, 118, 0.34);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .site-brand__mark--online,
-  .site-brand__mark--idle,
-  .site-brand__mark--dnd {
-    animation: none;
-  }
 }
 
 /* Final homepage polish */
@@ -8890,6 +8841,22 @@ body {
 @keyframes pageShellEnter {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* Where supported, replace the keyframe with a declarative @starting-style
+   transition (no animation machinery at all for this one-shot fade-in). */
+@supports at-rule(@starting-style) {
+  .page-shell {
+    animation: none;
+    opacity: 1;
+    transition: opacity 0.4s ease-out;
+  }
+
+  @starting-style {
+    .page-shell {
+      opacity: 0;
+    }
+  }
 }
 
 .hero-section--reference h1 {
@@ -9082,21 +9049,29 @@ body {
   inset: -0.42rem;
 }
 
+/* box-shadow is baked in once here (static) instead of animated in the
+   keyframes below: the pseudo-element's own animated `opacity` already
+   fades it in/out, so the visual (glow blooms as the ring expands, then
+   fades) is unchanged, but only transform/opacity are re-evaluated per
+   frame — box-shadow is resolved once and reused by the compositor. */
 .site-brand__mark--online::before,
 .site-brand__mark--online::after {
   border-color: rgba(67, 217, 141, 0.46);
+  box-shadow: 0 0 18px rgba(67, 217, 141, 0.2);
   animation: statusWaveOnline 2.4s ease-out infinite;
 }
 
 .site-brand__mark--idle::before,
 .site-brand__mark--idle::after {
   border-color: rgba(246, 197, 79, 0.44);
+  box-shadow: 0 0 16px rgba(246, 197, 79, 0.18);
   animation: statusWaveIdle 2.9s ease-out infinite;
 }
 
 .site-brand__mark--dnd::before,
 .site-brand__mark--dnd::after {
   border-color: rgba(255, 95, 118, 0.48);
+  box-shadow: 0 0 16px rgba(255, 95, 118, 0.2);
   animation: statusWaveDnd 3.1s ease-out infinite;
 }
 
@@ -9105,20 +9080,20 @@ body {
 }
 
 @keyframes statusWaveOnline {
-  0% { opacity: 0.62; transform: scale(0.96); box-shadow: 0 0 0 rgba(67, 217, 141, 0); }
-  70% { opacity: 0.08; transform: scale(1.16); box-shadow: 0 0 18px rgba(67, 217, 141, 0.2); }
+  0% { opacity: 0.62; transform: scale(0.96); }
+  70% { opacity: 0.08; transform: scale(1.16); }
   100% { opacity: 0; transform: scale(1.2); }
 }
 
 @keyframes statusWaveIdle {
-  0% { opacity: 0.56; transform: scale(0.96); box-shadow: 0 0 0 rgba(246, 197, 79, 0); }
-  70% { opacity: 0.08; transform: scale(1.15); box-shadow: 0 0 16px rgba(246, 197, 79, 0.18); }
+  0% { opacity: 0.56; transform: scale(0.96); }
+  70% { opacity: 0.08; transform: scale(1.15); }
   100% { opacity: 0; transform: scale(1.19); }
 }
 
 @keyframes statusWaveDnd {
-  0% { opacity: 0.58; transform: scale(0.96); box-shadow: 0 0 0 rgba(255, 95, 118, 0); }
-  70% { opacity: 0.08; transform: scale(1.14); box-shadow: 0 0 16px rgba(255, 95, 118, 0.2); }
+  0% { opacity: 0.58; transform: scale(0.96); }
+  70% { opacity: 0.08; transform: scale(1.14); }
   100% { opacity: 0; transform: scale(1.18); }
 }
 
@@ -9359,6 +9334,39 @@ body {
     flex: 1 !important;
     min-width: 8rem !important;
     justify-content: center !important;
+  }
+}
+
+/* ── Native scroll-driven reveal (progressive enhancement) ──
+   Used by <Reveal> for single-element fades that don't need framer-motion's
+   stagger choreography. Runs entirely on the compositor thread once the
+   animation is bound to the view() timeline — no scroll listener, no JS. */
+@supports (animation-timeline: view()) {
+  .reveal-on-view {
+    opacity: 0;
+    animation-name: revealOnView;
+    animation-timeline: view();
+    animation-range: cover 0% cover 40%;
+    animation-fill-mode: both;
+  }
+}
+
+@keyframes revealOnView {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-view {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
 

@@ -1,5 +1,6 @@
 ﻿import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
+import { useCanvasLoop } from "../hooks/useCanvasLoop";
 import { useScrolled } from "../hooks/useScrolled";
 import heroBg from "../../gta5rp/gta5bg.jpg";
 import starImg from "../../gta5rp/star.png";
@@ -237,58 +238,43 @@ function KagamiNav() {
   );
 }
 
+type KagamiParticle = { x: number; y: number; r: number; vy: number; alpha: number; alphaDir: number };
+
 function ParticleField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const particles = useRef<KagamiParticle[]>([]);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    const particles: { x: number; y: number; r: number; vy: number; alpha: number; alphaDir: number }[] = [];
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    for (let i = 0; i < 45; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 1.8 + 0.4,
-        vy: -(Math.random() * 0.4 + 0.15),
-        alpha: Math.random() * 0.5 + 0.1,
-        alphaDir: Math.random() > 0.5 ? 1 : -1,
-      });
-    }
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
+  useCanvasLoop(
+    canvasRef,
+    (width, height) => {
+      if (particles.current.length > 0) return; // seeded once, like the original
+      for (let i = 0; i < 45; i++) {
+        particles.current.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          r: Math.random() * 1.8 + 0.4,
+          vy: -(Math.random() * 0.4 + 0.15),
+          alpha: Math.random() * 0.5 + 0.1,
+          alphaDir: Math.random() > 0.5 ? 1 : -1,
+        });
+      }
+    },
+    (ctx, width, height) => {
+      ctx.clearRect(0, 0, width, height);
+      particles.current.forEach((p) => {
         p.y += p.vy;
         p.alpha += p.alphaDir * 0.004;
         if (p.alpha >= 0.65 || p.alpha <= 0.05) p.alphaDir *= -1;
-        if (p.y < -4) { p.y = canvas.height + 4; p.x = Math.random() * canvas.width; }
+        if (p.y < -4) { p.y = height + 4; p.x = Math.random() * width; }
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(165,139,255,${p.alpha})`;
         ctx.fill();
       });
-      animId = requestAnimationFrame(draw);
-    };
-    draw();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
+    },
+    { sizing: "element" }
+  );
 
   return <canvas ref={canvasRef} className="kg-hero__particles" aria-hidden="true" />;
 }
@@ -344,29 +330,29 @@ function KagamiHero() {
       </div>
       <ParticleField />
 
-      <motion.div
+      <m.div
         className="kg-hero__content"
         initial="hidden"
         animate="visible"
         variants={stagger}
       >
-        <motion.p className="kg-eyebrow" variants={fadeUp}>ДОБРО ПОЖАЛОВАТЬ В</motion.p>
-        <motion.h1 className="kg-hero__title" variants={fadeUp}>
+        <m.p className="kg-eyebrow" variants={fadeUp}>ДОБРО ПОЖАЛОВАТЬ В</m.p>
+        <m.h1 className="kg-hero__title" variants={fadeUp}>
           K<span className="kg-star-wrap"><KgStar className="kg-star-img--hero" /></span>GAMI
-        </motion.h1>
-        <motion.p className="kg-hero__tagline" variants={fadeUp}>
+        </m.h1>
+        <m.p className="kg-hero__tagline" variants={fadeUp}>
           СИЛА &bull; ЕДИНСТВО &bull; АМБИЦИИ
-        </motion.p>
-        <motion.p className="kg-hero__desc" variants={fadeUp}>
+        </m.p>
+        <m.p className="kg-hero__desc" variants={fadeUp}>
           Организация, основанная с целью объединить активных
           и целеустремлённых игроков, готовых развиваться,
           зарабатывать и создавать собственную историю.
-        </motion.p>
-        <motion.div className="kg-hero__btns" variants={fadeUp}>
+        </m.p>
+        <m.div className="kg-hero__btns" variants={fadeUp}>
           <a href="#kg-about" className="kg-btn kg-btn--outline">УЗНАТЬ БОЛЬШЕ</a>
           <a href={kagamiDiscordInvite} target="_blank" rel="noreferrer" className="kg-btn kg-btn--primary">ВСТУПИТЬ</a>
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
 
       <div className="kg-scroll-hint" aria-hidden="true">
         <span />
@@ -387,7 +373,7 @@ function KagamiPrinciples() {
     <section className="kg-section" id="kg-about">
       <div className="kg-container">
         <div className="kg-section-label">НАШИ ПРИНЦИПЫ</div>
-        <motion.div
+        <m.div
           className="kg-principles"
           initial="hidden"
           whileInView="visible"
@@ -395,13 +381,13 @@ function KagamiPrinciples() {
           variants={stagger}
         >
           {principles.map((p) => (
-            <motion.div key={p.title} className="kg-principle-card" variants={fadeUp}>
+            <m.div key={p.title} className="kg-principle-card" variants={fadeUp}>
               <div className="kg-principle-card__icon"><p.Icon /></div>
               <h3>{p.title}</h3>
               <p>{p.text}</p>
-            </motion.div>
+            </m.div>
           ))}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );
@@ -414,7 +400,7 @@ function KagamiActivities() {
         <div className="kg-cols">
 
           {/* Col 1 — what we do */}
-          <motion.div
+          <m.div
             className="kg-col-card"
             initial="hidden"
             whileInView="visible"
@@ -437,10 +423,10 @@ function KagamiActivities() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Col 2 — leadership */}
-          <motion.div
+          <m.div
             className="kg-col-card"
             id="kg-team"
             initial="hidden"
@@ -483,10 +469,10 @@ function KagamiActivities() {
                 {[0, 1, 2, 3].map((i) => <VacantSlot key={i} />)}
               </div>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Col 3 — benefits */}
-          <motion.div
+          <m.div
             className="kg-col-card"
             id="kg-benefits"
             initial="hidden"
@@ -513,7 +499,7 @@ function KagamiActivities() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </m.div>
 
         </div>
       </div>
@@ -526,23 +512,23 @@ function KagamiJoin() {
     <section className="kg-section kg-join" id="kg-join">
       <div className="kg-join__glow" aria-hidden="true" />
       <div className="kg-container">
-        <motion.div
+        <m.div
           className="kg-join__inner"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.25 }}
           variants={stagger}
         >
-          <motion.div className="kg-join__star" variants={fadeUp} aria-hidden="true">
+          <m.div className="kg-join__star" variants={fadeUp} aria-hidden="true">
             <KgStar className="kg-star-img--join" />
-          </motion.div>
-          <motion.h2 variants={fadeUp}>
+          </m.div>
+          <m.h2 variants={fadeUp}>
             ГОТОВ СТАТЬ ЧАСТЬЮ<br /><span> K<KgStar className="kg-star-img--inline" />GAMI?</span>
-          </motion.h2>
-          <motion.p variants={fadeUp}>
+          </m.h2>
+          <m.p variants={fadeUp}>
             Присоединяйся к нашей команде и начни писать свою историю в мире GTA 5 RP.
-          </motion.p>
-          <motion.div className="kg-steps" variants={fadeUp}>
+          </m.p>
+          <m.div className="kg-steps" variants={fadeUp}>
             <div className="kg-step">
               <div className="kg-step__num">01</div>
               <div className="kg-step__text">Подай заявку в Discord</div>
@@ -557,8 +543,8 @@ function KagamiJoin() {
               <div className="kg-step__num">03</div>
               <div className="kg-step__text">Добро пожаловать в семью</div>
             </div>
-          </motion.div>
-          <motion.a
+          </m.div>
+          <m.a
             href={kagamiDiscordInvite}
             target="_blank"
             rel="noreferrer"
@@ -566,8 +552,8 @@ function KagamiJoin() {
             variants={fadeUp}
           >
             ВСТУПИТЬ
-          </motion.a>
-        </motion.div>
+          </m.a>
+        </m.div>
       </div>
     </section>
   );

@@ -1,5 +1,18 @@
 import type { HTMLMotionProps } from "framer-motion";
 
+let cachedViewTimelineSupport: boolean | null = null;
+
+/** Cached feature-detect for native CSS scroll-driven animations. */
+export function supportsViewTimeline(): boolean {
+  if (cachedViewTimelineSupport === null) {
+    cachedViewTimelineSupport =
+      typeof CSS !== "undefined" &&
+      typeof CSS.supports === "function" &&
+      CSS.supports("animation-timeline: view()");
+  }
+  return cachedViewTimelineSupport;
+}
+
 type RevealProps = Pick<
   HTMLMotionProps<"div">,
   "animate" | "initial" | "whileInView" | "viewport" | "transition"

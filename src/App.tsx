@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { LazyMotion, domAnimation } from "framer-motion";
 import { SiteShell } from "./layouts/SiteShell";
 import { PageLocaleProvider } from "./i18n/pageLocale";
 import AboutSection from "./sections/AboutSection";
@@ -20,9 +21,11 @@ function MainSite() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<MainSite />} />
-      <Route path="/gta5rp" element={<KagamiPage />} />
-    </Routes>
+    <LazyMotion features={domAnimation} strict>
+      <Routes>
+        <Route path="/" element={<MainSite />} />
+        <Route path="/gta5rp" element={<KagamiPage />} />
+      </Routes>
+    </LazyMotion>
   );
 }

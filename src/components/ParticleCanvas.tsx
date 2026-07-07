@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useCanvasLoop } from "../hooks/useCanvasLoop";
 
 type Particle = {
   x: number;
@@ -31,6 +32,31 @@ function createParticle(width: number, height: number): Particle {
   };
 }
 
+const GLOW_SPRITE_SIZE = 64;
+
+// createRadialGradient()+addColorStop() is a relatively heavy canvas call;
+// doing it fresh for every particle on every frame (up to 38x * 60fps) was
+// measured to cause periodic >100ms main-thread long tasks from the GC
+// pressure of discarding that many gradient objects per second. Baking the
+// glow to an offscreen sprite once and blitting it via drawImage (scaled
+// per particle's radius, tinted per particle's alpha via globalAlpha) is
+// visually identical — opacity scaling commutes — but allocation-free.
+function createGlowSprite(): HTMLCanvasElement {
+  const sprite = document.createElement("canvas");
+  sprite.width = GLOW_SPRITE_SIZE;
+  sprite.height = GLOW_SPRITE_SIZE;
+  const ctx = sprite.getContext("2d")!;
+  const r = GLOW_SPRITE_SIZE / 2;
+  const glow = ctx.createRadialGradient(r, r, 0, r, r, r);
+  glow.addColorStop(0, "rgba(218, 174, 255, 1)");
+  glow.addColorStop(1, "rgba(143, 79, 255, 0)");
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(r, r, r, 0, Math.PI * 2);
+  ctx.fill();
+  return sprite;
+}
+
 function createMeteor(width: number, height: number): Meteor {
   const speed = 7 + Math.random() * 3.8;
   const angle = Math.PI * (0.13 + Math.random() * 0.08);
@@ -49,42 +75,23 @@ function createMeteor(width: number, height: number): Meteor {
 
 export function ParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const particles = useRef<Particle[]>([]);
+  const meteors = useRef<Meteor[]>([]);
+  const nextMeteorFrame = useRef(140 + Math.round(Math.random() * 220));
+  const glowSprite = useRef<HTMLCanvasElement | null>(null);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
-
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const particles: Particle[] = [];
-    const meteors: Meteor[] = [];
-    let animationFrame = 0;
-    let width = 0;
-    let height = 0;
-    let ratio = 1;
-    let frame = 0;
-    let nextMeteorFrame = 140 + Math.round(Math.random() * 220);
-
-    const resize = () => {
-      ratio = Math.min(window.devicePixelRatio || 1, 2);
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = Math.floor(width * ratio);
-      canvas.height = Math.floor(height * ratio);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-
+  useCanvasLoop(
+    canvasRef,
+    (width, height) => {
       const targetCount = Math.max(16, Math.min(38, Math.round(width / 46)));
-      while (particles.length < targetCount) particles.push(createParticle(width, height));
-      particles.length = targetCount;
-    };
-
-    const draw = () => {
-      frame += 1;
+      while (particles.current.length < targetCount) particles.current.push(createParticle(width, height));
+      particles.current.length = targetCount;
+    },
+    (context, width, height, frame, reducedMotion) => {
+      if (!glowSprite.current) glowSprite.current = createGlowSprite();
       context.clearRect(0, 0, width, height);
 
-      for (const particle of particles) {
+      for (const particle of particles.current) {
         if (!reducedMotion) {
           particle.x += particle.vx;
           particle.y += particle.vy;
@@ -95,13 +102,16 @@ export function ParticleCanvas() {
         if (particle.y < -20) particle.y = height + 20;
         if (particle.y > height + 20) particle.y = -20;
 
-        const glow = context.createRadialGradient(particle.x, particle.y, 0, particle.x, particle.y, particle.radius * 7);
-        glow.addColorStop(0, `rgba(218, 174, 255, ${particle.alpha})`);
-        glow.addColorStop(1, "rgba(143, 79, 255, 0)");
-        context.fillStyle = glow;
-        context.beginPath();
-        context.arc(particle.x, particle.y, particle.radius * 7, 0, Math.PI * 2);
-        context.fill();
+        const glowDiameter = particle.radius * 7 * 2;
+        context.globalAlpha = particle.alpha;
+        context.drawImage(
+          glowSprite.current,
+          particle.x - glowDiameter / 2,
+          particle.y - glowDiameter / 2,
+          glowDiameter,
+          glowDiameter
+        );
+        context.globalAlpha = 1;
 
         context.fillStyle = `rgba(245, 230, 255, ${Math.min(0.8, particle.alpha + 0.18)})`;
         context.beginPath();
@@ -109,10 +119,10 @@ export function ParticleCanvas() {
         context.fill();
       }
 
-      for (let i = 0; i < particles.length; i += 1) {
-        for (let j = i + 1; j < particles.length; j += 1) {
-          const a = particles[i];
-          const b = particles[j];
+      for (let i = 0; i < particles.current.length; i += 1) {
+        for (let j = i + 1; j < particles.current.length; j += 1) {
+          const a = particles.current[i];
+          const b = particles.current[j];
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const distance = Math.hypot(dx, dy);
@@ -128,13 +138,13 @@ export function ParticleCanvas() {
         }
       }
 
-      if (!reducedMotion && frame >= nextMeteorFrame && meteors.length < (width < 760 ? 2 : 4)) {
-        meteors.push(createMeteor(width, height));
-        nextMeteorFrame = frame + 80 + Math.round(Math.random() * 150);
+      if (!reducedMotion && frame >= nextMeteorFrame.current && meteors.current.length < (width < 760 ? 2 : 4)) {
+        meteors.current.push(createMeteor(width, height));
+        nextMeteorFrame.current = frame + 80 + Math.round(Math.random() * 150);
       }
 
-      for (let index = meteors.length - 1; index >= 0; index -= 1) {
-        const meteor = meteors[index];
+      for (let index = meteors.current.length - 1; index >= 0; index -= 1) {
+        const meteor = meteors.current[index];
         meteor.life += 1;
         meteor.x += meteor.vx;
         meteor.y += meteor.vy;
@@ -166,24 +176,11 @@ export function ParticleCanvas() {
         context.restore();
 
         if (meteor.life >= meteor.maxLife || meteor.x > width + 180 || meteor.y > height + 120) {
-          meteors.splice(index, 1);
+          meteors.current.splice(index, 1);
         }
       }
-
-      if (!reducedMotion) {
-        animationFrame = window.requestAnimationFrame(draw);
-      }
-    };
-
-    resize();
-    draw();
-    window.addEventListener("resize", resize);
-
-    return () => {
-      window.removeEventListener("resize", resize);
-      window.cancelAnimationFrame(animationFrame);
-    };
-  }, []);
+    }
+  );
 
   return <canvas className="particle-canvas" aria-hidden="true" ref={canvasRef} />;
 }

@@ -1,5 +1,4 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { motion } from "framer-motion";
 import profileAvatar from "../../assets/profile.png";
 import profileAvatar1 from "../../assets/profile1.png";
 import profileAvatar2 from "../../assets/profile2.png";
@@ -10,12 +9,12 @@ import profileAvatar6 from "../../assets/profile6.png";
 import profileAvatar7 from "../../assets/profile7.png";
 import mikaAvatar from "../../mika.jpg";
 import ownerAvatar from "../../metsuki.jpg";
+import { Reveal } from "../components/Reveal";
 import { SectionHeading } from "../components/SectionHeading";
 import { UiIcon } from "../components/UiIcon";
 import { useGuestbook } from "../hooks/useGuestbook";
 import { useMotionSettings } from "../hooks/useMotionSettings";
 import { usePageLocale } from "../i18n/pageLocale";
-import { getRevealProps } from "../utils/motion";
 
 const MAX_NAME = 50;
 const MAX_MSG = 500;
@@ -127,12 +126,12 @@ export default function GuestbookSection() {
   return (
     <section className="section-block section-block--airy section-block--guestbook" id="guestbook">
       <div className="page-container">
-        <motion.div {...getRevealProps(prefersReducedMotion)}>
+        <Reveal prefersReducedMotion={prefersReducedMotion}>
           <SectionHeading title={siteMeta.guestbookTitle} description={siteMeta.guestbookDescription} align="left" />
-        </motion.div>
+        </Reveal>
 
         <div className="guestbook-layout">
-          <motion.article className="guestbook-card" {...getRevealProps(prefersReducedMotion, 0.06)}>
+          <Reveal as="article" className="guestbook-card" delay={0.06} prefersReducedMotion={prefersReducedMotion}>
             <form className="guestbook-form" onSubmit={handleSubmit} noValidate>
               <div className="guestbook-form__fields">
                 <div className="guestbook-avatar-picker" role="radiogroup" aria-label={siteMeta.guestbookAvatarLabel}>
@@ -213,9 +212,9 @@ export default function GuestbookSection() {
             </form>
 
             <p className="guestbook-note">Be kind and respectful to other visitors.</p>
-          </motion.article>
+          </Reveal>
 
-          <motion.div className="guestbook-messages" {...getRevealProps(prefersReducedMotion, 0.12)}>
+          <Reveal className="guestbook-messages" delay={0.12} prefersReducedMotion={prefersReducedMotion}>
             <div className="guestbook-messages__head">
               <h3>Latest messages</h3>
               <span>{entries.length}</span>
@@ -261,7 +260,7 @@ export default function GuestbookSection() {
                   ))
                 : null}
             </div>
-          </motion.div>
+          </Reveal>
         </div>
       </div>
     </section>
