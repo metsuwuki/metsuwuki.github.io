@@ -7,6 +7,8 @@ import bypassCleanerIcon from "../assets/apps/bypass-cleaner-icon.ico";
 import bypassCleanerPreview from "../assets/apps/bypass-cleaner-preview.png";
 import exeAnalyserIcon from "../assets/apps/exe-analyser-icon.ico";
 import exeAnalyserPreview from "../assets/apps/exe-analyser-preview.png";
+import kinoBoxIcon from "../assets/apps/KinoBox.ico";
+import kinoBoxPreview from "../assets/apps/KinoBox-Preview.png";
 import type { IconName } from "../components/UiIcon";
 
 export type NavigationItem = {
@@ -45,6 +47,8 @@ export type AppCard = {
   downloadHref?: string;
   githubHref?: string;
   websiteHref?: string;
+  buyHref?: string;
+  buyLabel?: string;
   accent: "violet" | "cyan";
   tags: string[];
   highlights: string[];
@@ -106,18 +110,17 @@ export type LocalizedSiteContent = {
 
 const projectCards: AppCard[] = [
   {
-    title: "Bypass Cleaner",
-    version: "v0.4.0-alpha",
-    subtitle: "cleanup utility",
-    text: "System cleanup utility focused on control: preview mode, filters, quarantine, logging, and suspicious process handling.",
-    preview: bypassCleanerPreview,
-    icon: bypassCleanerIcon,
-    downloadHref:
-      "https://github.com/metsuwuki/ByPass_Cleaner/releases/download/v.0.4.0-alpha/ByPass.Cleaner.Setup.exe",
-    githubHref: "https://github.com/metsuwuki/ByPass_Cleaner",
+    title: "KinoBox",
+    version: "v1.0.1",
+    subtitle: "movie & tv tracker",
+    text: "Desktop diary for movies and TV shows: ratings, notes, watch status, and rewatches, with all data stored locally and no cloud sync.",
+    preview: kinoBoxPreview,
+    icon: kinoBoxIcon,
+    buyHref: "https://payhip.com/b/PZkWO",
+    buyLabel: "Buy for 5€",
     accent: "violet",
-    tags: ["Quarantine", "Preview", "Logs"],
-    highlights: ["folder scanning", "forced delete", "process terminate"],
+    tags: ["Ratings", "Collections", "Stats"],
+    highlights: ["watch status", "custom collections", "rewatch tracking"],
   },
   {
     title: "EXE Analyzer",
@@ -132,6 +135,20 @@ const projectCards: AppCard[] = [
     accent: "cyan",
     tags: ["PE", "Runtime", "Export"],
     highlights: ["entropy and imports", "stress scenarios", "html/json/markdown"],
+  },
+  {
+    title: "Bypass Cleaner",
+    version: "v0.4.0-alpha",
+    subtitle: "cleanup utility",
+    text: "System cleanup utility focused on control: preview mode, filters, quarantine, logging, and suspicious process handling.",
+    preview: bypassCleanerPreview,
+    icon: bypassCleanerIcon,
+    downloadHref:
+      "https://github.com/metsuwuki/ByPass_Cleaner/releases/download/v.0.4.0-alpha/ByPass.Cleaner.Setup.exe",
+    githubHref: "https://github.com/metsuwuki/ByPass_Cleaner",
+    accent: "violet",
+    tags: ["Quarantine", "Preview", "Logs"],
+    highlights: ["folder scanning", "forced delete", "process terminate"],
   },
 ];
 
@@ -322,7 +339,22 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
 
       return { ...card, ...ruText[card.title] };
     }),
-    appCards: projectCards,
+    appCards: projectCards.map((app) => {
+      const ruText: Record<
+        string,
+        Pick<AppCard, "subtitle" | "text" | "buyLabel" | "tags" | "highlights">
+      > = {
+        KinoBox: {
+          subtitle: "трекер фильмов и сериалов",
+          text: "Десктоп-дневник фильмов и сериалов: оценки, заметки, статус просмотра и пересмотры. Все данные хранятся локально, без облака.",
+          buyLabel: "Купить за 5€",
+          tags: ["Оценки", "Коллекции", "Статистика"],
+          highlights: ["статус просмотра", "свои коллекции", "учёт пересмотров"],
+        },
+      };
+
+      return { ...app, ...ruText[app.title] };
+    }),
   },
 };
 

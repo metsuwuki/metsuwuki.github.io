@@ -79,7 +79,7 @@ export default function AboutSection() {
   const marqueeRef = useRef<HTMLDivElement | null>(null);
 
   function openApp(app: AppCard) {
-    const target = app.downloadHref ?? app.githubHref ?? app.websiteHref;
+    const target = app.downloadHref ?? app.githubHref ?? app.websiteHref ?? app.buyHref;
     if (target) window.open(target, "_blank", "noreferrer");
   }
 
@@ -221,6 +221,20 @@ export default function AboutSection() {
                       </span>
                     ))}
                   </div>
+
+                  {app.buyHref ? (
+                    <div className="app-card__actions">
+                      <a
+                        className={`button app-card__button app-card__button--${app.accent}`}
+                        href={app.buyHref}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        {app.buyLabel ?? "Buy"}
+                      </a>
+                    </div>
+                  ) : null}
                 </div>
               </div>
               <div className={`app-card__platform app-card__platform--${app.accent}`} aria-hidden="true">
