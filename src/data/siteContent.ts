@@ -111,7 +111,7 @@ export type LocalizedSiteContent = {
 const projectCards: AppCard[] = [
   {
     title: "KinoBox",
-    version: "v1.0.1",
+    version: "v1.0.5",
     subtitle: "movie & tv tracker",
     text: "Desktop diary for movies and TV shows: ratings, notes, watch status, and rewatches, with all data stored locally and no cloud sync.",
     preview: kinoBoxPreview,
