@@ -77,6 +77,8 @@ export type SiteMeta = {
   appPreviewAltPrefix: string;
   appCardEyebrow: string;
   appDownloadLabel: string;
+  appDownloadProcessingLabel: string;
+  appBuyProcessingLabel: string;
   appGithubLabel: string;
   appWebsiteLabel: string;
   guestbookTitle: string;
@@ -91,6 +93,7 @@ export type SiteMeta = {
   guestbookMessageRequired: string;
   guestbookSubmitIdle: string;
   guestbookSubmitLoading: string;
+  guestbookSubmitSent: string;
   guestbookSubmitSuccess: string;
   guestbookSubmitError: string;
   guestbookLoading: string;
@@ -132,7 +135,7 @@ const projectCards: AppCard[] = [
     downloadHref:
       "https://github.com/metsuwuki/EXE-Programs-Analyser/releases/download/v1.0.0/EXE_Analyzer_Setup_1.0.0.exe",
     githubHref: "https://github.com/metsuwuki/EXE-Programs-Analyser",
-    accent: "cyan",
+    accent: "violet",
     tags: ["PE", "Runtime", "Export"],
     highlights: ["entropy and imports", "stress scenarios", "html/json/markdown"],
   },
@@ -223,6 +226,8 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
       appPreviewAltPrefix: "Preview",
       appCardEyebrow: "Application",
       appDownloadLabel: "Download",
+      appDownloadProcessingLabel: "Downloading",
+      appBuyProcessingLabel: "Opening",
       appGithubLabel: "GitHub",
       appWebsiteLabel: "Website",
       guestbookTitle: "Guestbook",
@@ -238,6 +243,7 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
       guestbookMessageRequired: "Write a message.",
       guestbookSubmitIdle: "Leave entry",
       guestbookSubmitLoading: "Sending...",
+      guestbookSubmitSent: "Sent",
       guestbookSubmitSuccess: "Message saved. Thank you!",
       guestbookSubmitError: "Failed to send. Please try again.",
       guestbookLoading: "Loading...",
@@ -279,6 +285,8 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
       appPreviewAltPrefix: "Превью",
       appCardEyebrow: "Приложение",
       appDownloadLabel: "Скачать",
+      appDownloadProcessingLabel: "Загрузка",
+      appBuyProcessingLabel: "Открытие",
       appGithubLabel: "GitHub",
       appWebsiteLabel: "Сайт",
       guestbookTitle: "Книга гостей",
@@ -294,6 +302,7 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
       guestbookMessageRequired: "Напиши сообщение.",
       guestbookSubmitIdle: "Оставить запись",
       guestbookSubmitLoading: "Отправка...",
+      guestbookSubmitSent: "Готово",
       guestbookSubmitSuccess: "Сообщение сохранено, спасибо!",
       guestbookSubmitError: "Ошибка отправки. Попробуй ещё раз.",
       guestbookLoading: "Загрузка...",

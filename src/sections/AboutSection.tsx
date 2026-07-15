@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { m } from "framer-motion";
+import { GlassActionButton } from "../components/GlassActionButton";
 import { Reveal } from "../components/Reveal";
 import { SectionHeading } from "../components/SectionHeading";
 import { useMotionSettings } from "../hooks/useMotionSettings";
@@ -136,13 +137,18 @@ export default function AboutSection() {
               rel={card.href?.startsWith("http") ? "noreferrer" : undefined}
               className={`destination-card destination-card--${card.tone} ${card.href ? "" : "destination-card--static"}`}
             >
-              <span className="destination-card__halo" aria-hidden="true" />
-              <img src={card.image} alt="" className="destination-card__image" loading="lazy" />
-              <span className="destination-card__label">{card.title}</span>
-              <p>{card.text}</p>
-              <span className="destination-card__meta" aria-hidden="true">
-                <span>{card.href?.startsWith("http") ? "External" : "Section"}</span>
-                <span>{String(index + 1).padStart(2, "0")}</span>
+              <span className="destination-card__spin destination-card__spin--blur" aria-hidden="true" />
+              <span className="destination-card__spin destination-card__spin--intense" aria-hidden="true" />
+              <span className="destination-card__backdrop" aria-hidden="true" />
+              <span className="destination-card__border" aria-hidden="true">
+                <span className="destination-card__spin destination-card__spin--inside" aria-hidden="true" />
+              </span>
+              <span className="destination-card__surface">
+                <img src={card.image} alt="" className="destination-card__image" loading="lazy" />
+                <span className="destination-card__textbox">
+                  <span className="destination-card__label">{card.title}</span>
+                  <p>{card.text}</p>
+                </span>
               </span>
             </m.a>
           ))}
@@ -224,15 +230,21 @@ export default function AboutSection() {
 
                   {app.buyHref ? (
                     <div className="app-card__actions">
-                      <a
-                        className={`button app-card__button app-card__button--${app.accent}`}
+                      <GlassActionButton
                         href={app.buyHref}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        {app.buyLabel ?? "Buy"}
-                      </a>
+                        label={app.buyLabel ?? "Buy"}
+                        processingLabel={siteMeta.appBuyProcessingLabel}
+                        variant="buy"
+                      />
+                    </div>
+                  ) : app.downloadHref ? (
+                    <div className="app-card__actions">
+                      <GlassActionButton
+                        href={app.downloadHref}
+                        label={siteMeta.appDownloadLabel}
+                        processingLabel={siteMeta.appDownloadProcessingLabel}
+                        variant="download"
+                      />
                     </div>
                   ) : null}
                 </div>

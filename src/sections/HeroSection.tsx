@@ -7,6 +7,20 @@ import { useMotionSettings } from "../hooks/useMotionSettings";
 import { usePageViews } from "../hooks/usePageViews";
 import { usePageLocale } from "../i18n/pageLocale";
 
+function HoloNumber({ value }: { value: string }) {
+  return (
+    <span className="holo-number">
+      <span className="holo-number__layer holo-number__layer--back" aria-hidden="true">
+        {value}
+      </span>
+      <span className="holo-number__layer holo-number__layer--mid" aria-hidden="true">
+        {value}
+      </span>
+      <span className="holo-number__layer holo-number__layer--front">{value}</span>
+    </span>
+  );
+}
+
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 18 },
   visible: (index = 0) => ({
@@ -100,8 +114,11 @@ export default function HeroSection() {
             <div className="hero-visitors-card__copy">
               <p>{siteMeta.uniqueVisitorsLabel}</p>
               <span>{siteMeta.uniqueVisitorsDescription}</span>
-              <strong>{statsLoading ? "..." : Intl.NumberFormat(siteMeta.guestbookDateLocale).format(uniqueVisitors ?? 0)}</strong>
-              <em>{siteMeta.guestbookDateLocale === "ru-RU" ? "Аналитика за 30 дней" : "30-day analytics"}</em>
+              <strong>
+                <HoloNumber
+                  value={statsLoading ? "..." : Intl.NumberFormat(siteMeta.guestbookDateLocale).format(uniqueVisitors ?? 0)}
+                />
+              </strong>
             </div>
             <div className="hero-visitors-card__visual">
               <VisitorsTrendChart points={monthlySeries} />

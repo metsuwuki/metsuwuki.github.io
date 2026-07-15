@@ -13,26 +13,20 @@ type SiteShellProps = {
 export function SiteShell({ children }: SiteShellProps) {
   const { content } = usePageLocale();
   const { siteMeta } = content;
-  const isRussian = siteMeta.guestbookDateLocale === "ru-RU";
-  const footerNavColumns = [
-    {
-      title: isRussian ? "Проекты" : "Projects",
-      links: [
-        { label: isRussian ? "Приложения" : "Applications", href: socialLinks.apps },
-        { label: "GitHub", href: socialLinks.github, external: true },
-      ],
-    },
-    {
-      title: isRussian ? "Контакты" : "Contacts",
-      links: [
-        { label: "Discord", href: socialLinks.discordProfile, external: true },
-        { label: isRussian ? "Книга гостей" : "Guestbook", href: socialLinks.guestbook },
-      ],
-    },
-  ];
 
   return (
     <div className="page-shell">
+      <svg className="visually-hidden-defs" aria-hidden="true" focusable="false">
+        <filter id="destinationCardUnopaq" y="-100%" height="300%" x="-100%" width="300%">
+          <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 5 0" />
+        </filter>
+        <filter id="destinationCardUnopaq2" y="-100%" height="300%" x="-100%" width="300%">
+          <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 10 0" />
+        </filter>
+        <filter id="destinationCardUnopaq3" y="-100%" height="300%" x="-100%" width="300%">
+          <feColorMatrix values="1 0 0 1 0  0 1 0 1 0  0 0 1 1 0  0 0 0 2 0" />
+        </filter>
+      </svg>
       <div className="page-shell__backdrop" aria-hidden="true">
         <div className="page-shell__scene" />
         <ParticleCanvas />
@@ -76,37 +70,6 @@ export function SiteShell({ children }: SiteShellProps) {
                 <div className="site-footer__brand-block">
                   <p className="site-footer__brand">{siteMeta.brandName}</p>
                   <p className="site-footer__tagline">{siteMeta.brandLine}</p>
-                  <a href="/gta5rp" className="site-footer__kagami-link" aria-label="KAGAMI GTA 5 RP">
-                    <span className="site-footer__kagami-word">
-                      K
-                      <svg className="site-footer__kagami-star" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path
-                          d="M12 2.8l2.55 5.18 5.72.83-4.14 4.04.98 5.7L12 15.86l-5.11 2.69.98-5.7-4.14-4.04 5.72-.83L12 2.8Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                      GAMI
-                    </span>
-                    <span>GTA 5 RP</span>
-                  </a>
-                </div>
-
-                <div className="site-footer__nav-grid">
-                  {footerNavColumns.map((column) => (
-                    <nav className="site-footer__nav-col" key={column.title} aria-label={column.title}>
-                      <h3>{column.title}</h3>
-                      {column.links.map((link) => (
-                        <a
-                          key={link.href}
-                          href={link.href}
-                          target={link.external ? "_blank" : undefined}
-                          rel={link.external ? "noreferrer" : undefined}
-                        >
-                          {link.label}
-                        </a>
-                      ))}
-                    </nav>
-                  ))}
                 </div>
 
                 <div className="site-footer__socials">
@@ -114,19 +77,25 @@ export function SiteShell({ children }: SiteShellProps) {
                     href={socialLinks.discordProfile}
                     target="_blank"
                     rel="noreferrer"
-                    className="site-footer__social-btn site-footer__social-btn--discord"
+                    aria-label="Discord"
+                    className="site-footer__social-orb site-footer__social-orb--discord"
                   >
-                    <UiIcon name="discord" className="site-footer__social-icon" />
-                    Discord
+                    <span className="site-footer__social-orb-ring" aria-hidden="true" />
+                    <span className="site-footer__social-orb-particles" aria-hidden="true" />
+                    <UiIcon name="discord" className="site-footer__social-orb-icon" />
+                    <span className="site-footer__social-orb-pulse" aria-hidden="true" />
                   </a>
                   <a
                     href={socialLinks.github}
                     target="_blank"
                     rel="noreferrer"
-                    className="site-footer__social-btn"
+                    aria-label="GitHub"
+                    className="site-footer__social-orb site-footer__social-orb--github"
                   >
-                    <UiIcon name="github" className="site-footer__social-icon" />
-                    GitHub
+                    <span className="site-footer__social-orb-ring" aria-hidden="true" />
+                    <span className="site-footer__social-orb-particles" aria-hidden="true" />
+                    <UiIcon name="github" className="site-footer__social-orb-icon" />
+                    <span className="site-footer__social-orb-pulse" aria-hidden="true" />
                   </a>
                 </div>
               </div>
