@@ -1,0 +1,67 @@
+name: Deploy Cloudflare Worker
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "cloudflare/**"
+      - ".github/workflows/deploy-cloudflare.yml"
+      - "package.json"
+      - "package-lock.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-production
+  cancel-in-progress: false
+
+jobs:
+  validate-and-deploy:
+    runs-on: ubuntu-latest
+    environment: cloudflare-production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate Worker and database logic
+        run: npm run cf:typecheck && npm test
+
+      - name: Configure D1 binding
+        run: node cloudflare/scripts/configure-ci.mjs
+        env:
+          CLOUDFLARE_D1_DATABASE_ID: ${{ vars.CLOUDFLARE_D1_DATABASE_ID }}
+
+      - name: Apply production D1 migrations
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 migrations apply kagami-nexus --remote --config cloudflare/wrangler.jsonc
+
+      - name: Deploy Worker
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config cloudflare/wrangler.jsonc
+
+      - name: Verify deployed API
+        env:
+          WORKER_URL: ${{ steps.deploy.outputs['deployment-url'] }}
+        run: |
+          test -n "$WORKER_URL"
+          curl --fail --retry 5 --retry-delay 3 "$WORKER_URL/api/health"
+          curl --fail --retry 5 --retry-delay 3 "$WORKER_URL/api/guestbook?limit=1"
+          curl --fail --retry 5 --retry-delay 3 "$WORKER_URL/api/analytics/summary?days=7"

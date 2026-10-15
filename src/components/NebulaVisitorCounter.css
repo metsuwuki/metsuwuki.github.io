@@ -1,0 +1,22 @@
+/* Isolated from legacy .holo-number styling. Parent wrapper decides placement. */
+.hero-nebula {
+  position: relative;
+  width: min(100%, 440px);
+  aspect-ratio: 1;
+  min-width: 0;
+  margin-inline: auto;
+  isolation: isolate;
+}
+.hero-nebula__ball,
+.hero-nebula__digits {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero-nebula__ball { z-index: 0; }
+.hero-nebula__digits { z-index: 1; pointer-events: none; }
+.hero-nebula .crystalized-ball { width: 100%; height: 100%; }
+@media (max-width: 640px) {
+  .hero-nebula { width: min(100%, 340px); }
+}
