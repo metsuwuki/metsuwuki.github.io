@@ -27,16 +27,28 @@ export function usePageViews() {
 
   useEffect(() => {
     const controller = new AbortController();
+
     async function track() {
       try {
         await apiRequest("/api/analytics/visit", { method: "POST", body: JSON.stringify({
           visitorId: getStableId(VISITOR_KEY, localStorage), sessionId: getSessionId(), path: window.location.pathname,
         }) }, controller.signal);
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.warn("Unable to record page visit; loading visitor total independently.", error);
+        }
+      }
+
+      try {
         const summary = await apiRequest<AnalyticsSummary>("/api/analytics/summary", {}, controller.signal);
-        setCount(summary.uniqueVisitors);
-      } catch { /* Unknown remains null; no invented fallback values. */ }
-      finally { if (!controller.signal.aborted) setLoading(false); }
+        if (!controller.signal.aborted) setCount(summary.uniqueVisitors);
+      } catch (error) {
+        if (!controller.signal.aborted) console.warn("Unable to load visitor total.", error);
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
     }
+
     void track();
     return () => controller.abort();
   }, []);
