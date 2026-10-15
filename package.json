@@ -27,7 +27,7 @@
     "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20261015.1",
+    "@cloudflare/workers-types": "^4.20260702.1",
     "@playwright/test": "^1.64.1",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^22.19.17",
@@ -39,6 +39,6 @@
     "typescript": "^5.7.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.4",
-    "wrangler": "^4.151.0"
+    "wrangler": "^4.86.0"
   }
 }
