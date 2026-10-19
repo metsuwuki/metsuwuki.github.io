@@ -3,6 +3,7 @@ import communityIcon from "../../assets/Community-Icon.png";
 import guestbookIcon from "../../assets/Guestbook-Icon.png";
 import mikaCosmicBackground from "../../assets/mika-cosmic-bg.png";
 import telegramIcon from "../../assets/Telegram-Icon.png";
+import telegramFooterIcon from "../assets/icons/telegram.svg";
 import mikaPortrait from "../../mika.jpg";
 import metsukiPortrait from "../../metsuki.jpg";
 import type { IconName } from "../components/UiIcon";
@@ -189,7 +190,7 @@ function getMikaContent(locale: Locale): ProfileContent {
       portrait: mikaPortrait,
       background: mikaCosmicBackground,
       presenceLabel: ru ? "Творческое пространство" : "Creative space",
-      links: [{ label: "Telegram", href: "https://t.me/MikaKagami_XIX", image: telegramIcon }],
+      links: [{ label: "Telegram", href: "https://t.me/MikaKagami_XIX", image: telegramFooterIcon }],
     },
     heroTypewriter: ru
       ? { prefix: "Мне нравится ", phrases: ["работать с 3D.", "придумывать интерьеры.", "пробовать идеи в дизайне.", "создавать аккуратные композиции."] }

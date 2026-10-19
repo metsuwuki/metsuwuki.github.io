@@ -56,7 +56,10 @@ export function SiteHeader() {
             <KagamiStarSvg />
             <span>K★GAMI</span>
           </a>
-          <Link to="/" className="site-nav__profile-switch" aria-label="Choose another profile">✦</Link>
+          <Link to="/" className="site-nav__profile-switch" aria-label={locale === "ru" ? "Сменить профиль" : "Choose profile"}>
+            <span aria-hidden="true">✦</span>
+            <span>{locale === "ru" ? "Сменить профиль" : "Choose profile"}</span>
+          </Link>
         </nav>
 
         <div className="site-header__actions">
@@ -106,7 +109,9 @@ export function SiteHeader() {
                 <KagamiStarSvg />
                 K★GAMI
               </a>
-              <Link to="/" className="site-header__mobile-profile-switch" onClick={closeMenu}>← Choose profile</Link>
+              <Link to="/" className="site-header__mobile-profile-switch" onClick={closeMenu}>
+                ← {locale === "ru" ? "Сменить профиль" : "Choose profile"}
+              </Link>
             </nav>
           </div>
         ) : null}
