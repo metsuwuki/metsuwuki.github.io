@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { apiRequest } from "../lib/api";
+import type { ProfileId } from "../data/profileContent";
 
 export interface GuestbookEntry { id: string; name: string; message: string; avatar: string | null; created_at: string; }
 type GuestbookPage = { entries: GuestbookEntry[]; nextCursor: string | null };
@@ -8,7 +9,7 @@ export type SubmitState = "idle" | "loading" | "success" | "error";
 const COOLDOWN_DURATION = 3_600_000;
 const LAST_SUBMIT_KEY = "guestbook_last_submit";
 
-export function useGuestbook() {
+export function useGuestbook(profileId: ProfileId) {
   const [entries, setEntries] = useState<GuestbookEntry[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,7 +26,7 @@ export function useGuestbook() {
     controllerRef.current = controller;
     setLoading(true);
     try {
-      const page = await apiRequest<GuestbookPage>("/api/guestbook?limit=20", {}, controller.signal);
+      const page = await apiRequest<GuestbookPage>(`/api/guestbook?limit=20&profile=${profileId}`, {}, controller.signal);
       setEntries(page.entries);
       setNextCursor(page.nextCursor);
       setFetchError(null);
@@ -34,7 +35,7 @@ export function useGuestbook() {
     } finally {
       if (!controller.signal.aborted) setLoading(false);
     }
-  }, []);
+  }, [profileId]);
 
   useEffect(() => {
     void fetchEntries();
@@ -48,13 +49,13 @@ export function useGuestbook() {
     if (!nextCursor || loadingMore) return;
     setLoadingMore(true);
     try {
-      const page = await apiRequest<GuestbookPage>(`/api/guestbook?limit=20&cursor=${encodeURIComponent(nextCursor)}`);
+      const page = await apiRequest<GuestbookPage>(`/api/guestbook?limit=20&profile=${profileId}&cursor=${encodeURIComponent(nextCursor)}`);
       setEntries((current) => [...current, ...page.entries]);
       setNextCursor(page.nextCursor);
     } catch (error) {
       setFetchError(error instanceof Error ? error.message : "Не удалось загрузить сообщения.");
     } finally { setLoadingMore(false); }
-  }, [loadingMore, nextCursor]);
+  }, [loadingMore, nextCursor, profileId]);
 
   const postEntry = useCallback(async (name: string, message: string, avatar: string, turnstileToken: string) => {
     setSubmitState("loading");
@@ -62,7 +63,7 @@ export function useGuestbook() {
     try {
       const result = await apiRequest<{ entry: GuestbookEntry }>("/api/guestbook", {
         method: "POST",
-        body: JSON.stringify({ name: name.trim(), message: message.trim(), avatar, turnstileToken }),
+        body: JSON.stringify({ name: name.trim(), message: message.trim(), avatar, turnstileToken, profile: profileId }),
       });
       setEntries((current) => [result.entry, ...current]);
       const now = Date.now();
@@ -74,7 +75,7 @@ export function useGuestbook() {
       setSubmitState("error");
       throw error;
     }
-  }, []);
+  }, [profileId]);
 
   return { entries, loading, loadingMore, nextCursor, submitState, fetchError, fetchEntries, loadMore, postEntry, cooldownEnd, submitError };
 }

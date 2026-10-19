@@ -1,5 +1,5 @@
 import { useState } from "react";
-import portraitImage from "../../metsuki.jpg";
+import { Link } from "react-router-dom";
 import { useDiscordPresence } from "../hooks/useDiscordPresence";
 import { useScrolled } from "../hooks/useScrolled";
 import { usePageLocale } from "../i18n/pageLocale";
@@ -23,6 +23,7 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { locale, setLocale, content } = usePageLocale();
   const { navigation, siteMeta } = content;
+  const { profile } = content;
   const presence = useDiscordPresence(siteMeta.discordPresenceId, locale);
 
   const closeMenu = () => setMenuOpen(false);
@@ -32,14 +33,14 @@ export function SiteHeader() {
       <div className={`site-header__inner ${isScrolled ? "is-scrolled" : ""}`}>
         <a href="#overview" className="site-brand" aria-label={`${siteMeta.brandName} ${siteMeta.brandHomeAria}`} onClick={closeMenu}>
           <span className={`site-brand__mark site-brand__mark--${presence.state}`}>
-            <img src={presence.avatarUrl || portraitImage} alt="" width="44" height="44" />
+            <img src={presence.avatarUrl || profile.portrait} alt="" width="44" height="44" />
           </span>
           <span className="site-brand__copy">
             <strong>{siteMeta.brandName}</strong>
             <span>{siteMeta.brandLine}</span>
             <span className={`site-brand__presence site-brand__presence--${presence.state}`} aria-label={presence.label}>
-              <UiIcon name="discord" className="site-brand__presence-icon" />
-              <span className="site-brand__presence-label">{presence.label}</span>
+              <UiIcon name={siteMeta.discordPresenceId ? "discord" : "spark"} className="site-brand__presence-icon" />
+              <span className="site-brand__presence-label">{siteMeta.discordPresenceId ? presence.label : profile.presenceLabel}</span>
             </span>
           </span>
         </a>
@@ -55,6 +56,7 @@ export function SiteHeader() {
             <KagamiStarSvg />
             <span>K★GAMI</span>
           </a>
+          <Link to="/" className="site-nav__profile-switch" aria-label="Choose another profile">✦</Link>
         </nav>
 
         <div className="site-header__actions">
@@ -104,6 +106,7 @@ export function SiteHeader() {
                 <KagamiStarSvg />
                 K★GAMI
               </a>
+              <Link to="/" className="site-header__mobile-profile-switch" onClick={closeMenu}>← Choose profile</Link>
             </nav>
           </div>
         ) : null}

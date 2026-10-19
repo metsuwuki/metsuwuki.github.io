@@ -86,14 +86,28 @@ function mapPresence(state: PresenceState, locale: Locale, userId?: string, payl
   };
 }
 
+function neutralPresence(locale: Locale): PresenceInfo {
+  return {
+    available: false,
+    label: locale === "ru" ? "Творческое пространство" : "Creative space",
+    state: "offline",
+    displayName: "",
+    username: "",
+    avatarUrl: "",
+    accentColor: "#8f4fff",
+    activityName: "",
+    activePlatform: "",
+  };
+}
+
 export function useDiscordPresence(userId?: string, locale: Locale = "en"): PresenceInfo {
   const [presence, setPresence] = useState<PresenceInfo>(
-    mapPresence(discordPresenceFallback.status, locale, userId),
+    userId ? mapPresence(discordPresenceFallback.status, locale, userId) : neutralPresence(locale),
   );
 
   useEffect(() => {
     if (!userId) {
-      setPresence(mapPresence(discordPresenceFallback.status, locale));
+      setPresence(neutralPresence(locale));
       return;
     }
 

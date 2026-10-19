@@ -4,7 +4,7 @@ import { fail, isAuthorized, json, readJson } from "../services/security";
 export async function moderateGuestbook(request: Request, env: Env, id?: string): Promise<Response> {
   if (!(await isAuthorized(request, env))) return fail(request, env, 401, "unauthorized", "Требуется авторизация модератора.");
   if (request.method === "GET") {
-    const rows = await env.DB.prepare("SELECT id, name, message, avatar, created_at, status FROM guestbook ORDER BY created_at DESC LIMIT 100").all();
+    const rows = await env.DB.prepare("SELECT id, name, message, avatar, created_at, status, profile FROM guestbook ORDER BY created_at DESC LIMIT 100").all();
     return json(request, env, { ok: true, data: { entries: rows.results } }, 200, { "Cache-Control": "no-store" });
   }
   if (!id) return fail(request, env, 400, "missing_id", "Не указан идентификатор сообщения.");

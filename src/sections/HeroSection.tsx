@@ -78,10 +78,7 @@ export default function HeroSection() {
   const { siteMeta } = content;
   const { prefersReducedMotion } = useMotionSettings();
   const { count: uniqueVisitors, loading: statsLoading } = usePageViews();
-  const isRussian = siteMeta.guestbookDateLocale === "ru-RU";
-  const typedDescription = isRussian
-    ? { prefix: "Создаю современные приложения с ", phrases: ["красивыми интерфейсами.", "масштабируемой архитектурой.", "высокой производительностью.", "продуманным UX."] }
-    : { prefix: "Building modern applications with ", phrases: ["beautiful interfaces.", "scalable architectures.", "high performance.", "clean user experiences."] };
+  const typedDescription = content.heroTypewriter;
 
   const revealProps = prefersReducedMotion
     ? {}

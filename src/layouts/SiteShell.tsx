@@ -3,7 +3,6 @@ import { CursorTrailCanvas } from "../components/CursorTrailCanvas";
 import { ParticleCanvas } from "../components/ParticleCanvas";
 import { SiteHeader } from "../components/SiteHeader";
 import { UiIcon } from "../components/UiIcon";
-import { socialLinks } from "../data/siteContent";
 import { usePageLocale } from "../i18n/pageLocale";
 
 type SiteShellProps = {
@@ -73,30 +72,15 @@ export function SiteShell({ children }: SiteShellProps) {
                 </div>
 
                 <div className="site-footer__socials">
-                  <a
-                    href={socialLinks.discordProfile}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Discord"
-                    className="site-footer__social-orb site-footer__social-orb--discord"
-                  >
-                    <span className="site-footer__social-orb-ring" aria-hidden="true" />
-                    <span className="site-footer__social-orb-particles" aria-hidden="true" />
-                    <UiIcon name="discord" className="site-footer__social-orb-icon" />
-                    <span className="site-footer__social-orb-pulse" aria-hidden="true" />
-                  </a>
-                  <a
-                    href={socialLinks.github}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="GitHub"
-                    className="site-footer__social-orb site-footer__social-orb--github"
-                  >
-                    <span className="site-footer__social-orb-ring" aria-hidden="true" />
-                    <span className="site-footer__social-orb-particles" aria-hidden="true" />
-                    <UiIcon name="github" className="site-footer__social-orb-icon" />
-                    <span className="site-footer__social-orb-pulse" aria-hidden="true" />
-                  </a>
+                  {content.profile.links.map((link) => (
+                    <a href={link.href} target="_blank" rel="noreferrer" aria-label={link.label} key={link.href}
+                      className={`site-footer__social-orb site-footer__social-orb--${link.icon}`}>
+                      <span className="site-footer__social-orb-ring" aria-hidden="true" />
+                      <span className="site-footer__social-orb-particles" aria-hidden="true" />
+                      <UiIcon name={link.icon} className="site-footer__social-orb-icon" />
+                      <span className="site-footer__social-orb-pulse" aria-hidden="true" />
+                    </a>
+                  ))}
                 </div>
               </div>
 

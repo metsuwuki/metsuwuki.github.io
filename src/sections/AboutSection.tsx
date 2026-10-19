@@ -43,6 +43,16 @@ const languageLogos = [
   { name: "C", icon: cIcon },
 ];
 
+const creativeDirections = [
+  { name: "3D Spaces", symbol: "◇" },
+  { name: "Interiors", symbol: "⌂" },
+  { name: "Visual Design", symbol: "✦" },
+  { name: "Composition", symbol: "◫" },
+  { name: "Materials", symbol: "◈" },
+  { name: "Light", symbol: "☼" },
+  { name: "Ideas", symbol: "∞" },
+];
+
 function getApplicationDepthOffset(index: number, active: number, length: number) {
   let offset = (index - active + length) % length;
   if (offset > length / 2) offset -= length;
@@ -100,15 +110,20 @@ function ApplicationDepthCarousel({ apps, siteMeta, openApp }: {
         {apps.map((app, index) => {
           const offset = getApplicationDepthOffset(index, active, apps.length);
           const distance = Math.abs(offset);
+          const actionable = Boolean(app.downloadHref ?? app.githubHref ?? app.websiteHref ?? app.buyHref);
           return <div key={app.title} className={`applications-depth-carousel__item ${index === active ? "is-active" : ""}`}
             style={{ "--app-depth-offset": offset, "--app-depth-distance": distance, zIndex: apps.length - distance } as CSSProperties}
             aria-hidden={index !== active} onClick={() => select(index)}>
             <article className={`app-reflective-card app-card--${app.accent}`} onPointerMove={tilt} onPointerLeave={resetTilt}>
               <div className="app-reflective-card__shine" aria-hidden="true" />
-              <button type="button" className="app-reflective-card__preview" onClick={() => openApp(app)} aria-label={`${app.title} ${siteMeta.appGithubLabel}`}>
+              {actionable ? <button type="button" className="app-reflective-card__preview" onClick={() => openApp(app)} aria-label={`${app.title} ${siteMeta.appGithubLabel}`}>
                 <img src={app.preview} alt={`${siteMeta.appPreviewAltPrefix} ${app.title}`} loading="lazy" />
                 <span className="window-chrome" aria-hidden="true"><i /><i /><i /></span>
-              </button>
+              </button> : <div className="app-reflective-card__preview app-reflective-card__preview--static">
+                <img src={app.preview} alt={`${siteMeta.appPreviewAltPrefix} ${app.title}`} loading="lazy" />
+                <span className="window-chrome" aria-hidden="true"><i /><i /><i /></span>
+                <span className="app-reflective-card__coming-soon">COMING SOON</span>
+              </div>}
               <div className="app-reflective-card__content">
                 <div className="app-reflective-card__meta"><p className="app-card__eyebrow">{siteMeta.appCardEyebrow}</p><span>{app.version}</span></div>
                 <div className="app-reflective-card__title"><img src={app.icon} alt="" /><h3>{app.title}</h3></div>
@@ -204,7 +219,7 @@ export function ApplicationCircularGallery({ apps, siteMeta, openApp }: {
   );
 }
 export default function AboutSection() {
-  const { content } = usePageLocale();
+  const { content, profileId } = usePageLocale();
   const { appCards, featureCards, siteMeta } = content;
   const { prefersReducedMotion } = useMotionSettings();
   const marqueeRef = useRef<HTMLDivElement | null>(null);
@@ -241,16 +256,16 @@ export default function AboutSection() {
         <m.div className="logo-marquee" ref={marqueeRef} {...getRevealProps(prefersReducedMotion, 0.05)}>
           <div className="logo-marquee__track">
             <ul className="logo-marquee__group">
-              {languageLogos.map((logo) => (
+              {(profileId === "mika" ? creativeDirections : languageLogos).map((logo) => (
                 <li className="logo-marquee__item" data-logo={logo.name} key={logo.name}>
-                  <img src={logo.icon} alt="" loading="lazy" />
+                  {"icon" in logo ? <img src={logo.icon} alt="" loading="lazy" /> : <span className="logo-marquee__symbol" aria-hidden="true">{logo.symbol}</span>}
                 </li>
               ))}
             </ul>
             <ul className="logo-marquee__group" aria-hidden="true">
-              {languageLogos.map((logo) => (
+              {(profileId === "mika" ? creativeDirections : languageLogos).map((logo) => (
                 <li className="logo-marquee__item" data-logo={logo.name} key={`${logo.name}-duplicate`}>
-                  <img src={logo.icon} alt="" loading="lazy" />
+                  {"icon" in logo ? <img src={logo.icon} alt="" loading="lazy" /> : <span className="logo-marquee__symbol" aria-hidden="true">{logo.symbol}</span>}
                 </li>
               ))}
             </ul>

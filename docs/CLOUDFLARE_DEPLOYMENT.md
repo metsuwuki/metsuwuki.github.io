@@ -57,6 +57,20 @@ Cloudflare can change plan limits. Recheck the official [Workers limits](https:/
    - `VITE_TURNSTILE_SITE_KEY` to the public Turnstile site key.
 7. Run the GitHub Pages workflow and verify both desktop/mobile guestbook flows.
 
+### Dual-profile guestbook migration
+
+Migration `0003_guestbook_profiles.sql` adds a constrained `profile` column to the existing guestbook table. Its default is `metsuki`, so every pre-existing entry and every legacy API client remains in the original MetsUwUki guestbook. Mika entries use `profile=mika`; both profiles continue to use the same D1 database, Turnstile verification, and IP-hash rate limit.
+
+Before production deployment, record the current count, apply migrations, and verify that no rows were lost:
+
+```powershell
+npx wrangler d1 execute kagami-nexus --remote --config cloudflare/wrangler.jsonc --command "SELECT COUNT(*) AS total FROM guestbook;"
+npx wrangler d1 migrations apply kagami-nexus --remote --config cloudflare/wrangler.jsonc
+npx wrangler d1 execute kagami-nexus --remote --config cloudflare/wrangler.jsonc --command "SELECT profile, COUNT(*) AS count FROM guestbook GROUP BY profile;"
+```
+
+Immediately after deployment, verify `GET /api/guestbook?profile=metsuki` and `GET /api/guestbook?profile=mika`. A request without `profile` deliberately remains equivalent to `profile=metsuki`. Do not change `HASH_SECRET`: analytics uniqueness and existing privacy hashes must remain continuous.
+
 Do not delete the original Supabase project until record counts, representative timestamps, avatar IDs, guestbook submission, and analytics persistence have been verified in production.
 
 ## GitHub Actions deployment

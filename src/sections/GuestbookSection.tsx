@@ -76,11 +76,11 @@ function renderLetters(text: string) {
 }
 
 export default function GuestbookSection() {
-  const { content } = usePageLocale();
+  const { content, profileId } = usePageLocale();
   const { siteMeta } = content;
   const isRussian = siteMeta.guestbookDateLocale === "ru-RU";
   const { prefersReducedMotion } = useMotionSettings();
-  const { entries, loading, loadingMore, nextCursor, submitState, fetchError, loadMore, postEntry, cooldownEnd, submitError } = useGuestbook();
+  const { entries, loading, loadingMore, nextCursor, submitState, fetchError, loadMore, postEntry, cooldownEnd, submitError } = useGuestbook(profileId);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState(avatarOptions[0].id);
