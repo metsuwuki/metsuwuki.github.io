@@ -8,8 +8,10 @@ import AboutSection from "./sections/AboutSection";
 import GuestbookSection from "./sections/GuestbookSection";
 import HeroSection from "./sections/HeroSection";
 import KagamiPage from "./pages/KagamiPage";
+import IdentitySelector from "./pages/IdentitySelector";
+import MikaPage from "./pages/MikaPage";
 
-function MainSite() {
+function MetsukiSite() {
   return (
     <PageLocaleProvider>
       <SiteShell>
@@ -35,7 +37,9 @@ export default function App() {
     <LazyMotion features={domAnimation} strict>
       <div ref={siteRef} className={`site-access-layer ${verified ? "is-verified" : "is-locked"}`} aria-hidden={!verified}>
         <Routes>
-          <Route path="/" element={<MainSite />} />
+          <Route path="/" element={<IdentitySelector />} />
+          <Route path="/metsuki" element={<MetsukiSite />} />
+          <Route path="/mika" element={<MikaPage />} />
           <Route path="/gta5rp" element={<KagamiPage />} />
         </Routes>
       </div>
