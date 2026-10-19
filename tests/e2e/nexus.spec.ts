@@ -58,7 +58,7 @@ test.describe("applications carousel", () => {
         await route.fulfill({ status: 202, json: { ok: true, data: { accepted: true } } });
       }
     });
-    await page.goto("/");
+    await page.goto("/metsuki");
     await passOnboarding(page);
     const carousel = page.getByRole("region", { name: /Applications|Приложения/ });
     const selector = carousel.locator(".applications-depth-carousel__viewport");
@@ -67,5 +67,23 @@ test.describe("applications carousel", () => {
     await page.keyboard.press("ArrowRight");
     await expect(carousel.locator(".applications-depth-carousel__item.is-active").getByRole("heading", { name: "EXE Analyzer" })).toBeVisible();
     await expect(carousel.locator(".app-reflective-card")).toHaveCount(3);
+  });
+});
+
+test.describe("identity selector", () => {
+  test("offers both profiles after verification", async ({ page }) => {
+    await page.goto("/");
+    await passOnboarding(page);
+    await expect(page.getByRole("link", { name: "Открыть профиль Metsuki Kagami" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Открыть профиль Mika Kagami" })).toBeVisible();
+  });
+
+  test("opens Mika without repeating onboarding", async ({ page }) => {
+    await page.goto("/");
+    await passOnboarding(page);
+    await page.getByRole("link", { name: "Открыть профиль Mika Kagami" }).click();
+    await expect(page).toHaveURL(/\/mika$/);
+    await expect(page.getByRole("heading", { name: /Mika\s*Kagami/i })).toBeVisible();
+    await expect(page.getByRole("dialog", { name: /Подтверди/ })).toHaveCount(0);
   });
 });
