@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 const VERIFIED_KEY = "metsuwuki_onboarding_verified_v1";
 
 async function mockApis(page: Page, uniqueVisitors = 245) {
-  await page.route("http://localhost:8787/api/**", async (route) => {
+  await page.route("**/api/**", async (route) => {
     const request = route.request();
     const url = new URL(request.url());
     if (url.pathname === "/api/analytics/summary") {
