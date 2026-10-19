@@ -62,9 +62,14 @@ function WarpBrandTitle({ text, reducedMotion }: { text: string; reducedMotion: 
     };
   }, [reducedMotion]);
 
+  const kagamiStart = text.toLocaleLowerCase().indexOf("kagami");
+  const isAccentLetter = (index: number) => kagamiStart >= 0
+    ? index >= kagamiStart && index < kagamiStart + 6
+    : index >= 4 && index <= 6;
+
   return <span className="warp-brand-title" ref={rootRef} role="img" aria-label={text}>
     {Array.from(text).map((letter, index) => (
-      <span className={`warp-brand-title__letter${index >= 4 && index <= 6 ? " is-accent" : ""}`}
+      <span className={`warp-brand-title__letter${isAccentLetter(index) ? " is-accent" : ""}`}
         aria-hidden="true" key={`${letter}-${index}`}
         ref={(node) => { letterRefs.current[index] = node; }}>
         {letter}

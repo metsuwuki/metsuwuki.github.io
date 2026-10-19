@@ -114,7 +114,7 @@ function getMikaFeatures(locale: Locale): FeatureCard[] {
       text: ru ? "Оставь сообщение в отдельном пространстве Mika." : "Leave a message in Mika's own guestbook space.",
       buttonLabel: ru ? "Открыть гостевую" : "Open Guestbook",
       href: "#guestbook",
-      image: telegramIcon,
+      image: guestbookIcon,
       tone: "violet",
     },
     {
@@ -137,7 +137,7 @@ function getMikaFeatures(locale: Locale): FeatureCard[] {
       text: ru ? "Подтверждённый способ связи с Mika." : "Mika's confirmed contact channel.",
       buttonLabel: ru ? "Написать в Telegram" : "Open Telegram",
       href: "https://t.me/MikaKagami_XIX",
-      image: guestbookIcon,
+      image: telegramIcon,
       tone: "violet",
     },
     {

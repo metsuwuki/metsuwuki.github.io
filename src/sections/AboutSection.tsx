@@ -256,8 +256,8 @@ export default function AboutSection() {
           <div className="logo-marquee__track">
             <ul className="logo-marquee__group">
               {profileId === "mika" ? creativeBrands.map((name) => (
-                <li className="logo-marquee__item logo-marquee__item--creative" data-logo={name} key={name}>
-                  <CreativeBrandMark name={name} /><span className="creative-brand-label">{name}</span>
+                <li className="logo-marquee__item logo-marquee__item--creative" data-logo={name} key={name} aria-label={name}>
+                  <CreativeBrandMark name={name} />
                 </li>
               )) : languageLogos.map((logo) => (
                 <li className="logo-marquee__item" data-logo={logo.name} key={logo.name}><img src={logo.icon} alt="" loading="lazy" /></li>
@@ -266,7 +266,7 @@ export default function AboutSection() {
             <ul className="logo-marquee__group" aria-hidden="true">
               {profileId === "mika" ? creativeBrands.map((name) => (
                 <li className="logo-marquee__item logo-marquee__item--creative" data-logo={name} key={`${name}-duplicate`}>
-                  <CreativeBrandMark name={name} /><span className="creative-brand-label">{name}</span>
+                  <CreativeBrandMark name={name} />
                 </li>
               )) : languageLogos.map((logo) => (
                 <li className="logo-marquee__item" data-logo={logo.name} key={`${logo.name}-duplicate`}><img src={logo.icon} alt="" loading="lazy" /></li>
