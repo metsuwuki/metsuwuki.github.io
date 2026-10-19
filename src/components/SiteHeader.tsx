@@ -51,6 +51,7 @@ export function SiteHeader() {
               {item.label}
             </a>
           ))}
+          <a href="/" className="site-nav__kagami-link" title="Выбрать профиль">✦ <span>PROFILES</span></a>
           <a href="/gta5rp" className="site-nav__kagami-link" title="K★GAMI — GTA 5 RP">
             <KagamiStarSvg />
             <span>K★GAMI</span>
@@ -100,6 +101,7 @@ export function SiteHeader() {
                   {item.label}
                 </a>
               ))}
+              <a href="/" className="site-header__mobile-kagami" onClick={closeMenu}>✦ Выбор профиля</a>
               <a href="/gta5rp" className="site-header__mobile-kagami" onClick={closeMenu}>
                 <KagamiStarSvg />
                 K★GAMI
