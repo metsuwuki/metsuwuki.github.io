@@ -11741,3 +11741,33 @@ body {
   color: #58c5ee;
   filter: drop-shadow(0 0 8px rgba(53,174,226,.55));
 }
+
+/* Keep every desktop navigation item in one visual system; only Home is active. */
+@media (min-width: 1181px) {
+  .site-nav .site-nav__kagami-link,
+  .site-nav .site-nav__profile-switch {
+    width: auto;
+    min-width: max-content;
+    height: auto;
+    margin-left: 0;
+    padding: .68rem 1.08rem !important;
+    border: 0 !important;
+    color: var(--muted) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .site-nav .site-nav__kagami-link:hover,
+  .site-nav .site-nav__kagami-link:focus-visible,
+  .site-nav .site-nav__profile-switch:hover,
+  .site-nav .site-nav__profile-switch:focus-visible {
+    color: #fff !important;
+    background: rgba(143, 79, 255, .16) !important;
+  }
+
+  .site-nav__profile-switch span:first-child,
+  .site-nav__profile-switch span:last-child {
+    color: inherit;
+    font-size: inherit;
+  }
+}
