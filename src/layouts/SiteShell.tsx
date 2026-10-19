@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { CursorTrailCanvas } from "../components/CursorTrailCanvas";
 import { ParticleCanvas } from "../components/ParticleCanvas";
 import { SiteHeader } from "../components/SiteHeader";
@@ -14,7 +14,10 @@ export function SiteShell({ children }: SiteShellProps) {
   const { siteMeta } = content;
 
   return (
-    <div className="page-shell">
+    <div
+      className={`page-shell page-shell--${content.profile.id}`}
+      style={content.profile.background ? { "--profile-background": `url(${content.profile.background})` } as CSSProperties : undefined}
+    >
       <svg className="visually-hidden-defs" aria-hidden="true" focusable="false">
         <filter id="destinationCardUnopaq" y="-100%" height="300%" x="-100%" width="300%">
           <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 5 0" />
@@ -74,10 +77,12 @@ export function SiteShell({ children }: SiteShellProps) {
                 <div className="site-footer__socials">
                   {content.profile.links.map((link) => (
                     <a href={link.href} target="_blank" rel="noreferrer" aria-label={link.label} key={link.href}
-                      className={`site-footer__social-orb site-footer__social-orb--${link.icon}`}>
+                      className={`site-footer__social-orb site-footer__social-orb--${link.icon ?? "image"}`}>
                       <span className="site-footer__social-orb-ring" aria-hidden="true" />
                       <span className="site-footer__social-orb-particles" aria-hidden="true" />
-                      <UiIcon name={link.icon} className="site-footer__social-orb-icon" />
+                      {link.image
+                        ? <img src={link.image} alt="" className="site-footer__social-orb-icon site-footer__social-orb-image" />
+                        : link.icon ? <UiIcon name={link.icon} className="site-footer__social-orb-icon" /> : null}
                       <span className="site-footer__social-orb-pulse" aria-hidden="true" />
                     </a>
                   ))}

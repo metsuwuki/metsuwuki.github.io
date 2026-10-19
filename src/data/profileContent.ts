@@ -1,9 +1,10 @@
 import appIcon from "../../assets/App-Icon.png";
 import communityIcon from "../../assets/Community-Icon.png";
 import guestbookIcon from "../../assets/Guestbook-Icon.png";
+import mikaCosmicBackground from "../../assets/mika-cosmic-bg.png";
+import telegramIcon from "../../assets/Telegram-Icon.png";
 import mikaPortrait from "../../mika.jpg";
 import metsukiPortrait from "../../metsuki.jpg";
-import creativePreview from "../../background.jpg";
 import type { IconName } from "../components/UiIcon";
 import type { AppCard, FeatureCard, Locale, LocalizedSiteContent } from "./siteContent";
 import { getSiteContent } from "./siteContent";
@@ -13,13 +14,15 @@ export type ProfileId = "metsuki" | "mika";
 export type ProfileLink = {
   label: string;
   href: string;
-  icon: IconName;
+  icon?: IconName;
+  image?: string;
 };
 
 export type ProfileContent = LocalizedSiteContent & {
   profile: {
     id: ProfileId;
     portrait: string;
+    background?: string;
     presenceLabel: string;
     links: ProfileLink[];
   };
@@ -36,7 +39,7 @@ const mikaAppsByLocale: Record<Locale, AppCard[]> = {
       version: "COMING SOON",
       subtitle: "future portfolio",
       text: "A reserved space for Mika's future published creative projects. No unreleased work is presented as complete.",
-      preview: creativePreview,
+      preview: mikaCosmicBackground,
       icon: appIcon,
       accent: "violet",
       tags: ["3D", "Design", "Ideas"],
@@ -47,7 +50,7 @@ const mikaAppsByLocale: Record<Locale, AppCard[]> = {
       version: "COMING SOON",
       subtitle: "visual studies",
       text: "A future collection for visual studies and design explorations when Mika is ready to publish them.",
-      preview: creativePreview,
+      preview: mikaCosmicBackground,
       icon: communityIcon,
       accent: "cyan",
       tags: ["Visual", "Space", "Light"],
@@ -58,7 +61,7 @@ const mikaAppsByLocale: Record<Locale, AppCard[]> = {
       version: "COMING SOON",
       subtitle: "new directions",
       text: "This card intentionally contains no fictional project: it will host confirmed future work.",
-      preview: creativePreview,
+      preview: mikaCosmicBackground,
       icon: guestbookIcon,
       accent: "violet",
       tags: ["Interior", "3D", "Design"],
@@ -71,7 +74,7 @@ const mikaAppsByLocale: Record<Locale, AppCard[]> = {
       version: "COMING SOON",
       subtitle: "будущее портфолио",
       text: "Место для будущих опубликованных творческих проектов Mika. Незавершённые работы не выдаются за готовые.",
-      preview: creativePreview,
+      preview: mikaCosmicBackground,
       icon: appIcon,
       accent: "violet",
       tags: ["3D", "Дизайн", "Идеи"],
@@ -82,7 +85,7 @@ const mikaAppsByLocale: Record<Locale, AppCard[]> = {
       version: "COMING SOON",
       subtitle: "визуальные исследования",
       text: "Будущая коллекция визуальных исследований и дизайн-экспериментов, когда Mika будет готова их опубликовать.",
-      preview: creativePreview,
+      preview: mikaCosmicBackground,
       icon: communityIcon,
       accent: "cyan",
       tags: ["Визуал", "Пространство", "Свет"],
@@ -93,7 +96,7 @@ const mikaAppsByLocale: Record<Locale, AppCard[]> = {
       version: "COMING SOON",
       subtitle: "новые направления",
       text: "Здесь нет вымышленного проекта: карточка предназначена для будущей подтверждённой работы.",
-      preview: creativePreview,
+      preview: mikaCosmicBackground,
       icon: guestbookIcon,
       accent: "violet",
       tags: ["Интерьеры", "3D", "Дизайн"],
@@ -111,7 +114,7 @@ function getMikaFeatures(locale: Locale): FeatureCard[] {
       text: ru ? "Оставь сообщение в отдельном пространстве Mika." : "Leave a message in Mika's own guestbook space.",
       buttonLabel: ru ? "Открыть гостевую" : "Open Guestbook",
       href: "#guestbook",
-      image: guestbookIcon,
+      image: telegramIcon,
       tone: "violet",
     },
     {
@@ -184,8 +187,9 @@ function getMikaContent(locale: Locale): ProfileContent {
     profile: {
       id: "mika",
       portrait: mikaPortrait,
+      background: mikaCosmicBackground,
       presenceLabel: ru ? "Творческое пространство" : "Creative space",
-      links: [{ label: "Telegram", href: "https://t.me/MikaKagami_XIX", icon: "message" }],
+      links: [{ label: "Telegram", href: "https://t.me/MikaKagami_XIX", image: telegramIcon }],
     },
     heroTypewriter: ru
       ? { prefix: "Мне нравится ", phrases: ["работать с 3D.", "придумывать интерьеры.", "пробовать идеи в дизайне.", "создавать аккуратные композиции."] }

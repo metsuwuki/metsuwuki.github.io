@@ -11541,3 +11541,84 @@ body {
   .identity-selector__card, .identity-selector__card img { transition: none; }
   .identity-selector__card:hover, .identity-selector__card:focus-visible { transform: none; }
 }
+
+/* === Mika profile artwork and creative brand marquee === */
+.page-shell--mika .page-shell__scene {
+  background:
+    linear-gradient(180deg, rgba(6, 3, 13, .08) 0%, rgba(6, 3, 13, .24) 56%, rgba(6, 3, 13, .92) 100%),
+    var(--profile-background) center top / cover no-repeat;
+  filter: saturate(1.14) brightness(.82) contrast(1.04);
+}
+.page-shell--mika .page-shell__scene::before {
+  background:
+    radial-gradient(circle at 55% 18%, rgba(206, 113, 255, .24), transparent 22%),
+    radial-gradient(circle at 16% 28%, rgba(105, 80, 255, .2), transparent 24%),
+    linear-gradient(180deg, transparent 44%, rgba(6, 3, 13, .9) 100%);
+}
+.page-shell--mika .page-shell__scene-glow {
+  background:
+    radial-gradient(circle at 52% 16%, rgba(188, 92, 255, .32), transparent 20%),
+    radial-gradient(circle at 20% 42%, rgba(103, 86, 255, .16), transparent 26%);
+}
+.logo-marquee__item--creative {
+  width: auto !important;
+  min-width: clamp(9rem, 11vw, 11.5rem) !important;
+  padding: 0 1.15rem;
+  gap: .72rem;
+}
+.creative-brand-mark {
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  filter: drop-shadow(0 0 12px rgba(176, 104, 255, .24));
+}
+.creative-brand-label {
+  color: #eee6f8;
+  font: 700 .72rem/1 "Space Grotesk", sans-serif;
+  letter-spacing: .025em;
+}
+.creative-brand-mark--figma circle:nth-child(1) { fill: #f24e1e; }
+.creative-brand-mark--figma circle:nth-child(2) { fill: #ff7262; }
+.creative-brand-mark--figma circle:nth-child(3) { fill: #a259ff; }
+.creative-brand-mark--figma circle:nth-child(4) { fill: #1abcfe; }
+.creative-brand-mark--figma circle:nth-child(5) { fill: #0acf83; }
+.creative-brand-mark--blender { fill: none; stroke: #f5792a; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+.creative-brand-mark--blender circle { fill: #4b8ec9; stroke: #fff; stroke-width: 1.4; }
+.creative-brand-mark--photoshop,
+.creative-brand-mark--illustrator,
+.creative-brand-mark--max {
+  display: grid;
+  place-items: center;
+  border: 2px solid currentColor;
+  border-radius: .36rem;
+  font: 800 1rem/1 "Space Grotesk", sans-serif;
+  letter-spacing: -.05em;
+}
+.creative-brand-mark--photoshop { color: #31a8ff; background: #001e36; }
+.creative-brand-mark--illustrator { color: #ff9a00; background: #330000; }
+.creative-brand-mark--max { color: #78d6cb; background: linear-gradient(145deg, #142c31, #081316); font-size: .72rem; }
+.creative-brand-mark--cinema {
+  position: relative;
+  display: block;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #fff 0 8%, #8dccff 9% 25%, #3359c9 45%, #101d55 72%);
+  box-shadow: inset -4px -5px 10px rgba(0,0,0,.35), 0 0 15px rgba(91,139,255,.28);
+}
+.creative-brand-mark--cinema::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 4px solid rgba(255,255,255,.82);
+  border-right-color: transparent;
+  border-radius: 50%;
+  transform: rotate(-22deg);
+}
+.creative-brand-mark--cinema i { position: absolute; width: 8px; height: 8px; right: 5px; top: 7px; border-radius: 50%; background: #fff; }
+.site-footer__social-orb--image { color: #35aee2; }
+.site-footer__social-orb-image { width: 2rem; height: 2rem; object-fit: contain; filter: drop-shadow(0 0 8px rgba(53,174,226,.55)); }
+@media (max-width: 640px) {
+  .logo-marquee__item--creative { min-width: 8.2rem !important; padding-inline: .8rem; }
+  .creative-brand-label { font-size: .64rem; }
+  .creative-brand-mark { width: 1.9rem; height: 1.9rem; }
+  .page-shell--mika .page-shell__scene { background-position: 58% top; }
+}

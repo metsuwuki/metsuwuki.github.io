@@ -43,15 +43,14 @@ const languageLogos = [
   { name: "C", icon: cIcon },
 ];
 
-const creativeDirections = [
-  { name: "3D Spaces", symbol: "◇" },
-  { name: "Interiors", symbol: "⌂" },
-  { name: "Visual Design", symbol: "✦" },
-  { name: "Composition", symbol: "◫" },
-  { name: "Materials", symbol: "◈" },
-  { name: "Light", symbol: "☼" },
-  { name: "Ideas", symbol: "∞" },
-];
+const creativeBrands = ["Figma", "Blender", "Photoshop", "Illustrator", "Cinema 4D", "3ds Max"] as const;
+
+function CreativeBrandMark({ name }: { name: typeof creativeBrands[number] }) {
+  if (name === "Figma") return <svg viewBox="0 0 40 40" aria-hidden="true" className="creative-brand-mark creative-brand-mark--figma"><circle cx="14" cy="8" r="6"/><circle cx="26" cy="8" r="6"/><circle cx="14" cy="20" r="6"/><circle cx="26" cy="20" r="6"/><circle cx="14" cy="32" r="6"/></svg>;
+  if (name === "Blender") return <svg viewBox="0 0 40 40" aria-hidden="true" className="creative-brand-mark creative-brand-mark--blender"><path d="M5 18h18l-8-6m8 6-6-11"/><ellipse cx="24" cy="22" rx="11" ry="8"/><circle cx="24" cy="22" r="4"/></svg>;
+  if (name === "Cinema 4D") return <span className="creative-brand-mark creative-brand-mark--cinema" aria-hidden="true"><i /></span>;
+  return <span className={`creative-brand-mark creative-brand-mark--${name === "Photoshop" ? "photoshop" : name === "Illustrator" ? "illustrator" : "max"}`} aria-hidden="true">{name === "Photoshop" ? "Ps" : name === "Illustrator" ? "Ai" : "3ds"}</span>;
+}
 
 function getApplicationDepthOffset(index: number, active: number, length: number) {
   let offset = (index - active + length) % length;
@@ -256,17 +255,21 @@ export default function AboutSection() {
         <m.div className="logo-marquee" ref={marqueeRef} {...getRevealProps(prefersReducedMotion, 0.05)}>
           <div className="logo-marquee__track">
             <ul className="logo-marquee__group">
-              {(profileId === "mika" ? creativeDirections : languageLogos).map((logo) => (
-                <li className="logo-marquee__item" data-logo={logo.name} key={logo.name}>
-                  {"icon" in logo ? <img src={logo.icon} alt="" loading="lazy" /> : <span className="logo-marquee__symbol" aria-hidden="true">{logo.symbol}</span>}
+              {profileId === "mika" ? creativeBrands.map((name) => (
+                <li className="logo-marquee__item logo-marquee__item--creative" data-logo={name} key={name}>
+                  <CreativeBrandMark name={name} /><span className="creative-brand-label">{name}</span>
                 </li>
+              )) : languageLogos.map((logo) => (
+                <li className="logo-marquee__item" data-logo={logo.name} key={logo.name}><img src={logo.icon} alt="" loading="lazy" /></li>
               ))}
             </ul>
             <ul className="logo-marquee__group" aria-hidden="true">
-              {(profileId === "mika" ? creativeDirections : languageLogos).map((logo) => (
-                <li className="logo-marquee__item" data-logo={logo.name} key={`${logo.name}-duplicate`}>
-                  {"icon" in logo ? <img src={logo.icon} alt="" loading="lazy" /> : <span className="logo-marquee__symbol" aria-hidden="true">{logo.symbol}</span>}
+              {profileId === "mika" ? creativeBrands.map((name) => (
+                <li className="logo-marquee__item logo-marquee__item--creative" data-logo={name} key={`${name}-duplicate`}>
+                  <CreativeBrandMark name={name} /><span className="creative-brand-label">{name}</span>
                 </li>
+              )) : languageLogos.map((logo) => (
+                <li className="logo-marquee__item" data-logo={logo.name} key={`${logo.name}-duplicate`}><img src={logo.icon} alt="" loading="lazy" /></li>
               ))}
             </ul>
           </div>
