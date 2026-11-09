@@ -117,26 +117,26 @@ test.describe("dual portfolio routing", () => {
   });
 });
 
-test.describe("K✦GAMI Nexus remains intact", () => {
+test.describe("KAGAMI crew page", () => {
   test.beforeEach(async ({ page }) => {
     await mockApis(page);
     await openVerified(page, "/gta5rp");
   });
 
-  test("has working navigation and a real recruitment destination", async ({ page, isMobile }) => {
-    await expect(page.getByRole("heading", { name: /K.*GAMI/i, level: 1 })).toBeVisible();
-    if (isMobile) await page.getByRole("button", { name: "Открыть меню" }).click();
-    await page.getByRole("link", { name: "Информация" }).click();
-    await expect(page.locator("#kg-information")).toBeInViewport();
-    await expect(page.getByRole("link", { name: /Перейти в Discord/i })).toHaveAttribute("href", /^https:\/\/discord\.gg\//);
+  test("has no section navbar and every Discord button points to the invite", async ({ page }) => {
+    await expect(page.getByRole("heading", { name: "KAGAMI", level: 1 })).toBeVisible();
+    await expect(page.locator(".kg-header nav")).toHaveCount(0);
+    await expect(page.locator(".kg-header .kg-nav__discord")).toBeVisible();
+    const discordLinks = page.locator('a[href^="https://discord.gg/"]');
+    expect(await discordLinks.count()).toBeGreaterThanOrEqual(3);
+    await expect(page.getByRole("link", { name: /Подать заявку/ })).toHaveAttribute("href", /^https:\/\/discord\.gg\//);
   });
 
-  test("depth carousel supports keyboard input and reduced motion", async ({ page }) => {
-    const carousel = page.getByRole("region", { name: "Направления участия" });
-    const viewport = carousel.locator(".depth-carousel__viewport");
-    await viewport.focus();
-    await page.keyboard.press("ArrowRight");
-    await expect(carousel.getByText("Сообщество", { exact: true }).last()).toBeVisible();
-    if (test.info().project.name === "reduced-motion") expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(true);
+  test("shows activity cards and leadership without horizontal overflow", async ({ page }) => {
+    await expect(page.locator(".kg-card")).toHaveCount(4);
+    await expect(page.getByRole("img", { name: /Metsuki Kagami — основатель/ })).toBeVisible();
+    await expect(page.getByRole("img", { name: /Mika Kagami — сооснователь/ })).toBeVisible();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
   });
 });

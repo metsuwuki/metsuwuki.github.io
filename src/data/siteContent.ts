@@ -1,14 +1,14 @@
-import appIcon from "../../assets/App-Icon.png";
-import communityIcon from "../../assets/Community-Icon.png";
-import discordIcon from "../../assets/Discord-Icon.png";
-import githubIcon from "../../assets/Github-Icon.png";
-import guestbookIcon from "../../assets/Guestbook-Icon.png";
+import appIcon from "../../assets/App-Icon.webp";
+import communityIcon from "../../assets/Community-Icon.webp";
+import discordIcon from "../../assets/Discord-Icon.webp";
+import githubIcon from "../../assets/Github-Icon.webp";
+import guestbookIcon from "../../assets/Guestbook-Icon.webp";
 import bypassCleanerIcon from "../assets/apps/bypass-cleaner-icon.ico";
-import bypassCleanerPreview from "../assets/apps/bypass-cleaner-preview.png";
+import bypassCleanerPreview from "../assets/apps/bypass-cleaner-preview.webp";
 import exeAnalyserIcon from "../assets/apps/exe-analyser-icon.ico";
-import exeAnalyserPreview from "../assets/apps/exe-analyser-preview.png";
+import exeAnalyserPreview from "../assets/apps/exe-analyser-preview.webp";
 import kinoBoxIcon from "../assets/apps/KinoBox.ico";
-import kinoBoxPreview from "../assets/apps/KinoBox-Preview.png";
+import kinoBoxPreview from "../assets/apps/KinoBox-Preview.webp";
 import type { IconName } from "../components/UiIcon";
 
 export type NavigationItem = {

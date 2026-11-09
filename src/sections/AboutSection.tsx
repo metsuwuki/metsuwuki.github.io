@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent, type WheelEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type PointerEvent, type WheelEvent } from "react";
 import { m } from "framer-motion";
 import { GlassActionButton } from "../components/GlassActionButton";
 import { Reveal } from "../components/Reveal";
@@ -52,83 +52,110 @@ function CreativeBrandMark({ name }: { name: typeof creativeBrands[number] }) {
   return <span className={`creative-brand-mark creative-brand-mark--${name === "Photoshop" ? "photoshop" : name === "Illustrator" ? "illustrator" : "max"}`} aria-hidden="true">{name === "Photoshop" ? "Ps" : name === "Illustrator" ? "Ai" : "3ds"}</span>;
 }
 
-function getApplicationDepthOffset(index: number, active: number, length: number) {
+function getApplicationOffset(index: number, active: number, length: number) {
   let offset = (index - active + length) % length;
   if (offset > length / 2) offset -= length;
   return offset;
 }
 
-function ApplicationDepthCarousel({ apps, siteMeta, openApp }: {
+/**
+ * Flat, layout-driven application carousel.
+ * All cards share one grid cell, so the stage is exactly as tall as the
+ * tallest card (no fixed heights, no clipped content). Only transform and
+ * opacity are animated — no 3D, filters or blend modes — so the browser keeps
+ * a few small compositor layers instead of large blurred ones.
+ */
+function ApplicationCarousel({ apps, siteMeta, openApp }: {
   apps: AppCard[];
   siteMeta: LocalizedSiteContent["siteMeta"];
   openApp: (app: AppCard) => void;
 }) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
-  const drag = useRef<{ x: number; index: number } | null>(null);
+  const [onScreen, setOnScreen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ x: number; id: number; moved: boolean } | null>(null);
   const lastWheel = useRef(0);
   const { prefersReducedMotion } = useMotionSettings();
   const select = useCallback((next: number) => setActive((next + apps.length) % apps.length), [apps.length]);
 
   useEffect(() => {
-    if (prefersReducedMotion || paused || apps.length < 2) return;
+    const node = rootRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting), { threshold: 0.35 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  // Autoplay only while the carousel is actually visible and not being interacted with.
+  useEffect(() => {
+    if (prefersReducedMotion || paused || !onScreen || apps.length < 2) return;
     const timer = window.setInterval(() => setActive((current) => (current + 1) % apps.length), 7000);
     return () => window.clearInterval(timer);
-  }, [apps.length, paused, prefersReducedMotion]);
+  }, [apps.length, onScreen, paused, prefersReducedMotion]);
 
-  const tilt = (event: PointerEvent<HTMLElement>) => {
-    if (prefersReducedMotion) return;
-    const card = event.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width;
-    const y = (event.clientY - rect.top) / rect.height;
-    card.style.setProperty("--app-rx", `${(0.5 - y) * 5}deg`);
-    card.style.setProperty("--app-ry", `${(x - 0.5) * 7}deg`);
-    card.style.setProperty("--app-mx", `${x * 100}%`);
-    card.style.setProperty("--app-my", `${y * 100}%`);
+  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    drag.current = { x: event.clientX, id: event.pointerId, moved: false };
   };
-  const resetTilt = (event: PointerEvent<HTMLElement>) => {
-    event.currentTarget.style.setProperty("--app-rx", "0deg");
-    event.currentTarget.style.setProperty("--app-ry", "0deg");
+  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const state = drag.current;
+    if (!state || state.moved || Math.abs(event.clientX - state.x) < 12) return;
+    // Capture only once a real swipe starts, so plain clicks still reach buttons and links.
+    state.moved = true;
+    event.currentTarget.setPointerCapture(state.id);
+  };
+  const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    const state = drag.current;
+    drag.current = null;
+    if (!state?.moved) return;
+    const delta = event.clientX - state.x;
+    if (Math.abs(delta) > 40) select(active + (delta < 0 ? 1 : -1));
+  };
+  // Only horizontal wheel/trackpad gestures switch cards; vertical scrolling keeps scrolling the page.
+  const onWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (Math.abs(event.deltaX) <= Math.abs(event.deltaY) || Math.abs(event.deltaX) < 20) return;
+    const now = performance.now();
+    if (now - lastWheel.current < 450) return;
+    lastWheel.current = now;
+    select(active + (event.deltaX > 0 ? 1 : -1));
   };
 
   return (
-    <div className="applications-depth-carousel" id="applications-catalog" role="region" aria-roledescription="carousel" aria-label={siteMeta.appsTitle}
+    <div ref={rootRef} className="applications-depth-carousel" id="applications-catalog" role="region" aria-roledescription="carousel" aria-label={siteMeta.appsTitle}
       onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)}
       onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}>
       <div className="applications-depth-carousel__viewport" tabIndex={0}
-        onPointerDown={(event) => { drag.current = { x: event.clientX, index: active }; event.currentTarget.setPointerCapture(event.pointerId); }}
-        onPointerUp={(event) => { if (!drag.current) return; const delta = event.clientX - drag.current.x; if (Math.abs(delta) > 40) select(drag.current.index + (delta < 0 ? 1 : -1)); drag.current = null; }}
-        onWheel={(event) => { if (Math.abs(event.deltaX) + Math.abs(event.deltaY) < 12) return; const now = performance.now(); if (now - lastWheel.current < 420) return; lastWheel.current = now; select(active + (event.deltaX + event.deltaY > 0 ? 1 : -1)); }}
+        onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp}
+        onPointerCancel={() => { drag.current = null; }} onWheel={onWheel}
         onKeyDown={(event) => {
+          if (event.target !== event.currentTarget) return;
           if (event.key === "ArrowRight") { event.preventDefault(); select(active + 1); }
           if (event.key === "ArrowLeft") { event.preventDefault(); select(active - 1); }
           if (event.key === "Home") { event.preventDefault(); select(0); }
           if (event.key === "End") { event.preventDefault(); select(apps.length - 1); }
         }}>
         {apps.map((app, index) => {
-          const offset = getApplicationDepthOffset(index, active, apps.length);
-          const distance = Math.abs(offset);
+          const offset = getApplicationOffset(index, active, apps.length);
+          const isActive = offset === 0;
           const actionable = Boolean(app.downloadHref ?? app.githubHref ?? app.websiteHref ?? app.buyHref);
-          return <div key={app.title} className={`applications-depth-carousel__item ${index === active ? "is-active" : ""}`}
-            style={{ "--app-depth-offset": offset, "--app-depth-distance": distance, zIndex: apps.length - distance } as CSSProperties}
-            aria-hidden={index !== active} onClick={() => select(index)}>
-            <article className={`app-reflective-card app-card--${app.accent}`} onPointerMove={tilt} onPointerLeave={resetTilt}>
-              <div className="app-reflective-card__shine" aria-hidden="true" />
+          const previewAlt = `${siteMeta.appPreviewAltPrefix} ${app.title}`;
+          return <div key={app.title} className={`applications-depth-carousel__item ${isActive ? "is-active" : ""}`}
+            data-offset={Math.max(-2, Math.min(2, offset))} aria-hidden={!isActive}>
+            <article className={`app-reflective-card app-card--${app.accent}`}
+              ref={(node) => { if (node) node.inert = !isActive; }}>
               {actionable ? <button type="button" className="app-reflective-card__preview" onClick={() => openApp(app)} aria-label={`${app.title} ${siteMeta.appGithubLabel}`}>
-                <img src={app.preview} alt={`${siteMeta.appPreviewAltPrefix} ${app.title}`} loading="lazy" />
-                <span className="window-chrome" aria-hidden="true"><i /><i /><i /></span>
+                <img src={app.preview} alt={previewAlt} loading="lazy" decoding="async" width={1120} height={630} />
               </button> : <div className="app-reflective-card__preview app-reflective-card__preview--static">
-                <img src={app.preview} alt={`${siteMeta.appPreviewAltPrefix} ${app.title}`} loading="lazy" />
-                <span className="window-chrome" aria-hidden="true"><i /><i /><i /></span>
+                <img src={app.preview} alt={previewAlt} loading="lazy" decoding="async" width={1120} height={630} />
                 <span className="app-reflective-card__coming-soon">COMING SOON</span>
               </div>}
               <div className="app-reflective-card__content">
-                <div className="app-reflective-card__meta"><p className="app-card__eyebrow">{siteMeta.appCardEyebrow}</p><span>{app.version}</span></div>
-                <div className="app-reflective-card__title"><img src={app.icon} alt="" /><h3>{app.title}</h3></div>
+                <div className="app-reflective-card__meta"><p className="app-card__eyebrow">{siteMeta.appCardEyebrow}</p>{app.version && <span>{app.version}</span>}</div>
+                <div className="app-reflective-card__title"><img src={app.icon} alt="" width={38} height={38} /><h3>{app.title}</h3></div>
                 <p className="app-reflective-card__subtitle">{app.subtitle}</p>
-                <p>{app.text}</p>
-                <div className="app-card__highlights">{app.highlights.map((item) => <span key={item} className="app-card__pill">{item}</span>)}</div>
+                <p className="app-reflective-card__text">{app.text}</p>
+                <ul className="app-card__highlights">{app.highlights.map((item) => <li key={item} className="app-card__pill">{item}</li>)}</ul>
                 <div className="app-reflective-card__footer">
                   <div className="app-card__tags">{app.tags.map((tag) => <span key={tag} className="app-card__tag">{tag}</span>)}</div>
                   {app.buyHref ? <GlassActionButton href={app.buyHref} label={app.buyLabel ?? "Buy"} processingLabel={siteMeta.appBuyProcessingLabel} variant="buy" />
@@ -136,6 +163,8 @@ function ApplicationDepthCarousel({ apps, siteMeta, openApp }: {
                 </div>
               </div>
             </article>
+            {!isActive && <button type="button" className="applications-depth-carousel__peek" tabIndex={-1}
+              aria-label={app.title} onClick={() => select(index)} />}
           </div>;
         })}
       </div>
@@ -148,75 +177,6 @@ function ApplicationDepthCarousel({ apps, siteMeta, openApp }: {
   );
 }
 
-export function ApplicationCircularGallery({ apps, siteMeta, openApp }: {
-  apps: AppCard[];
-  siteMeta: LocalizedSiteContent["siteMeta"];
-  openApp: (app: AppCard) => void;
-}) {
-  const [active, setActive] = useState(0);
-  const drag = useRef<{ x: number; index: number } | null>(null);
-  const select = useCallback((next: number) => setActive((next + apps.length) % apps.length), [apps.length]);
-  const app = apps[active];
-  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    drag.current = { x: event.clientX, index: active };
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-  const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
-    if (!drag.current) return;
-    const delta = event.clientX - drag.current.x;
-    if (Math.abs(delta) > 36) select(drag.current.index + (delta < 0 ? 1 : -1));
-    drag.current = null;
-  };
-  const onWheel = (event: WheelEvent<HTMLDivElement>) => {
-    if (Math.abs(event.deltaX) + Math.abs(event.deltaY) > 12) select(active + (event.deltaX + event.deltaY > 0 ? 1 : -1));
-  };
-
-  return (
-    <div className="applications-circular-gallery" id="applications-catalog" role="region" aria-roledescription="carousel" aria-label={siteMeta.appsTitle}>
-      <div className="applications-circular-gallery__selector" tabIndex={0} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onWheel={onWheel}
-        onKeyDown={(event) => {
-          if (event.key === "ArrowRight") { event.preventDefault(); select(active + 1); }
-          if (event.key === "ArrowLeft") { event.preventDefault(); select(active - 1); }
-        }}>
-        <div className="applications-circular-gallery__ring">
-          {apps.map((item, index) => {
-            const offset = index - active;
-            return (
-              <button key={item.title} type="button" className={index === active ? "is-active" : ""}
-                style={{ "--app-offset": offset } as CSSProperties} aria-current={index === active} onClick={() => select(index)}>
-                <img src={item.icon} alt="" /><span>{item.title}</span><small>{item.version}</small>
-              </button>
-            );
-          })}
-        </div>
-        <div className="applications-circular-gallery__nav">
-          <button type="button" onClick={() => select(active - 1)} aria-label="Previous application">Ã¢â€ Â</button>
-          <span>{String(active + 1).padStart(2, "0")} / {String(apps.length).padStart(2, "0")}</span>
-          <button type="button" onClick={() => select(active + 1)} aria-label="Next application">Ã¢â€ â€™</button>
-        </div>
-      </div>
-
-      <article className={`app-reflective-card app-card--${app.accent}`} aria-live="polite">
-        <div className="app-reflective-card__shine" aria-hidden="true" />
-        <button type="button" className="app-reflective-card__preview" onClick={() => openApp(app)} aria-label={`${app.title} ${siteMeta.appGithubLabel}`}>
-          <img src={app.preview} alt={`${siteMeta.appPreviewAltPrefix} ${app.title}`} loading="lazy" />
-          <span className="window-chrome" aria-hidden="true"><i /><i /><i /></span>
-        </button>
-        <div className="app-reflective-card__content">
-          <p className="app-card__eyebrow">{siteMeta.appCardEyebrow} Ã‚Â· {app.version}</p>
-          <div className="app-reflective-card__title"><img src={app.icon} alt="" /><h3>{app.title}</h3></div>
-          <p>{app.text}</p>
-          <div className="app-card__highlights">{app.highlights.map((item) => <span key={item} className="app-card__pill">{item}</span>)}</div>
-          <div className="app-reflective-card__footer">
-            <div className="app-card__tags">{app.tags.map((tag) => <span key={tag} className="app-card__tag">{tag}</span>)}</div>
-            {app.buyHref ? <GlassActionButton href={app.buyHref} label={app.buyLabel ?? "Buy"} processingLabel={siteMeta.appBuyProcessingLabel} variant="buy" />
-              : app.downloadHref ? <GlassActionButton href={app.downloadHref} label={siteMeta.appDownloadLabel} processingLabel={siteMeta.appDownloadProcessingLabel} variant="download" /> : null}
-          </div>
-        </div>
-      </article>
-    </div>
-  );
-}
 export default function AboutSection() {
   const { content, profileId } = usePageLocale();
   const { appCards, featureCards, siteMeta } = content;
@@ -229,7 +189,7 @@ export default function AboutSection() {
   }
 
   // The marquee's CSS animation otherwise keeps ticking forever, even while
-  // scrolled well out of view Ã¢â‚¬â€ pause it via IntersectionObserver instead
+  // scrolled well out of view — pause it via IntersectionObserver instead
   // (animation-timeline: view() doesn't fit here: it would turn the
   // time-driven infinite ticker into a scroll-position-scrubbed one).
   useEffect(() => {
@@ -306,7 +266,7 @@ export default function AboutSection() {
           <SectionHeading title={siteMeta.appsTitle} description={siteMeta.appsDescription} align="left" />
         </Reveal>
 
-        <ApplicationDepthCarousel apps={appCards} siteMeta={siteMeta} openApp={openApp} />
+        <ApplicationCarousel apps={appCards} siteMeta={siteMeta} openApp={openApp} />
 
       </div>
     </section>

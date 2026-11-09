@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AnimatePresence, LazyMotion, domAnimation } from "framer-motion";
 import { hasPassedOnboarding, OnboardingGate } from "./components/OnboardingGate";
 import { SiteShell } from "./layouts/SiteShell";
@@ -7,9 +7,11 @@ import { PageLocaleProvider } from "./i18n/pageLocale";
 import AboutSection from "./sections/AboutSection";
 import GuestbookSection from "./sections/GuestbookSection";
 import HeroSection from "./sections/HeroSection";
-import KagamiPage from "./pages/KagamiPage";
 import IdentitySelector from "./pages/IdentitySelector";
 import type { ProfileId } from "./data/profileContent";
+
+// Separate chunk: the KAGAMI crew page has its own fonts, CSS and art.
+const KagamiPage = lazy(() => import("./pages/KagamiPage"));
 
 function PortfolioPage({ profileId }: { profileId: ProfileId }) {
   useEffect(() => {
@@ -44,7 +46,7 @@ export default function App() {
           <Route path="/" element={<IdentitySelector />} />
           <Route path="/metsuki" element={<PortfolioPage profileId="metsuki" />} />
           <Route path="/mika" element={<PortfolioPage profileId="mika" />} />
-          <Route path="/gta5rp" element={<KagamiPage />} />
+          <Route path="/gta5rp" element={<Suspense fallback={null}><KagamiPage /></Suspense>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

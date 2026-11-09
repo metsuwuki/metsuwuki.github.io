@@ -1,277 +1,186 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode, type WheelEvent } from "react";
-import { m } from "framer-motion";
-import heroBg from "../../kagami/gta5bg.jpg";
-import starImg from "../../kagami/star.png";
-import metsukiImg from "../../metsuki.jpg";
-import mikaImg from "../../mika.jpg";
-import { useMotionSettings } from "../hooks/useMotionSettings";
+import { useEffect } from "react";
+import duoImg from "../../assets/duo.jpg";
+import carImg from "../../assets/car.jpg";
+import cityImg from "../../assets/city.jpg";
+import vinewoodImg from "../../assets/vinewood.jpg";
 import "./KagamiPage.css";
 
-const discordInvite = "https://discord.gg/FFDcSZ4n2J";
-const navigation = [
-  ["Главная", "kg-hero"], ["О нас", "kg-philosophy"], ["Информация", "kg-information"],
-  ["Руководство", "kg-leadership"], ["Контакты", "kg-contact"],
-] as const;
+/** Единственное место, где задаётся ссылка-приглашение в Discord. */
+export const DISCORD_URL = "https://discord.gg/FFDcSZ4n2J";
 
-const reveal = { hidden: { opacity: 0, y: 36 }, visible: { opacity: 1, y: 0 } };
+const FONTS_HREF = "https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap&subset=cyrillic";
 
-function BrandStar({ className = "" }: { className?: string }) {
-  return <img className={`nexus-star ${className}`} src={starImg} alt="" aria-hidden="true" />;
-}
+type Activity = { title: string; text: string; image: string; position?: string; alt: string; icon: JSX.Element };
 
-function ReflectiveCard({ children, className = "", label }: { children: ReactNode; className?: string; label: string }) {
-  const ref = useRef<HTMLElement>(null);
-  const { prefersReducedMotion } = useMotionSettings();
-  const move = (event: PointerEvent<HTMLElement>) => {
-    if (prefersReducedMotion || !ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width;
-    const y = (event.clientY - rect.top) / rect.height;
-    ref.current.style.setProperty("--rx", `${(0.5 - y) * 8}deg`);
-    ref.current.style.setProperty("--ry", `${(x - 0.5) * 10}deg`);
-    ref.current.style.setProperty("--mx", `${x * 100}%`);
-    ref.current.style.setProperty("--my", `${y * 100}%`);
-  };
-  const reset = () => {
-    ref.current?.style.setProperty("--rx", "0deg");
-    ref.current?.style.setProperty("--ry", "0deg");
-  };
-  return <article ref={ref} className={`reflective-card ${className}`} aria-label={label} onPointerMove={move} onPointerLeave={reset}>{children}<span className="reflective-card__light" aria-hidden="true" /></article>;
-}
-
-type PathItem = { eyebrow: string; title: string; body: string; note: string };
-const paths: PathItem[] = [
-  { eyebrow: "01 / ДЕЙСТВИЕ", title: "Контракты", body: "Командное выполнение задач и участие в активностях организации.", note: "Для игроков, которым важны координация и общий результат." },
-  { eyebrow: "02 / СВЯЗЬ", title: "Сообщество", body: "Общение, совместные поездки и время с участниками K✦GAMI.", note: "Для тех, кто ищет постоянный круг людей, а не разовую группу." },
-  { eyebrow: "03 / РОСТ", title: "Развитие", body: "Вклад в движение организации вперёд и поддержка новых участников.", note: "Для инициативных игроков, готовых расти вместе с командой." },
-  { eyebrow: "04 / АТМОСФЕРА", title: "События", body: "Совместные мероприятия, операции и внутренняя жизнь организации.", note: "Для тех, кто хочет быть частью общей истории." },
+const activities: Activity[] = [
+  {
+    title: "Ролевая игра",
+    text: "Создание историй, развитие персонажей и влияния в городе.",
+    image: vinewoodImg,
+    alt: "Холмы Вайнвуда на закате",
+    icon: <path fill="currentColor" d="M2 7c3-2 7-2 10 0 3-2 7-2 10 0v4c0 4-3 6-5 6s-3-2-5-2-3 2-5 2-5-2-5-6zm5 3a1.5 1.5 0 1 0 0 3h2a1.5 1.5 0 0 0 0-3zm8 0a1.5 1.5 0 0 0 0 3h2a1.5 1.5 0 0 0 0-3z" />,
+  },
+  {
+    title: "Операции",
+    text: "Совместные действия, проекты и крупные события.",
+    image: carImg,
+    alt: "Машина на ночной улице Лос-Сантоса",
+    icon: <path fill="currentColor" d="M4 2h2v20H4zm3 1h13l-3 4.5L20 12H7z" />,
+  },
+  {
+    title: "Сообщество",
+    text: "Поддержка, взаимодействие и единые цели.",
+    image: duoImg,
+    position: "center 25%",
+    alt: "Metsuki и Mika Kagami",
+    icon: <path fill="currentColor" d="M12 4a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM5 7a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm14 0a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM12 12.5c3.5 0 6 2 6 4.5v2H6v-2c0-2.5 2.5-4.5 6-4.5zM0 19v-1.5C0 15.6 1.8 14 4.4 13.7A6 6 0 0 0 4 17v2zm24 0h-4v-2a6 6 0 0 0-.4-3.3c2.6.3 4.4 1.9 4.4 3.8z" />,
+  },
+  {
+    title: "Развитие",
+    text: "Внутренний рост, проекты и новые возможности.",
+    image: cityImg,
+    alt: "Ночной силуэт Лос-Сантоса",
+    icon: <path fill="currentColor" d="M3 14h4v8H3zm7-5h4v13h-4zm7-6h4v19h-4z" />,
+  },
 ];
 
-function getDepthOffset(index: number, active: number, length: number) {
-  let offset = (index - active + length) % length;
-  if (offset > length / 2) offset -= length;
-  return offset;
+const leaders = [
+  { name: "Metsuki Kagami", role: "Основатель", side: "left" },
+  { name: "Mika Kagami", role: "Сооснователь", side: "right" },
+] as const;
+
+const requirements = [
+  { title: "Активность", text: "Участие в делах, а не строчка в списке" },
+  { title: "Уважение", text: "К правилам и участникам" },
+  { title: "Командность", text: "Готовность действовать сообща" },
+];
+
+function Star({ className }: { className?: string }) {
+  return <svg className={className} viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 1.5l2.6 7.1 7.4.3-5.8 4.6 2 7.3L12 16.6l-6.2 4.2 2-7.3L2 8.9l7.4-.3z" /></svg>;
 }
 
-function DepthCarousel() {
-  const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const drag = useRef<{ x: number; index: number } | null>(null);
-  const lastWheel = useRef(0);
-  const { prefersReducedMotion } = useMotionSettings();
-  const select = useCallback((next: number) => setActive((next + paths.length) % paths.length), []);
+function DiscordIcon() {
+  return <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20.32 4.37a19.8 19.8 0 0 0-4.89-1.52.07.07 0 0 0-.08.04c-.21.38-.44.87-.61 1.25a18.3 18.3 0 0 0-5.49 0 12.6 12.6 0 0 0-.62-1.25.08.08 0 0 0-.08-.04 19.7 19.7 0 0 0-4.88 1.52.07.07 0 0 0-.03.03C.53 9.05-.32 13.58.1 18.06a.08.08 0 0 0 .03.06 19.9 19.9 0 0 0 5.99 3.03.08.08 0 0 0 .09-.03c.46-.63.87-1.3 1.22-2a.08.08 0 0 0-.04-.1 13.1 13.1 0 0 1-1.87-.9.08.08 0 0 1 0-.12l.37-.3a.07.07 0 0 1 .08 0c3.93 1.8 8.18 1.8 12.06 0a.07.07 0 0 1 .08 0l.37.3a.08.08 0 0 1 0 .12c-.6.35-1.22.65-1.87.9a.08.08 0 0 0-.04.1c.36.7.77 1.37 1.22 2a.08.08 0 0 0 .09.03 19.8 19.8 0 0 0 6-3.03.08.08 0 0 0 .03-.05c.5-5.18-.84-9.68-3.55-13.66a.06.06 0 0 0-.03-.03zM8.02 15.33c-1.18 0-2.16-1.08-2.16-2.42s.96-2.42 2.16-2.42c1.21 0 2.18 1.1 2.16 2.42 0 1.34-.96 2.42-2.16 2.42zm7.97 0c-1.18 0-2.15-1.08-2.15-2.42s.95-2.42 2.15-2.42c1.21 0 2.18 1.1 2.16 2.42 0 1.34-.94 2.42-2.16 2.42z" /></svg>;
+}
 
+function CheckIcon() {
+  return <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.5" y="1.5" width="21" height="21" rx="3" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M6 12.5l4 4 8-9" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+}
+
+function DiscordButton({ children, className = "" }: { children: string; className?: string }) {
+  return <a className={`kg-btn kg-btn--primary ${className}`} href={DISCORD_URL} target="_blank" rel="noopener noreferrer"><DiscordIcon />{children}</a>;
+}
+
+function Logo() {
+  return <a href="#kg-top" className="kg-logo" aria-label="KAGAMI — наверх"><span>KAGAMI</span><Star /></a>;
+}
+
+function useKagamiDocument() {
   useEffect(() => {
-    if (prefersReducedMotion || paused) return;
-    const timer = window.setInterval(() => setActive((current) => (current + 1) % paths.length), 6500);
-    return () => window.clearInterval(timer);
-  }, [paused, prefersReducedMotion]);
+    const previousTitle = document.title;
+    document.title = "KAGAMI — GTA 5 RP Crew";
+    document.documentElement.classList.add("kg-route");
 
-  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    drag.current = { x: event.clientX, index: active };
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-  const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
-    if (!drag.current) return;
-    const delta = event.clientX - drag.current.x;
-    if (Math.abs(delta) > 40) select(drag.current.index + (delta < 0 ? 1 : -1));
-    drag.current = null;
-  };
-  const onWheel = (event: WheelEvent<HTMLDivElement>) => {
-    if (Math.abs(event.deltaX) + Math.abs(event.deltaY) < 8) return;
-    const now = performance.now();
-    if (now - lastWheel.current < 420) return;
-    lastWheel.current = now;
-    select(active + (event.deltaY + event.deltaX > 0 ? 1 : -1));
-  };
+    let link = document.querySelector<HTMLLinkElement>("link[data-kg-fonts]");
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = FONTS_HREF;
+      link.dataset.kgFonts = "";
+      document.head.appendChild(link);
+    }
 
-  return <div className="depth-carousel" role="region" aria-roledescription="карусель" aria-label="Направления участия"
-    onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)}
-    onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}>
-    <div className="depth-carousel__viewport" tabIndex={0} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onWheel={onWheel}
-      onKeyDown={(event) => {
-        if (event.key === "ArrowRight") { event.preventDefault(); select(active + 1); }
-        if (event.key === "ArrowLeft") { event.preventDefault(); select(active - 1); }
-        if (event.key === "Home") { event.preventDefault(); select(0); }
-        if (event.key === "End") { event.preventDefault(); select(paths.length - 1); }
-      }}>
-      {paths.map((item, index) => {
-        const offset = getDepthOffset(index, active, paths.length);
-        const distance = Math.abs(offset);
-        return <div key={item.title} className={`depth-carousel__item ${index === active ? "is-active" : ""}`}
-          style={{ "--depth-offset": offset, "--depth-distance": distance, zIndex: paths.length - distance } as CSSProperties}
-          aria-hidden={index !== active} onClick={() => select(index)}>
-          <ReflectiveCard className="path-card" label={item.title}>
-            <p className="nexus-kicker">{item.eyebrow}</p>
-            <h3>{item.title}</h3>
-            <p>{item.body}</p>
-            <div className="path-card__line" />
-            <small>{item.note}</small>
-          </ReflectiveCard>
-        </div>;
-      })}
-    </div>
-    <div className="depth-carousel__controls">
-      <button type="button" onClick={() => select(active - 1)} aria-label="Предыдущее направление">←</button>
-      <span aria-live="polite">{String(active + 1).padStart(2, "0")} / {String(paths.length).padStart(2, "0")}</span>
-      <button type="button" onClick={() => select(active + 1)} aria-label="Следующее направление">→</button>
-    </div>
-  </div>;
-}
-
-export function CircularGallery() {
-  const [active, setActive] = useState(0);
-  const drag = useRef<{ x: number; index: number } | null>(null);
-  const select = useCallback((next: number) => setActive((next + paths.length) % paths.length), []);
-  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    drag.current = { x: event.clientX, index: active };
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-  const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
-    if (!drag.current) return;
-    const delta = event.clientX - drag.current.x;
-    if (Math.abs(delta) > 40) select(drag.current.index + (delta < 0 ? 1 : -1));
-    drag.current = null;
-  };
-  const onWheel = (event: WheelEvent<HTMLDivElement>) => {
-    if (Math.abs(event.deltaX) + Math.abs(event.deltaY) < 8) return;
-    select(active + (event.deltaY + event.deltaX > 0 ? 1 : -1));
-  };
-
-  return <div className="circular-gallery" role="region" aria-roledescription="карусель" aria-label="Направления участия">
-    <div className="circular-gallery__viewport" tabIndex={0} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onWheel={onWheel}
-      onKeyDown={(event) => {
-        if (event.key === "ArrowRight") { event.preventDefault(); select(active + 1); }
-        if (event.key === "ArrowLeft") { event.preventDefault(); select(active - 1); }
-      }}>
-      <div className="circular-gallery__orbit" style={{ "--active": active } as CSSProperties}>
-        {paths.map((item, index) => {
-          const relative = ((index - active + paths.length + 2) % paths.length) - 2;
-          return <button key={item.title} type="button" className={`circular-gallery__item ${index === active ? "is-active" : ""}`}
-            style={{ "--offset": relative } as CSSProperties} aria-label={`Выбрать: ${item.title}`} aria-current={index === active} onClick={() => select(index)}>
-            <span>{item.eyebrow}</span><strong>{item.title}</strong>
-          </button>;
-        })}
-      </div>
-    </div>
-    <ReflectiveCard className="path-card" label={paths[active].title}>
-      <p className="nexus-kicker">{paths[active].eyebrow}</p>
-      <h3>{paths[active].title}</h3>
-      <p>{paths[active].body}</p>
-      <div className="path-card__line" />
-      <small>{paths[active].note}</small>
-    </ReflectiveCard>
-    <div className="circular-gallery__controls">
-      <button type="button" onClick={() => select(active - 1)} aria-label="Предыдущее направление">←</button>
-      <span aria-live="polite">{String(active + 1).padStart(2, "0")} / {String(paths.length).padStart(2, "0")}</span>
-      <button type="button" onClick={() => select(active + 1)} aria-label="Следующее направление">→</button>
-    </div>
-  </div>;
-}
-
-function NexusNav() {
-  const [open, setOpen] = useState(false);
-  const [active, setActive] = useState("kg-hero");
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
-    onScroll(); window.addEventListener("scroll", onScroll, { passive: true });
-    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) setActive(entry.target.id); }), { rootMargin: "-35% 0px -55%" });
-    navigation.forEach(([, id]) => { const node = document.getElementById(id); if (node) observer.observe(node); });
-    return () => { window.removeEventListener("scroll", onScroll); observer.disconnect(); };
+    return () => {
+      document.title = previousTitle;
+      document.documentElement.classList.remove("kg-route");
+    };
   }, []);
-  return <header className={`nexus-nav ${scrolled ? "is-scrolled" : ""} ${open ? "is-open" : ""}`}>
-    <a href="#kg-hero" className="nexus-nav__brand" onClick={() => setOpen(false)}>K<BrandStar />GAMI <span>/ THE NEXUS</span></a>
-    <nav id="nexus-navigation" aria-label="Основная навигация">
-      {navigation.map(([label, id]) => <a key={id} href={`#${id}`} className={active === id ? "is-active" : ""} onClick={() => setOpen(false)}>{label}</a>)}
-    </nav>
-    <a className="nexus-button nexus-button--small" href={discordInvite} target="_blank" rel="noreferrer">Вступить <span>↗</span></a>
-    <button className="nexus-nav__toggle" type="button" aria-expanded={open} aria-controls="nexus-navigation" aria-label={open ? "Закрыть меню" : "Открыть меню"} onClick={() => setOpen(!open)}><i /><i /></button>
+}
+
+function Header() {
+  return <header className="kg-header">
+    <div className="kg-wrap kg-nav">
+      <Logo />
+      <DiscordButton className="kg-nav__discord">Discord</DiscordButton>
+    </div>
   </header>;
 }
 
 export default function KagamiPage() {
-  const { prefersReducedMotion } = useMotionSettings();
-  const heroRef = useRef<HTMLElement>(null);
-  useEffect(() => {
-    if (prefersReducedMotion) return;
-    const node = heroRef.current;
-    if (!node) return;
-    const move = (event: globalThis.PointerEvent) => {
-      const x = event.clientX / window.innerWidth - 0.5;
-      const y = event.clientY / window.innerHeight - 0.5;
-      node.style.setProperty("--hero-x", `${x}`); node.style.setProperty("--hero-y", `${y}`);
-    };
-    window.addEventListener("pointermove", move, { passive: true });
-    return () => window.removeEventListener("pointermove", move);
-  }, [prefersReducedMotion]);
+  useKagamiDocument();
 
-  return <div className="nexus-page">
-    <NexusNav />
+  return <div className="kg">
+    <div className="kg-grain" aria-hidden="true" />
+
+    <Header />
+
     <main>
-      <section className="nexus-hero" id="kg-hero" ref={heroRef}>
-        <div className="nexus-hero__bg" style={{ backgroundImage: `url(${heroBg})` }} aria-hidden="true" />
-        <div className="nexus-hero__grid" aria-hidden="true" /><div className="nexus-hero__stars" aria-hidden="true" />
-        <div className="nexus-hero__shade" aria-hidden="true" />
-        <m.div className="nexus-hero__content" initial={prefersReducedMotion ? false : "hidden"} animate="visible" variants={{ visible: { transition: { staggerChildren: .11 } } }}>
-          <m.p variants={reveal} transition={{ duration: .7 }} className="nexus-kicker">DIGITAL HEADQUARTERS · GTA 5 RP</m.p>
-          <m.h1 variants={reveal} transition={{ duration: .8 }} className="nexus-hero__wordmark"><span>K</span><BrandStar className="nexus-star--hero" /><span>GAMI</span></m.h1>
-          <m.p variants={reveal} transition={{ duration: .7 }} className="nexus-hero__motto">СИЛА · ЕДИНСТВО · АМБИЦИИ</m.p>
-          <m.div variants={reveal} transition={{ duration: .7 }} className="nexus-hero__statement">Не просто команда.<br /><em>Своя история.</em></m.div>
-          <m.p variants={reveal} transition={{ duration: .7 }} className="nexus-hero__copy">Организация для активных и целеустремлённых игроков, готовых развиваться, зарабатывать и двигаться вперёд вместе.</m.p>
-          <m.div variants={reveal} transition={{ duration: .7 }} className="nexus-hero__actions"><a className="nexus-button" href="#kg-philosophy">Открыть Nexus</a><a className="nexus-link" href={discordInvite} target="_blank" rel="noreferrer">Discord ↗</a></m.div>
-        </m.div>
-        <a href="#kg-philosophy" className="nexus-scroll"><span>SCROLL TO ENTER</span><i /></a>
-      </section>
-
-      <section className="nexus-section nexus-philosophy" id="kg-philosophy">
-        <div className="nexus-section__index">01 / МАНИФЕСТ</div>
-        <m.div className="nexus-philosophy__intro" initial="hidden" whileInView="visible" viewport={{ once: true, amount: .25 }} variants={reveal} transition={{ duration: .7 }}>
-          <p className="nexus-kicker">ОБЩАЯ СИСТЕМА КООРДИНАТ</p><h2>Мы строим не тег.<br /><span>Мы строим среду.</span></h2>
-        </m.div>
-        <div className="nexus-philosophy__story">
-          <p className="nexus-philosophy__lead">K✦GAMI объединяет людей вокруг дисциплины, уважения и общей цели.</p>
-          <ol>
-            <li><span>01</span><div><h3>Единство</h3><p>Каждый участник — часть команды. Сильная организация начинается с доверия и взаимной поддержки.</p></div></li>
-            <li><span>02</span><div><h3>Развитие</h3><p>Мы растём вместе, делимся опытом и помогаем друг другу двигаться дальше.</p></div></li>
-            <li><span>03</span><div><h3>Амбиции</h3><p>Общий вектор — движение вперёд без пустых обещаний и выдуманных достижений.</p></div></li>
-          </ol>
+      <section className="kg-hero" id="kg-top" aria-labelledby="kg-title">
+        <div className="kg-hero__bg" style={{ backgroundImage: `url(${cityImg})` }} aria-hidden="true" />
+        <img className="kg-hero__art" src={duoImg} alt="Metsuki и Mika Kagami — лидеры KAGAMI" />
+        <div className="kg-wrap kg-hero__inner">
+          <div className="kg-hero__text">
+            <p className="kg-status"><i aria-hidden="true" />Набор открыт</p>
+            <svg className="kg-crown" viewBox="0 0 80 50" fill="none" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M6 44 L4 12 L22 28 L40 4 L56 28 L76 12 L72 44 Z" /></svg>
+            <h1 id="kg-title" className="kg-display kg-hero__title">KAGAMI</h1>
+            <p className="kg-hero__sub"><span className="kg-slashes" aria-hidden="true">////</span><span className="kg-display">RP Crew</span></p>
+            <p className="kg-hero__lead">Семья на просторах Лос-Сантоса. Роль, взаимодействие, развитие и свои правила.</p>
+            <div className="kg-hero__ctas">
+              <DiscordButton>Вступить в Discord →</DiscordButton>
+              <a className="kg-btn kg-btn--ghost" href="#kg-activity">Узнать больше</a>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="nexus-section nexus-information" id="kg-information">
-        <div className="nexus-section__index">02 / ИНФОРМАЦИЯ</div>
-        <header className="nexus-section__header"><p className="nexus-kicker">ВЫБЕРИ СВОЙ ВЕКТОР</p><h2>Один Nexus.<br />Разные способы участия.</h2><p>Прокрути, перетащи или используй стрелки клавиатуры, чтобы познакомиться с направлениями.</p></header>
-        <DepthCarousel />
-      </section>
+      <div className="kg-wrap kg-split">
+        <section id="kg-activity" className="kg-activity" aria-labelledby="kg-activity-title">
+          <h2 id="kg-activity-title" className="kg-display kg-h2">Наша деятельность<span className="kg-slashes" aria-hidden="true">///</span></h2>
+          <ul className="kg-cards">
+            {activities.map((item) => <li key={item.title} className="kg-card">
+              <img className="kg-card__img" src={item.image} alt={item.alt} loading="lazy" decoding="async" style={item.position ? { objectPosition: item.position } : undefined} />
+              <div className="kg-card__body">
+                <h3 className="kg-display"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">{item.icon}</svg>{item.title}</h3>
+                <p>{item.text}</p>
+              </div>
+            </li>)}
+          </ul>
+        </section>
 
-      <section className="nexus-section nexus-leadership" id="kg-leadership">
-        <div className="nexus-section__index">03 / РУКОВОДСТВО</div>
-        <header className="nexus-section__header"><p className="nexus-kicker">ДВА ХАРАКТЕРА · ОДИН ЗНАК</p><h2>Центр управления<br />K✦GAMI.</h2></header>
-        <div className="nexus-leadership__duo">
-          <ReflectiveCard className="leader-profile leader-profile--metsuki" label="Metsuki Kagami — основатель">
-            <img src={metsukiImg} alt="Metsuki Kagami" loading="lazy" /><div className="leader-profile__scrim" /><div className="leader-profile__copy"><span>FOUNDER / 01</span><h3>Metsuki<br />Kagami</h3><p>Основатель организации</p></div>
-          </ReflectiveCard>
-          <div className="nexus-leadership__sigil"><BrandStar /><span>UNITY<br />PROTOCOL</span></div>
-          <ReflectiveCard className="leader-profile leader-profile--mika" label="Mika Kagami — соосновательница">
-            <img src={mikaImg} alt="Mika Kagami" loading="lazy" /><div className="leader-profile__scrim" /><div className="leader-profile__copy"><span>CO-FOUNDER / 02</span><h3>Mika<br />Kagami</h3><p>Соосновательница организации</p></div>
-          </ReflectiveCard>
+        <section id="kg-leaders" className="kg-leaders" aria-labelledby="kg-leaders-title">
+          <h2 id="kg-leaders-title" className="kg-display kg-h2">Руководство</h2>
+          <div className="kg-polaroids">
+            {leaders.map((leader) => <figure key={leader.name} className={`kg-polaroid kg-polaroid--${leader.side}`}>
+              <span className="kg-tape" aria-hidden="true" />
+              <img src={duoImg} alt={`${leader.name} — ${leader.role.toLowerCase()}`} loading="lazy" decoding="async" />
+              <figcaption><span className="kg-display">{leader.name}</span></figcaption>
+              <span className="kg-polaroid__role">{leader.role}</span>
+            </figure>)}
+          </div>
+        </section>
+      </div>
+
+      <section className="kg-join" id="kg-join" aria-labelledby="kg-join-title">
+        <div className="kg-join__img" style={{ backgroundImage: `url(${carImg})` }} role="img" aria-label="Машина на ночной улице Лос-Сантоса" />
+        <div className="kg-wrap kg-join__inner">
+          <h2 id="kg-join-title" className="kg-display kg-join__title">Вступай<br />в <em>KAGAMI</em></h2>
+          <ul className="kg-checks">
+            {requirements.map((item) => <li key={item.title}><CheckIcon /><div><b>{item.title}</b><span>{item.text}</span></div></li>)}
+          </ul>
+          <div className="kg-join__cta">
+            <DiscordButton className="kg-btn--large">Подать заявку</DiscordButton>
+            <small>Заявка и собеседование — в Discord</small>
+          </div>
         </div>
-      </section>
-
-      <section className="nexus-section nexus-protocol">
-        <div className="nexus-section__index">04 / ПРОТОКОЛ</div>
-        <div className="nexus-protocol__copy"><p className="nexus-kicker">ПЕРЕД ВСТУПЛЕНИЕМ</p><h2>Ясные ожидания.<br />Честный старт.</h2><p>Организация ждёт активных и целеустремлённых игроков, готовых общаться, участвовать в общей жизни и уважать команду.</p></div>
-        <dl><div><dt>01</dt><dd><strong>Активность</strong><span>Участие в делах организации, а не только присутствие в списке.</span></dd></div><div><dt>02</dt><dd><strong>Уважение</strong><span>Здоровое общение и ответственность за свои действия.</span></dd></div><div><dt>03</dt><dd><strong>Командность</strong><span>Готовность действовать сообща и помогать другим.</span></dd></div></dl>
-      </section>
-
-      <section className="nexus-join" id="kg-contact">
-        <div className="nexus-join__halo" aria-hidden="true"><BrandStar /></div>
-        <p className="nexus-kicker">КАНАЛ СВЯЗИ ОТКРЫТ</p><h2>Твоя глава<br /><em>начинается здесь.</em></h2>
-        <p>Заявка подаётся через официальный Discord K✦GAMI. Там же можно уточнить актуальные требования и пройти собеседование.</p>
-        <a className="nexus-button nexus-button--large" href={discordInvite} target="_blank" rel="noreferrer">Перейти в Discord <span>↗</span></a>
       </section>
     </main>
-    <footer className="nexus-footer"><a href="#kg-hero">K<BrandStar />GAMI</a><p>СИЛА · ЕДИНСТВО · АМБИЦИИ</p><span>© {new Date().getFullYear()} K✦GAMI</span></footer>
+
+    <footer className="kg-footer">
+      <div className="kg-wrap kg-footer__inner">
+        <Logo />
+        <span className="kg-footer__tag">GTA RP Crew</span>
+        <span className="kg-footer__copy">© 2026 KAGAMI</span>
+      </div>
+    </footer>
   </div>;
 }
