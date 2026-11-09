@@ -3,8 +3,8 @@ import communityIcon from "../../assets/Community-Icon.webp";
 import discordIcon from "../../assets/Discord-Icon.webp";
 import githubIcon from "../../assets/Github-Icon.webp";
 import guestbookIcon from "../../assets/Guestbook-Icon.webp";
-import bypassCleanerIcon from "../assets/apps/bypass-cleaner-icon.ico";
-import bypassCleanerPreview from "../assets/apps/bypass-cleaner-preview.webp";
+import kagamiEmbedStudioIcon from "../assets/apps/kagami-embed-studio-icon.webp";
+import kagamiEmbedStudioPreview from "../assets/apps/kagami-embed-studio-preview.webp";
 import exeAnalyserIcon from "../assets/apps/exe-analyser-icon.ico";
 import exeAnalyserPreview from "../assets/apps/exe-analyser-preview.webp";
 import kinoBoxIcon from "../assets/apps/KinoBox.ico";
@@ -139,18 +139,18 @@ const projectCards: AppCard[] = [
     highlights: ["entropy and imports", "stress scenarios", "html/json/markdown"],
   },
   {
-    title: "Bypass Cleaner",
-    version: "v0.4.0-alpha",
-    subtitle: "cleanup utility",
-    text: "System cleanup utility focused on control: preview mode, filters, quarantine, logging, and suspicious process handling.",
-    preview: bypassCleanerPreview,
-    icon: bypassCleanerIcon,
+    title: "KAGAMI Embed Studio",
+    version: "v1.0.0",
+    subtitle: "discord message editor",
+    text: "Modern Discord message editor with a visual interface. Build Embeds and Components V2, use templates, preview the result in real time, and send messages through your own Discord bot.",
+    preview: kagamiEmbedStudioPreview,
+    icon: kagamiEmbedStudioIcon,
     downloadHref:
-      "https://github.com/metsuwuki/ByPass_Cleaner/releases/download/v.0.4.0-alpha/ByPass.Cleaner.Setup.exe",
-    githubHref: "https://github.com/metsuwuki/ByPass_Cleaner",
+      "https://github.com/metsuwuki/Kagami-Embed-Studio/releases/download/v1.0.0/kagami-embed-studio.exe",
+    githubHref: "https://github.com/metsuwuki/Kagami-Embed-Studio",
     accent: "violet",
-    tags: ["Quarantine", "Preview", "Logs"],
-    highlights: ["folder scanning", "forced delete", "process terminate"],
+    tags: ["Embed", "Components V2", "Templates"],
+    highlights: ["live preview", "ready-made templates", "send via your bot"],
   },
 ];
 
@@ -358,6 +358,12 @@ const contentByLocale: Record<Locale, LocalizedSiteContent> = {
           buyLabel: "Скачать",
           tags: ["Оценки", "Коллекции", "Статистика"],
           highlights: ["статус просмотра", "свои коллекции", "учёт пересмотров"],
+        },
+        "KAGAMI Embed Studio": {
+          subtitle: "редактор Discord-сообщений",
+          text: "Современный редактор Discord-сообщений с удобным визуальным интерфейсом. Создавайте и настраивайте Embed и Components V2, используйте шаблоны, просматривайте результат в реальном времени и отправляйте сообщения через собственного Discord-бота.",
+          tags: ["Embed", "Components V2", "Шаблоны"],
+          highlights: ["предпросмотр в реальном времени", "готовые шаблоны", "отправка через своего бота"],
         },
       };
 
