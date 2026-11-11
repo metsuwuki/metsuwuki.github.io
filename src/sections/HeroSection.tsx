@@ -97,7 +97,6 @@ export default function HeroSection() {
 
   return (
     <section className="hero-section hero-section--reference" id="overview">
-      <div className="hero-scroll-hint" aria-hidden="true"><span /></div>
       <div className="page-container hero-reference-grid">
         <m.div className="hero-reference-copy" {...revealProps}>
           <m.p className="hero-eyebrow" custom={0} variants={itemVariants}>{siteMeta.heroEyebrow}</m.p>

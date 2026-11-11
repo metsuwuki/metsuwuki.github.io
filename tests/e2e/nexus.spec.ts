@@ -31,7 +31,11 @@ async function passOnboarding(page: Page) {
   const slider = gate.getByRole("slider");
   const target = await slider.getAttribute("data-target");
   if (!target) throw new Error("Onboarding target is missing");
-  await slider.fill(target);
+  const marker = await gate.locator(".slide-commit__target").boundingBox();
+  if (!marker) throw new Error("Onboarding target is hidden");
+  await page.mouse.click(marker.x + marker.width / 2, marker.y + marker.height / 2);
+  const value = Number(await slider.inputValue());
+  expect(Math.abs(value - Number(target))).toBeLessThanOrEqual(1);
   await gate.getByRole("button", { name: "Submit" }).click();
   await expect(gate).toBeHidden();
   await expect(page.locator(".site-access-layer")).toHaveAttribute("aria-hidden", "false");

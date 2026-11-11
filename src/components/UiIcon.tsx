@@ -6,6 +6,10 @@ export type IconName =
   | "archive"
   | "arrow-right"
   | "branch"
+  | "check"
+  | "chevron-left"
+  | "chevron-right"
+  | "chevrons-right"
   | "cleaner"
   | "craft"
   | "cpp"
@@ -124,6 +128,18 @@ const iconNodes: Record<IconName, JSX.Element> = {
         strokeLinecap="round"
       />
     </>
+  ),
+  check: (
+    <path d="m4.5 10 3.5 3.5 7.5-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  ),
+  "chevron-left": (
+    <path d="m12.5 5-5 5 5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  ),
+  "chevron-right": (
+    <path d="m7.5 5 5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  ),
+  "chevrons-right": (
+    <path d="m4.5 5.5 4.5 4.5-4.5 4.5m6.5-9 4.5 4.5-4.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
   ),
   cleaner: (
     <>

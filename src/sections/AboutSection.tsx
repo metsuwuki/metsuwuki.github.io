@@ -3,6 +3,7 @@ import { m } from "framer-motion";
 import { GlassActionButton } from "../components/GlassActionButton";
 import { Reveal } from "../components/Reveal";
 import { SectionHeading } from "../components/SectionHeading";
+import { UiIcon } from "../components/UiIcon";
 import { useMotionSettings } from "../hooks/useMotionSettings";
 import { usePageLocale } from "../i18n/pageLocale";
 import { getRevealProps } from "../utils/motion";
@@ -169,9 +170,9 @@ function ApplicationCarousel({ apps, siteMeta, openApp }: {
         })}
       </div>
       <div className="applications-depth-carousel__controls">
-        <button type="button" onClick={() => select(active - 1)} aria-label="Previous application">←</button>
+        <button type="button" onClick={() => select(active - 1)} aria-label="Previous application"><UiIcon name="chevron-left" /></button>
         <span aria-live="polite">{String(active + 1).padStart(2, "0")} / {String(apps.length).padStart(2, "0")}</span>
-        <button type="button" onClick={() => select(active + 1)} aria-label="Next application">→</button>
+        <button type="button" onClick={() => select(active + 1)} aria-label="Next application"><UiIcon name="chevron-right" /></button>
       </div>
     </div>
   );

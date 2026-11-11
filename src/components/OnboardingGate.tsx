@@ -1,15 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { m } from "framer-motion";
+import { UiIcon } from "./UiIcon";
 
 const VERIFIED_KEY = "metsuwuki_onboarding_verified_v1";
-
-function DirectionGlyph({ check = false }: { check?: boolean }) {
-  return check ? (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.2 4.2L19 7" /></svg>
-  ) : (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 7l5 5-5 5" /></svg>
-  );
-}
 
 type OnboardingGateProps = { onVerified: () => void };
 
@@ -57,11 +50,11 @@ export function OnboardingGate({ onVerified }: OnboardingGateProps) {
       <h1 id="onboarding-title">Подтверди,<br /><em>что ты человек.</em></h1>
       <p className="onboarding-panel__copy">Совмести сигнал с контрольной отметкой, затем подтверди вход.</p>
 
-      <div className="slide-commit" style={{ "--slide-value": `${value}%`, "--slide-target": `${target}%` } as React.CSSProperties}>
+      <div className="slide-commit" style={{ "--slide-value": value / 100, "--slide-target": target / 100 } as CSSProperties}>
         <div className="slide-commit__labels"><span>ТЕКУЩИЙ СИГНАЛ <b>{value}%</b></span><span>ЦЕЛЬ <b>{target}%</b></span></div>
         <div className="slide-commit__track">
           <span className="slide-commit__progress" />
-          <span className="slide-commit__target" aria-hidden="true"><i /></span>
+          <span className="slide-commit__target" aria-hidden="true" />
           <input
             type="range"
             min="0"
@@ -73,7 +66,7 @@ export function OnboardingGate({ onVerified }: OnboardingGateProps) {
             aria-valuetext={`${value} процентов, цель ${target}`}
             onChange={(event) => setValue(Number(event.target.value))}
           />
-          <span className="slide-commit__thumb" aria-hidden="true"><i><DirectionGlyph check={aligned} /></i></span>
+          <span className="slide-commit__thumb" aria-hidden="true"><UiIcon name={aligned ? "check" : "chevrons-right"} /></span>
         </div>
         <p className="slide-commit__feedback" aria-live="polite">
           {aligned ? "Сигнал совмещён. Можно подтвердить вход." : `Отклонение: ${Math.abs(target - value)}%`}
@@ -81,7 +74,7 @@ export function OnboardingGate({ onVerified }: OnboardingGateProps) {
       </div>
 
       <button className="specular-submit" type="button" disabled={!aligned || submitting} onClick={submit}>
-        <span>{submitting ? "Открываю интерфейс…" : "Submit"}</span><i aria-hidden="true"><DirectionGlyph /></i>
+        <span>{submitting ? "Открываю интерфейс…" : "Submit"}</span>
       </button>
       <p className="onboarding-panel__note">Проверка действует до закрытия вкладки.</p>
     </div>
