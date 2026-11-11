@@ -33,7 +33,7 @@ export function SiteHeader() {
       <div className={`site-header__inner ${isScrolled ? "is-scrolled" : ""}`}>
         <a href="#overview" className="site-brand" aria-label={`${siteMeta.brandName} ${siteMeta.brandHomeAria}`} onClick={closeMenu}>
           <span className={`site-brand__mark site-brand__mark--${presence.state}`}>
-            <img src={presence.avatarUrl || profile.portrait} alt="" width="44" height="44" />
+            <img src={profile.portrait} alt="" width="44" height="44" />
           </span>
           <span className="site-brand__copy">
             <strong>{siteMeta.brandName}</strong>
