@@ -77,6 +77,15 @@ test.describe("dual portfolio routing", () => {
     await expect(carousel.locator(".app-reflective-card")).toHaveCount(3);
   });
 
+  test("opens KAGAMI Embed Studio through its permanent hash link", async ({ page }) => {
+    await openVerified(page, "/metsuki#kagami-embed-studio");
+    const carousel = page.getByRole("region", { name: /Applications|Приложения/ });
+    const card = carousel.locator("#kagami-embed-studio");
+    await expect(card).toBeVisible();
+    await expect(card.locator("xpath=..")).toHaveClass(/is-active/);
+    await expect(card.getByRole("link", { name: /Permanent link/ })).toHaveAttribute("href", "#kagami-embed-studio");
+  });
+
   test("opens Mika through the identical portfolio structure with honest coming-soon cards", async ({ page }) => {
     await openVerified(page, "/mika");
     await expect(page.locator(".hero-section")).toBeVisible();

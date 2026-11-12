@@ -11676,7 +11676,12 @@ body {
 .applications-depth-carousel .app-reflective-card__content { display: flex; flex: 1; flex-direction: column; padding: 20px 24px 22px; }
 .applications-depth-carousel .app-reflective-card__meta { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
 .applications-depth-carousel .app-reflective-card__meta .app-card__eyebrow { margin: 0; color: rgba(195,170,235,.75); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }
-.applications-depth-carousel .app-reflective-card__meta > span { padding: 5px 8px; border: 1px solid rgba(179,139,243,.22); border-radius: 7px; color: #d9c8fa; background: rgba(150,96,235,.08); font: 600 10px/1 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .08em; }
+.applications-depth-carousel .app-reflective-card__meta-actions { display: flex; min-width: 0; align-items: center; justify-content: flex-end; gap: 7px; }
+.applications-depth-carousel .app-reflective-card__meta-actions > span { flex: none; padding: 5px 8px; border: 1px solid rgba(179,139,243,.22); border-radius: 7px; color: #d9c8fa; background: rgba(150,96,235,.08); font: 600 10px/1 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .08em; }
+.applications-depth-carousel .app-card__permalink { max-width: 12.5rem; overflow: hidden; color: #9c8dad; font: 600 9px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .04em; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; transition: color .2s ease; }
+.applications-depth-carousel .app-card__permalink:hover { color: #d8baff; }
+.applications-depth-carousel .app-card__permalink:focus-visible { border-radius: 4px; outline: 2px solid #a9e9ff; outline-offset: 3px; }
+.applications-depth-carousel .app-reflective-card:target { border-color: rgba(190, 132, 255, .78); box-shadow: 0 24px 70px rgba(70, 28, 128, .42), 0 0 0 1px rgba(188, 122, 255, .22); }
 .applications-depth-carousel .app-reflective-card__title { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
 .applications-depth-carousel .app-reflective-card__title img { flex: none; width: 38px; height: 38px; object-fit: contain; border-radius: 10px; }
 .applications-depth-carousel .app-reflective-card__title h3 { margin: 0; font-size: clamp(24px, 2.4vw, 32px); letter-spacing: -.03em; overflow-wrap: anywhere; }
@@ -11711,6 +11716,7 @@ body {
   .applications-depth-carousel__item[data-offset="1"] { transform: translateX(40%); }
   .applications-depth-carousel .app-reflective-card { border-radius: 20px; }
   .applications-depth-carousel .app-reflective-card__content { padding: 16px 16px 18px; }
+  .applications-depth-carousel .app-card__permalink { max-width: 8rem; }
   .applications-depth-carousel .app-reflective-card__footer { flex-direction: column; align-items: stretch; }
   .applications-depth-carousel__controls { width: 100%; }
 }

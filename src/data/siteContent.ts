@@ -38,6 +38,7 @@ export type FeatureCard = {
 };
 
 export type AppCard = {
+  anchorId?: string;
   title: string;
   version?: string;
   subtitle: string;
@@ -113,6 +114,7 @@ export type LocalizedSiteContent = {
 
 const projectCards: AppCard[] = [
   {
+    anchorId: "kinobox",
     title: "KinoBox",
     version: "v1.0.6",
     subtitle: "movie & tv tracker",
@@ -125,6 +127,7 @@ const projectCards: AppCard[] = [
     highlights: ["watch status", "custom collections", "rewatch tracking"],
   },
   {
+    anchorId: "exe-analyzer",
     title: "EXE Analyzer",
     version: "v1.0.0",
     subtitle: "exe analyser",
@@ -139,6 +142,7 @@ const projectCards: AppCard[] = [
     highlights: ["entropy and imports", "stress scenarios", "html/json/markdown"],
   },
   {
+    anchorId: "kagami-embed-studio",
     title: "KAGAMI Embed Studio",
     version: "v1.0.0",
     subtitle: "discord message editor",

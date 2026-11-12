@@ -59,6 +59,13 @@ function getApplicationOffset(index: number, active: number, length: number) {
   return offset;
 }
 
+function getApplicationIndexFromHash(apps: AppCard[]) {
+  if (typeof window === "undefined") return 0;
+  const anchor = decodeURIComponent(window.location.hash.slice(1));
+  const index = apps.findIndex((app) => app.anchorId === anchor);
+  return index >= 0 ? index : 0;
+}
+
 /**
  * Flat, layout-driven application carousel.
  * All cards share one grid cell, so the stage is exactly as tall as the
@@ -71,7 +78,7 @@ function ApplicationCarousel({ apps, siteMeta, openApp }: {
   siteMeta: LocalizedSiteContent["siteMeta"];
   openApp: (app: AppCard) => void;
 }) {
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(() => getApplicationIndexFromHash(apps));
   const [paused, setPaused] = useState(false);
   const [onScreen, setOnScreen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -79,6 +86,21 @@ function ApplicationCarousel({ apps, siteMeta, openApp }: {
   const lastWheel = useRef(0);
   const { prefersReducedMotion } = useMotionSettings();
   const select = useCallback((next: number) => setActive((next + apps.length) % apps.length), [apps.length]);
+
+  useEffect(() => {
+    const selectHashTarget = () => {
+      const anchor = decodeURIComponent(window.location.hash.slice(1));
+      const index = apps.findIndex((app) => app.anchorId === anchor);
+      if (index < 0) return;
+      setActive(index);
+      setPaused(true);
+      window.requestAnimationFrame(() => rootRef.current?.scrollIntoView({ block: "center" }));
+    };
+
+    selectHashTarget();
+    window.addEventListener("hashchange", selectHashTarget);
+    return () => window.removeEventListener("hashchange", selectHashTarget);
+  }, [apps]);
 
   useEffect(() => {
     const node = rootRef.current;
@@ -143,7 +165,7 @@ function ApplicationCarousel({ apps, siteMeta, openApp }: {
           const previewAlt = `${siteMeta.appPreviewAltPrefix} ${app.title}`;
           return <div key={app.title} className={`applications-depth-carousel__item ${isActive ? "is-active" : ""}`}
             data-offset={Math.max(-2, Math.min(2, offset))} aria-hidden={!isActive}>
-            <article className={`app-reflective-card app-card--${app.accent}`}
+            <article id={app.anchorId} className={`app-reflective-card app-card--${app.accent}`}
               ref={(node) => { if (node) node.inert = !isActive; }}>
               {actionable ? <button type="button" className="app-reflective-card__preview" onClick={() => openApp(app)} aria-label={`${app.title} ${siteMeta.appGithubLabel}`}>
                 <img src={app.preview} alt={previewAlt} loading="lazy" decoding="async" width={1120} height={630} />
@@ -152,7 +174,13 @@ function ApplicationCarousel({ apps, siteMeta, openApp }: {
                 <span className="app-reflective-card__coming-soon">COMING SOON</span>
               </div>}
               <div className="app-reflective-card__content">
-                <div className="app-reflective-card__meta"><p className="app-card__eyebrow">{siteMeta.appCardEyebrow}</p>{app.version && <span>{app.version}</span>}</div>
+                <div className="app-reflective-card__meta">
+                  <p className="app-card__eyebrow">{siteMeta.appCardEyebrow}</p>
+                  <div className="app-reflective-card__meta-actions">
+                    {app.anchorId && <a className="app-card__permalink" href={`#${app.anchorId}`} aria-label={`Permanent link to ${app.title}`}>#{app.anchorId}</a>}
+                    {app.version && <span>{app.version}</span>}
+                  </div>
+                </div>
                 <div className="app-reflective-card__title"><img src={app.icon} alt="" width={38} height={38} /><h3>{app.title}</h3></div>
                 <p className="app-reflective-card__subtitle">{app.subtitle}</p>
                 <p className="app-reflective-card__text">{app.text}</p>
