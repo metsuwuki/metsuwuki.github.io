@@ -144,13 +144,13 @@ const projectCards: AppCard[] = [
   {
     anchorId: "kagami-embed-studio",
     title: "KAGAMI Embed Studio",
-    version: "v1.0.0",
+    version: "v1.1.0",
     subtitle: "discord message editor",
     text: "Modern Discord message editor with a visual interface. Build Embeds and Components V2, use templates, preview the result in real time, and send messages through your own Discord bot.",
     preview: kagamiEmbedStudioPreview,
     icon: kagamiEmbedStudioIcon,
     downloadHref:
-      "https://github.com/metsuwuki/Kagami-Embed-Studio/releases/download/v1.0.0/kagami-embed-studio.exe",
+      "https://github.com/metsuwuki/Kagami-Embed-Studio/releases/download/v1.1.0/KAGAMI-Embed-Studio_1.1.0_x64-setup.exe",
     githubHref: "https://github.com/metsuwuki/Kagami-Embed-Studio",
     accent: "violet",
     tags: ["Embed", "Components V2", "Templates"],
