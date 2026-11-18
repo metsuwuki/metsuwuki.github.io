@@ -1,0 +1,250 @@
+/* Glow-border hover card, adapted from Uiverse.io by SelfMadeSystem */
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0b0d10;
+  margin: 0;
+}
+
+.card-container {
+  position: relative;
+  width: 260px;
+  height: 360px;
+  border-radius: 24px;
+}
+
+.card-border {
+  position: absolute;
+  inset: 0;
+  background: #0005;
+  border-radius: inherit;
+}
+
+/* From Uiverse.io by JohnnyCSilva */
+.card {
+  position: absolute;
+  inset: 0.125em;
+  border-radius: 22px;
+  overflow: hidden;
+
+  display: grid;
+  place-items: center;
+  color: #fff;
+
+  background: radial-gradient(
+      120% 120% at 20% 0%,
+      rgba(255, 255, 255, 0.08),
+      transparent 55%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.02)
+    ),
+    #111215;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 220ms ease;
+  will-change: transform;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -60px;
+  background: radial-gradient(
+      circle at 30% 20%,
+      rgba(120, 170, 255, 0.22),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 70% 80%,
+      rgba(160, 90, 255, 0.18),
+      transparent 50%
+    );
+  filter: blur(18px);
+  opacity: 0.55;
+  transition: opacity 220ms ease;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12),
+    transparent 40%
+  );
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.img {
+  height: 62%;
+  position: absolute;
+  z-index: 1;
+
+  opacity: 0.92;
+  transform: translateY(2px) scale(1);
+  transition:
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 260ms ease,
+    filter 260ms ease;
+  will-change: transform;
+}
+
+.textBox {
+  z-index: 2;
+  width: 100%;
+  padding: 18px 18px 16px;
+
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 200ms ease,
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.head {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: 0.2px;
+}
+
+.textBox span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.42);
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.price {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.currency {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-right: 2px;
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-4px) scale(1.03);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.45);
+}
+
+.card:hover::before,
+.card:focus-visible::before {
+  opacity: 0.85;
+}
+
+.card:hover .textBox,
+.card:focus-visible .textBox {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card:hover .img,
+.card:focus-visible .img {
+  transform: translateY(-10px) scale(1.04);
+  opacity: 0.35;
+  filter: blur(2px);
+  animation: float 2.4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(4px);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+}
+
+.backdrop {
+  position: absolute;
+  inset: -100%;
+  background: #111111aa;
+  z-index: -1;
+}
+
+.spin {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+}
+
+.spin-blur {
+  filter: blur(3em) url(#unopaq);
+}
+
+.spin-intense {
+  inset: -0.125em;
+  filter: blur(0.5em) url(#unopaq2);
+  border-radius: 0.75em;
+}
+
+.spin-inside {
+  inset: -2px;
+  border-radius: inherit;
+  filter: blur(2px) url(#unopaq3);
+  z-index: 0;
+}
+
+.spin::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  opacity: 0;
+  animation: speen 8s cubic-bezier(0.56, 0.15, 0.28, 0.86) infinite;
+  animation-play-state: paused;
+  transition: opacity 0.3s ease;
+}
+
+.card-container:hover .spin::before {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+.spin-blur::before {
+  background: linear-gradient(-45deg, #7b2ff7, #0000 46% 54%, #c77dff);
+}
+
+.spin-intense::before {
+  background: linear-gradient(-45deg, #9d4edd, #0000 35% 65%, #e0aaff);
+}
+
+.spin-inside::before {
+  background: linear-gradient(-45deg, #c77dff, #0000 35% 65%, #f3d9ff);
+}
+
+@keyframes speen {
+  0% {
+    rotate: 10deg;
+  }
+  50% {
+    rotate: 190deg;
+  }
+  to {
+    rotate: 370deg;
+  }
+}

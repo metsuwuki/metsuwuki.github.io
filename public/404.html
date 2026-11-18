@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>metsuwuki.github.io</title>
+  <script>
+    // SPA redirect for GitHub Pages — Rafael Pedicini technique
+    // When GH Pages returns 404 for /gta5rp, redirect to /?/gta5rp
+    // so React Router can handle it on the client.
+    var l = window.location;
+    l.replace(
+      l.protocol + '//' + l.host +
+      l.pathname.split('/').slice(0, 1).join('/') +
+      '/?/' + l.pathname.slice(1) +
+      (l.search ? l.search.replace('?', '&') : '') +
+      l.hash
+    );
+  </script>
+</head>
+<body></body>
+</html>

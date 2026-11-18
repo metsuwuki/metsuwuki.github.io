@@ -1,0 +1,1 @@
+INSERT INTO public.guestbook (id, name, message, created_at, avatar) VALUES ('35a3b9b4-96c2-4efb-bd4e-a8e73205e8b6', 'MetsUwUki', 'The first opening', '2026-04-23 19:20:57.850105+00', 'profile'), ('e56da10d-0e71-403c-9953-47e08e980ce8', 'Mika Kagami', 'Wow, this is perfect. Love you baby♡', '2026-04-23 22:22:09.526543+00', 'profile6');
